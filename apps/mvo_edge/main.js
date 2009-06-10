@@ -1,6 +1,6 @@
 // ==========================================================================
 // Project:   MvoEdge
-// Copyright: ©2009 My Company, Inc.
+// Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
 
@@ -18,15 +18,21 @@ MvoEdge.main = function main() {
   // on screen.  If you app gets any level of complexity, you will probably 
   // create multiple pages and panes.  
   MvoEdge.getPath('mainPage.mainPane').append();
-
+  
   // Step 2. Set the content property on your primary controller.
   // This will make your app come alive!
-
-  // TODO: Set the content property on your primary controller
+  // Set the content property on your primary controller
   // ex: .contactsController.set('content',.contacts);
+  var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
+  MvoEdge.masterController.set('content', nodes);
+  var images = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+  MvoEdge.thumbnailController.set('content', images);
 
+  // Call the layout controller in order to setup the interface components
+  MvoEdge.layoutController.initializeWorkspace();
+  
 };
 
 function main() {
-	MvoEdge.main();
+  MvoEdge.main();
 }
