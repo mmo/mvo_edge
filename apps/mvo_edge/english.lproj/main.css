@@ -1,0 +1,41 @@
+/* ==========================================================================
+// Project:   MvoEdge - mainPage
+// Copyright: (c) 2009 RERO
+// ==========================================================================
+*/
+
+body.sc-theme {
+ background-color: #fff;
+ font: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+.workspace h1 {
+ border: none ;
+ padding: 0px;
+ margin: 0px;
+ letter-spacing: -1px;
+ font: normal 3.4em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+.workspace h3 {
+ margin: 8px 0px;
+ padding: 0px;
+ font: 1.5em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+ color: #808080;
+}
+
+.workspace .metadata_primary {
+ font: 1.3em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+ font-weight: bold;
+ color: #333;
+}
+
+.workspace .metadata_secondary {
+ font: 1.1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+ font-weight: bold;
+ color: #777;
+}
+
+.workspace .toolbox_icon {
+  padding: 5px;
+}
