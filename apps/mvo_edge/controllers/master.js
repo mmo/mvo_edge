@@ -27,7 +27,7 @@ MvoEdge.masterController = SC.ArrayController.create(
     @property {Array} descriptiveMetadataDictionary
   */
   descriptiveMetadataDictionary: function () {
-    return this.arrangedObjects().objectAt(0);
+    return this.arrangedObjects().objectAt(0).get('metadata');
   }.property(),
 
   /**

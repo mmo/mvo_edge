@@ -81,7 +81,7 @@ MvoEdge.viewsPage = SC.Page.design({
         tagName: 'span',
         classNames: 'workspace metadata_secondary',
         contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
-        contentValueKey: 'author'
+        contentValueKey: 'creator'
       })
     ]
   }).classNames('workspace'.w())

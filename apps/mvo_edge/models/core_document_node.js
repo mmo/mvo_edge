@@ -14,8 +14,13 @@
 MvoEdge.CoreDocumentNode = SC.Record.extend(
 /** @scope MvoEdge.CoreDocumentNode.prototype */ {
 
+  parentId: SC.Record.attr(String),
+  nextId: SC.Record.attr(String),
+  previousId: SC.Record.attr(String),
+  sequenceNumber: SC.Record.attr(Number),
   label: SC.Record.attr(String),
-  fileguid: SC.Record.attr(String),
+  metadata: SC.Record.attr(Object),
+  urlDefault: SC.Record.attr(String),
   children: SC.Record.attr(Array)
 
 });

@@ -1,6 +1,6 @@
 // ==========================================================================
-// Project:   MvoEdge.Thumbnail
-// Copyright: (c) 2009 RERO
+// Project:   MvoEdge.Tree
+// Copyright: ©2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
 
@@ -11,11 +11,11 @@
   @extends SC.Record
   @version 0.1
 */
-MvoEdge.Thumbnail = SC.Record.extend(
-/** @scope MvoEdge.Thumbnail.prototype */ {
+MvoEdge.Tree = SC.Record.extend(
+/** @scope MvoEdge.Tree.prototype */ {
 
-  url: SC.Record.attr(String),
-  image_url: SC.Record.attr(String),
+  label: SC.Record.attr(String),
+  children: SC.Record.attr(Array),
   coreDocumentNode: SC.Record.attr(MvoEdge.CoreDocumentNode)
- 
-});
+
+}) ;
