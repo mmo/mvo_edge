@@ -3,6 +3,7 @@
 // Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
+require('views/tree');
 
 MvoEdge.viewsPage = SC.Page.design({
 
@@ -52,14 +53,8 @@ MvoEdge.viewsPage = SC.Page.design({
   /**
     Tree view
   */
-  treeView: SC.ScrollView.design({
-    /*
-    layout: { top: 0, bottom: 0, left: 0, right: 0 },
-    
-    contentView: MvoEdge.TreeView.design({
-      classNames: 'yui-skin-sam'
-    })
-    */
+  treeView: MvoEdge.TreeView.design({
+      id: 'treeId'
   }),
 
   /**

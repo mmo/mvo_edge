@@ -27,6 +27,8 @@ MvoEdge.main = function main() {
   MvoEdge.masterController.set('content', nodes);
   var images = MvoEdge.store.findAll(MvoEdge.Thumbnail);
   MvoEdge.thumbnailController.set('content', images);
+  var labels = MvoEdge.store.findAll(MvoEdge.Tree);
+  MvoEdge.treeController.set('content', labels);
 
   // Call the layout controller in order to setup the interface components
   MvoEdge.layoutController.initializeWorkspace();

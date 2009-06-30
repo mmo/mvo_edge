@@ -54,7 +54,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.metadataView');
     this.layoutView(MvoEdge.LAYOUT_LEFT, 'viewsPage.thumbnailView');
     this.layoutView(MvoEdge.LAYOUT_CENTRAL, 'viewsPage.mainContentView');
-    //this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
+    this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
   },
 
   /**
