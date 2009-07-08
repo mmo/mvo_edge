@@ -53,8 +53,13 @@ MvoEdge.viewsPage = SC.Page.design({
   /**
     Tree view
   */
-  treeView: MvoEdge.TreeView.design({
+  treeView: SC.ScrollView.design({
+    layout: { top: 0, bottom: 0, left: 0, right: 0 },
+  
+    contentView: MvoEdge.TreeView.design({
+      classNames: 'yui-skin-sam',
       id: 'treeId'
+    })
   }),
 
   /**

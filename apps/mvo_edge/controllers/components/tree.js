@@ -16,10 +16,11 @@ MvoEdge.treeController = SC.ArrayController.create(
   treeSelection: undefined,
   // TODO: Add your own code here.
   selectedTree: function(){
-    alert('label ');
+    console.log('treeController selectedTree :');
   }.property('treeSelection'),
 
   masterObjectSelectionDidChange: function() {
+    console.log('treeController masterObjectSelectionDidChange :');
   }.observes('MvoEdge.masterController.selectedObjectId')
 
 }) ;
