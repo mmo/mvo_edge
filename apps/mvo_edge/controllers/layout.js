@@ -74,7 +74,7 @@ MvoEdge.layoutController = SC.Object.create(
   */
   layoutView: function (location, viewPath) {
     MvoEdge.getPath('mainPage.mainPane.' + location)
-        .appendChild(MvoEdge.getPath(viewPath));
+      .appendChild(MvoEdge.getPath(viewPath));
   }
 
 });                                                                                   

@@ -14,6 +14,7 @@ MvoEdge.treeController = SC.ArrayController.create(
 /** @scope MvoEdge.treeController.prototype */ {
 
   treeSelection: undefined,
+  
   // TODO: Add your own code here.
   selectedTree: function(){
     console.log('treeController selectedTree :');

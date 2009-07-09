@@ -58,6 +58,7 @@ MvoEdge.viewsPage = SC.Page.design({
   
     contentView: MvoEdge.TreeView.design({
       classNames: 'yui-skin-sam',
+      //id is not used
       id: 'treeId'
     })
   }),

@@ -3,7 +3,6 @@
 // Copyright: ©2009 My Company, Inc.
 // ==========================================================================
 /*globals MvoEdge */
-require('core');
 /** @class
 
   (Document Your View Here)
@@ -15,13 +14,15 @@ MvoEdge.TreeView = SC.View.extend(
 
   handleNodes: [],
   listOfTreeNode: {},
-  nodeById:{},
+  nodeById: {},
 
-  // TODO: Add your own code here.
-  render: function(context, firstTime) {
+  render: function (context, firstTime) {
     console.log('TreeView render :');
   },
-    
+  
+  /**
+  build the TreeView
+  */
   buildTree: function () {
     console.log('TreeView buildTree :');
 
@@ -29,20 +30,23 @@ MvoEdge.TreeView = SC.View.extend(
     // See http://developer.yahoo.com/yui/treeview/
     // Every TreeNode is an object with a type: 'text' and a label:
     var div = MvoEdge.getPath('viewsPage.treeView');
+    //create a new treeWidget
+    //id of the div: this solution works but it's not optimal
     var treeWidget = new YAHOO.widget.TreeView(div.parentView.toString().split(':')[1]);
     var treeNodeRecords = MvoEdge.store.findAll(MvoEdge.Tree);
     
-    //create hashtable
+    //create hashtable of node
     var enumerator = treeNodeRecords.enumerator();
-    console.log('TreeView buildTree number of label: '+enumerator._length);
-    for(var t=0; t <enumerator._length; t++){
+    console.log('TreeView buildTree number of label: ' + enumerator._length);
+    for (var t = 0; t < enumerator._length; t++) {
       var obj = enumerator.nextObject();
       this.nodeById[obj.get('guid')] = obj;
     }    
-    enumerator.reset();   
-    for ( var i = 0; i < enumerator._length; i++){
+    enumerator.reset(); 
+    //retreive all node
+    for (var i = 0; i < enumerator._length; i++) {
       var currentNode = enumerator.nextObject();
-      if(!this.handleNodes[currentNode]){
+      if (!this.handleNodes[currentNode]) {
         this.addNode(currentNode, treeWidget.getRoot());
       }
     }
@@ -50,23 +54,26 @@ MvoEdge.TreeView = SC.View.extend(
     // subscribe to the labelClick event on every tree node
     treeWidget.subscribe('clickEvent', function (node) {
       // when a tree node is selected, update the selection in the controller
-      alert('label '+node.node.label);
+      alert('label ' + node.node.label);
     });
-    console.log('TreeView buildTree treeWidget number of node : '+treeWidget.getNodeCount());
+    console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
     treeWidget.expandAll();
   },
-    
+  
+  /**
+  add a node to his parent
+  */  
   addNode: function (node, parentWidgetNode) {
-    // add node to the tree
-    console.log('TreeView addNode :' + node.get('label') + ' adding to '+ parentWidgetNode.index);
+    console.log('TreeView addNode :' + node.get('label') + ' adding to ' + parentWidgetNode.index);
+    //create a TextNode
     var currentWidgetNode = new YAHOO.widget.TextNode(
       node.get('label'), parentWidgetNode, false);
       
     // mark node as added
     this.listOfTreeNode[node.get('guid')] = currentWidgetNode;
     this.handleNodes[node] = true;
-    // add children
+    // add children of the node
     var nodeChildren = node.get('children');
     if (nodeChildren) {
       for (var idx = 0; idx < nodeChildren.length; idx++) {
@@ -75,7 +82,9 @@ MvoEdge.TreeView = SC.View.extend(
     }
   },
    
-  // update selected node in the tree widget
+  /** 
+  update selected node in the tree widget
+  */
   selectNode: function () {
     console.log('TreeView selectNode :');
 		// TODO
