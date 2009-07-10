@@ -54,7 +54,7 @@ MvoEdge.TreeView = SC.View.extend(
     // subscribe to the labelClick event on every tree node
     treeWidget.subscribe('clickEvent', function (node) {
       // when a tree node is selected, update the selection in the controller
-      alert('label ' + node.node.label);
+      console.log('label ' + node.node.label);
     });
     console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
