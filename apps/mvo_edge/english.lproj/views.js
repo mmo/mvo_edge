@@ -26,7 +26,8 @@ MvoEdge.viewsPage = SC.Page.design({
     
     contentView: SC.ImageView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: 'MvoEdge.thumbnailController.selectedThumbnail',
+      //contentBinding: 'MvoEdge.thumbnailController.selectedThumbnail',
+	  contentBinding: 'MvoEdge.masterController.selectedObject',
       contentValueKey: 'url'
     })
   }),
