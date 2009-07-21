@@ -9,11 +9,11 @@ sc_require('models/components/tree');
 MvoEdge.Tree.FIXTURES = [
 
   { guid: 't0002', type: 'Tree', label: 'Front Matter', children: ['t0003', 't0004', 't0005', 't0006'],
-  coreDocumentNode: 'n00002', objectIds: ['n00004', 'n00006', 'n00012'] },
+  coreDocumentNode: 'n00002', objectIds: ['n00004', 'n00006', 'n00014'] },
   { guid: 't0003', type: 'Tree', label: 'Cover', coreDocumentNode: 'n00003', objectIds: ['n00004'] },
   { guid: 't0004', type: 'Tree', label: 'Title page', coreDocumentNode: 'n00007', objectIds: ['n00008'] },
   { guid: 't0005', type: 'Tree', label: 'Preliminaries', coreDocumentNode: 'n00009',objectIds: ['n00010'] },
-  { guid: 't0006', type: 'Tree', label: 'Preface', coreDocumentNode: 'n00011', objectIds: ['n00014'] },
+  { guid: 't0006', type: 'Tree', label: 'Preface', coreDocumentNode: 'n00011', objectIds: ['n00012'] },
   { guid: 't0007', type: 'Tree', label: 'Body', children:['t0008', 't0009', 't0010', 't0011'], coreDocumentNode: 'n00015',
   objectIds: ['n00017', 'n00018', 'n00019', 'n00020', 'n00021', 'n00022', 'n00023', 'n00024', 'n00025', 'n00026', 'n00030', 'n00034',
   'n00040', 'n00041', 'n00042', 'n00043', 'n00044', 'n00045', 'n00049', 'n00051', 'n00052', 'n00053', 'n00054',

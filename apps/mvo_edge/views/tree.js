@@ -54,13 +54,13 @@ MvoEdge.TreeView = SC.View.extend(
       }
     }
 
-    // subscribe to the labelClick event on every tree node
+    // subscribe to the clickEvent event on every tree node
     treeWidget.subscribe('clickEvent', function(node) {
 		// when a tree node is selected, update the selection in the controller
 		console.info('label ' + node.node.label);
-		var f = node.node.data.treeNode;
-		console.info("guid : " + f);
-		MvoEdge.treeController.set('treeSelection', f);
+		var tn = node.node.data.treeNode;
+		console.info("TreeNode : " + tn);
+		MvoEdge.treeController.set('treeSelection', tn);
     });
     console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
@@ -71,8 +71,9 @@ MvoEdge.TreeView = SC.View.extend(
 	Add a node to his parent
   */
   addNode: function(node, parentWidgetNode) {
-	var o = {label: node.get('label'), treeNode: node};
-    var currentWidgetNode = new YAHOO.widget.TextNode(o, parentWidgetNode, false);
+	// Build TextNode with the label and the treeNode
+	var obj = {label: node.get('label'), treeNode: node};
+    var currentWidgetNode = new YAHOO.widget.TextNode(obj, parentWidgetNode, false);
 
     // mark node as added
     this.listOfTreeNode[node.get('guid')] = currentWidgetNode;
@@ -87,21 +88,19 @@ MvoEdge.TreeView = SC.View.extend(
   },
    
   /**
-	Update selected node in the tree widget
+	Update selected node in the tree widget.
+	
+	@observes MvoEdge.treeController.treeSelection
   */
   selectNode: function() {
-    console.log('TreeView, call selectNode');
     var treeSelection = MvoEdge.treeController.get('treeSelection');
-    console.info('treeSelection : '+treeSelection);
-	if (treeSelection) {
+    if (treeSelection) {
 		var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
-		console.info('nodeToFocus : '+nodeToFocus);
 		if (nodeToFocus) {
-			console.info('Focus done');
+			console.info('Set focus on the good treeNode');
 			nodeToFocus.focus();
 		}
 	}
-	console.log('TreeView, end of call selectNode');
-	}.observes('MvoEdge.treeController.treeSelection')
+  }.observes('MvoEdge.treeController.treeSelection')
 
 });
