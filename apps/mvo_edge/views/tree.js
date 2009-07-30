@@ -16,14 +16,14 @@ MvoEdge.TreeView = SC.View.extend(
   listOfTreeNode: {},
   nodeById: {},
 
-  render: function(context, firstTime) {
+  render: function (context, firstTime) {
     console.log('TreeView render :');
   },
   
   /**
-	Build the TreeView
+    Build the TreeView
   */
-  buildTree: function() {
+  buildTree: function () {
     console.log('TreeView buildTree :');
 
     // Tree widget implemented with YUI TreeView
@@ -33,7 +33,8 @@ MvoEdge.TreeView = SC.View.extend(
     //create a new treeWidget
     //id of the div: this solution works but it's not optimal
     //var divTree = div.parentView.toString().split(':')[1];
-    //var treeWidget = new YAHOO.widget.TreeView(div.parentView._view_layer.id); // div.parentView._view_layer.id
+    //var treeWidget = new YAHOO.widget.TreeView(div.parentView._view_layer.id); 
+    // div.parentView._view_layer.id
     var treeWidget = new YAHOO.widget.TreeView(div.parentView.toString().split(':')[1]);
     var treeNodeRecords = MvoEdge.store.findAll(MvoEdge.Tree);
     
@@ -55,12 +56,12 @@ MvoEdge.TreeView = SC.View.extend(
     }
 
     // subscribe to the clickEvent event on every tree node
-    treeWidget.subscribe('clickEvent', function(node) {
-		// when a tree node is selected, update the selection in the controller
-		console.info('label ' + node.node.label);
-		var tn = node.node.data.treeNode;
-		console.info("TreeNode : " + tn);
-		MvoEdge.treeController.set('treeSelection', tn);
+    treeWidget.subscribe('clickEvent', function (node) {
+      // when a tree node is selected, update the selection in the controller
+      console.info('label ' + node.node.label);
+      var tn = node.node.data.treeNode;
+      console.info("TreeNode : " + tn);
+      MvoEdge.treeController.set('treeSelection', tn);
     });
     console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
@@ -68,11 +69,14 @@ MvoEdge.TreeView = SC.View.extend(
   },
   
   /**
-	Add a node to his parent
+    Add a node to his parent
+    
+    @param {Object} node the TreeNode
+    @param {YAHOO.widget.Node} parentWidgetNode the TreeNode's parent node
   */
-  addNode: function(node, parentWidgetNode) {
-	// Build TextNode with the label and the treeNode
-	var obj = {label: node.get('label'), treeNode: node};
+  addNode: function (node, parentWidgetNode) {
+    // Build TextNode with the label and the treeNode
+    var obj = {label: node.get('label'), treeNode: node};
     var currentWidgetNode = new YAHOO.widget.TextNode(obj, parentWidgetNode, false);
 
     // mark node as added
@@ -88,19 +92,19 @@ MvoEdge.TreeView = SC.View.extend(
   },
    
   /**
-	Update selected node in the tree widget.
+    Update selected node in the tree widget.
 	
-	@observes MvoEdge.treeController.treeSelection
+    @observes MvoEdge.treeController.treeSelection
   */
-  selectNode: function() {
+  selectNode: function () {
     var treeSelection = MvoEdge.treeController.get('treeSelection');
     if (treeSelection) {
-		var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
-		if (nodeToFocus) {
-			console.info('Set focus on the good treeNode');
-			nodeToFocus.focus();
-		}
-	}
+      var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
+      if (nodeToFocus) {
+        console.info('Set focus on the good treeNode');
+        nodeToFocus.focus();
+      }
+    }
   }.observes('MvoEdge.treeController.treeSelection')
 
 });

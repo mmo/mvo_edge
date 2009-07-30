@@ -49,7 +49,7 @@ MvoEdge.layoutController = SC.Object.create(
     
     @see MvoEdge.main
   */
-  initializeWorkspace: function() {
+  initializeWorkspace: function () {
     //this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.titleView');
     this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.metadataView');
     this.layoutView(MvoEdge.LAYOUT_LEFT, 'viewsPage.thumbnailView');
@@ -72,9 +72,9 @@ MvoEdge.layoutController = SC.Object.create(
     @param location {String} must correspond to one of the defined region constants
     @param viewPath {String} the path leading to the view to be positioned
   */
-  layoutView: function(location, viewPath) {
+  layoutView: function (location, viewPath) {
     MvoEdge.getPath('mainPage.mainPane.' + location)
       .appendChild(MvoEdge.getPath(viewPath));
   }
 
-});                                                                                   
+});

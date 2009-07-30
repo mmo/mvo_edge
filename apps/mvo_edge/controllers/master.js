@@ -21,10 +21,10 @@ MvoEdge.masterController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
 
   /**
-  	The guid of the selected file/object that is currently being displasyed by
+  	The guid of the selected file/object that is currently being displayed by
     the application
 
-    @property {String} selectedObjectId the guid of an object of type
+    @property {String} selectedObjectId the guid of an object of type 
     MvoEdge.CoreDocumentNode
   */
   selectedObjectId: undefined,
@@ -35,7 +35,7 @@ MvoEdge.masterController = SC.ArrayController.create(
 
     @property {Array} descriptiveMetadataDictionary
   */
-  descriptiveMetadataDictionary: function() {
+  descriptiveMetadataDictionary: function () {
     return this.arrangedObjects().objectAt(0).get('metadata');
   }.property(),
 
@@ -45,23 +45,26 @@ MvoEdge.masterController = SC.ArrayController.create(
 
     @property {MvoEdge.Thumbnail} selectedObjectId
   */
-  selectedObject: function() {
-	var coreDocumentNodeId = this.get('selectedObjectId');
-	if (coreDocumentNodeId) {
-		var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
-		var imageObjects = MvoEdge.store.findAll(q);
-		if (imageObjects) {
-			var sizeImageObjects = imageObjects.get('length');
-			if (sizeImageObjects > 0) {
-				return imageObjects.firstObject();
-			} else {
-				console.error("There is no MvoEdge.Thumbnail in the store with the coreDocumentNodeId '" + coreDocumentNodeId + "' !");
-				return null;
-			}
-		} else {
-			console.error("Unable to retrieve the coreDocumentNodeId '" + coreDocumentNodeId + "' in the store of MvoEdge.Thumbnail.");
-			return null;
-		}
+  selectedObject: function () {
+    var coreDocumentNodeId = this.get('selectedObjectId');
+    if (coreDocumentNodeId) {
+      var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, 
+          conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
+      var imageObjects = MvoEdge.store.findAll(q);
+      if (imageObjects) {
+        var sizeImageObjects = imageObjects.get('length');
+        if (sizeImageObjects > 0) {
+          return imageObjects.firstObject();
+        } else {
+          console.error("There is no MvoEdge.Thumbnail in the store" + 
+              " with the coreDocumentNodeId '" + coreDocumentNodeId + "' !");
+          return null;
+        }
+      } else {
+        console.error("Unable to retrieve the coreDocumentNodeId '" + 
+            coreDocumentNodeId + "' in the store of MvoEdge.Thumbnail.");
+        return null;
+      }
     }
   }.property('selectedObjectId').cacheable(),
 
@@ -70,7 +73,8 @@ MvoEdge.masterController = SC.ArrayController.create(
 
     @param {String} guid the guid of an object of type MvoEdge.CoreDocumentNode
   */
-  changeSelection: function(guid) {
-	this.set('selectedObjectId', guid);
+  changeSelection: function (guid) {
+    this.set('selectedObjectId', guid);
   }
+
 });
