@@ -7,7 +7,7 @@
 module("MvoEdge.CoreDocumentNode");
 
 // TODO: Replace with real unit test for CoreDocumentNode
-test("test description", function() {
+test("test description", function () {
   var expected = "test";
   var result   = "test";
   equals(result, expected, "test should equal test");

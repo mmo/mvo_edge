@@ -93,7 +93,7 @@ MvoEdge.TreeView = SC.View.extend(
    
   /**
     Update selected node in the tree widget.
-	
+  
     @observes MvoEdge.treeController.treeSelection
   */
   selectNode: function () {

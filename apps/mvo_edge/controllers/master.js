@@ -21,7 +21,7 @@ MvoEdge.masterController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
 
   /**
-  	The guid of the selected file/object that is currently being displayed by
+    The guid of the selected file/object that is currently being displayed by
     the application
 
     @property {String} selectedObjectId the guid of an object of type 

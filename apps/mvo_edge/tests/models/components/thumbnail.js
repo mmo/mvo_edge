@@ -7,7 +7,7 @@
 module("MvoEdge.Thumbnail");
 
 // TODO: Replace with real unit test for Thumbnail
-test("test description", function() {
+test("test description", function () {
   var expected = "test";
   var result   = "test";
   equals(result, expected, "test should equal test");

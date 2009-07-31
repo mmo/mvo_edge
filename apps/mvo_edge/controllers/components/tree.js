@@ -26,7 +26,7 @@ MvoEdge.treeController = SC.ArrayController.create(
   /**
     Updates the masterController if the currently selected thumbnail 
     has been changed.
-	
+  
     @observes treeSelection
   */
   treeSelectionDidChange: function () {
@@ -49,7 +49,7 @@ MvoEdge.treeController = SC.ArrayController.create(
   /**
     Returns true if the coreDocumentNode's guid is already 
     in the currently selected treeNode.
-	
+  
     @property {Boolean} treeSelection
   */
   hasObjectId: function () {
@@ -98,7 +98,7 @@ MvoEdge.treeController = SC.ArrayController.create(
 
   /**
     Changes the currently selected treeNode, given the coreDocumentNode's guid.
-	
+  
     @param {String} coreDocumentNodeId the guid of an object of type 
     {@link MvoEdge.CoreDocumentNode}
   */
