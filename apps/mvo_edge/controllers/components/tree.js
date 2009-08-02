@@ -65,9 +65,29 @@ MvoEdge.treeController = SC.ArrayController.create(
     @observes treeSelection
    */
   _treeSelectionDidChange: function () {
+    /*
     var objectId = this.get('treeSelection').get('objectIds').firstObject();
-    if (objectId) {
+    // make sure the selection has actually changed, (to avoid loopbacks)
+    if (objectId && objectId !== this.get('masterSelection')) {
       this.set('masterSelection', objectId);
+    }
+    */
+
+    var objectIdInArray = NO;
+    var currentSelection = this.get('masterSelection');
+    var objectIds = this.get('treeSelection').get('objectIds');
+    if (objectIds && objectIds.length > 0) {
+      for (var i = 0; i < objectIds.length; i++) {
+        if (objectIds[i] === currentSelection) {
+          objectIdInArray = YES;
+          break;
+        }
+      }
+    }
+
+    // make sure the selection has actually changed, (to avoid loopbacks)
+    if (!objectIdInArray) {
+      this.set('masterSelection', objectIds.firstObject());
     }
 
     console.info('MvoEdge.treeController#_treeSelectionDidChange: ' +
@@ -86,8 +106,9 @@ MvoEdge.treeController = SC.ArrayController.create(
     var newTreeNode =
         this.get('_masterSelectionToTreeNode')[this.get('masterSelection')];
 
-    // update the current tree selection
+    // make sure the selection has actually changed, (to avoid loopbacks)
     if (newTreeNode && newTreeNode !== this.get('treeSelection')) {
+      // update the current tree selection
       this.set('treeSelection', newTreeNode);
 
       console.info('MvoEdge.treeController#_masterSelectionDidChange: ' +
