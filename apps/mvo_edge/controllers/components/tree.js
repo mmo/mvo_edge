@@ -16,119 +16,83 @@ MvoEdge.treeController = SC.ArrayController.create(
 /** @scope MvoEdge.treeController.prototype */ {
 
   /**
-    Sets the currently selected treeNode.
+    Binds to the master selection
+    @property {String}
+   */
+  masterSelectionBinding: "MvoEdge.masterController.masterSelection",
 
-    @property {Object}
+  /**
+    Currently selected treeNode.
+
+    @property {MvoEdge.Tree}
     @default undefined
   */
   treeSelection: undefined,
-  
+
   /**
-    Updates the masterController if the currently selected thumbnail 
-    has been changed.
-  
-    @observes treeSelection
-  */
-  treeSelectionDidChange: function () {
-    var selectedTreeNode = this.get('treeSelection');
-    if (selectedTreeNode) {
-      var hasObject = this.get('hasObjectId');
-      if (hasObject === false) {
-        var objectIds = selectedTreeNode.get('objectIds');
-        var objectId = objectIds.firstObject();
-        if (objectId) {
-          console.info('Tree --> Change masterController');
-          MvoEdge.masterController.changeSelection(objectId);
+    A conversion table (masterSelection -> treeNode) used to quickly determine
+    the treeNode associated with a certain master selection
+   */
+  _masterSelectionToTreeNode: {},
+   
+   /**
+    If 'content' changes, the _masterSelectionToTreeNode conversion table must
+    be updated (this should only happen once, during aplication setup)
+   */
+  _contentDidChange: function () {
+    var newTable = {};
+    var treeNodes = MvoEdge.store.findAll(MvoEdge.Tree);
+    if (treeNodes && treeNodes.isEnumerable) {
+      treeNodes.forEach(function (treeNode) {
+        var objectIds = treeNode.get('objectIds');
+        if (objectIds && objectIds.isEnumerable) {
+          objectIds.forEach(function (objectId) {
+            newTable[objectId] = treeNode;
+          });
         }
-      } else {
-        console.info('The currently treeNode has already the same objectId.');
-      }
+      });
     }
+    this.set('_masterSelectionToTreeNode', newTable);
+
+    console.info('MvoEdge.treeController#_contentDidChange');
+
+  }.observes('content'),
+
+  /**
+    Updates the masterSelection binding if the currently selected tree node has
+    changed.
+    
+    @observes treeSelection
+   */
+  _treeSelectionDidChange: function () {
+    var objectId = this.get('treeSelection').get('objectIds').firstObject();
+    if (objectId) {
+      this.set('masterSelection', objectId);
+    }
+
+    console.info('MvoEdge.treeController#_treeSelectionDidChange: ' +
+        'new treeSelection is ' + this.get('treeSelection').get('guid'));
+
   }.observes('treeSelection'),
 
   /**
-    Returns true if the coreDocumentNode's guid is already 
-    in the currently selected treeNode.
-  
-    @property {Boolean} treeSelection
+    Updates treeSelection by observing changes in master controller's master
+    selection
+    
+    @observes masterSelection
   */
-  hasObjectId: function () {
-    var selectedTreeNode = this.get('treeSelection');
-    var hasObject = NO;
-    var masterSelection = MvoEdge.masterController.get('selectedObjectId');
-    if (masterSelection && selectedTreeNode) {
-      var objectIds = selectedTreeNode.get('objectIds');
-      if (objectIds) {
-        var sizeObjectIds = objectIds.get('length');
-        // Iterate on objectIds
-        for (var i = 0; i < sizeObjectIds; i++) {
-          if (objectIds[i] === masterSelection) {
-            hasObject = YES;
-            break;
-          }
-        }
-      }
-    }
-    return hasObject;
-  }.property('treeSelection'),
+  _masterSelectionDidChange: function () {
+    // find the tree node that corresponds to the current master selection
+    var newTreeNode =
+        this.get('_masterSelectionToTreeNode')[this.get('masterSelection')];
 
-  /**
-    Updates treeNode selection by observing changes 
-    in master controller's object selection.
+    // update the current tree selection
+    if (newTreeNode && newTreeNode !== this.get('treeSelection')) {
+      this.set('treeSelection', newTreeNode);
 
-    @observes MvoEdge.masterController.selectedObjectId
-  */
-  masterObjectSelectionDidChange: function () {
-    var masterSelection = MvoEdge.masterController.get('selectedObjectId');
-    if (masterSelection) {
-      /** 
-        Check if the currently selected treeNode 
-        has the objectId 'masterSelection'
-      */
-      var hasObj = this.get('hasObjectId');
-      if (hasObj === false) {
-        // Retrieve the good treeNode with masterSelection
-        this.setTreeSelection(masterSelection);
-      } else {
-        console.info('It is not necessary to change' + 
-            ' the currently selected treeNode.');
-      }
+      console.info('MvoEdge.treeController#_masterSelectionDidChange: ' +
+          'new masterSelection is ' + this.get('masterSelection'));
     }
-  }.observes('MvoEdge.masterController.selectedObjectId'),
-
-  /**
-    Changes the currently selected treeNode, given the coreDocumentNode's guid.
-  
-    @param {String} coreDocumentNodeId the guid of an object of type 
-    {@link MvoEdge.CoreDocumentNode}
-  */
-  setTreeSelection: function (coreDocumentNodeId) {
-    var treeNodes = MvoEdge.store.findAll(MvoEdge.Tree);
-    if (treeNodes) {
-      var sizeTreeNodes = treeNodes.get('length');
-      var hasTreeNode = NO;
-      // Iterate on MvoEdge.Tree store 
-      for (var i = 0; i < sizeTreeNodes; i++) {
-        var treeNode = treeNodes.objectAt(i);
-        var listObjectIds = treeNode.get('objectIds');
-        if (listObjectIds) {
-          var sizeObjectIds = listObjectIds.get('length');
-          // Iterate on objectIds
-          for (var j = 0; j < sizeObjectIds; j++) {
-            // Check if the objectId is equal to coreDocumentNodeId
-            if (listObjectIds[j] === coreDocumentNodeId) {
-              console.info('Change treeSelection');
-              this.set('treeSelection', treeNode);
-              hasTreeNode = YES;
-              break;
-            }
-          }
-        }
-        if (hasTreeNode === true) {
-          break;
-        }
-      }
-    }
-  }
+  }.observes('masterSelection')
 
 });
