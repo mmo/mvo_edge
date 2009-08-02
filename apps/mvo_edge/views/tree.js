@@ -12,6 +12,12 @@
 MvoEdge.TreeView = SC.View.extend(
 /** @scope MvoEdge.Tree.prototype */ {
 
+  /**
+    Binds to the tree selection in the tree controller
+    @property {MvoEdge.Tree}
+   */
+  treeSelectionBinding: "MvoEdge.treeController.treeSelection",
+
   handleNodes: [],
   listOfTreeNode: {},
   nodeById: {},
@@ -23,13 +29,14 @@ MvoEdge.TreeView = SC.View.extend(
   /**
     Build the TreeView
   */
-  buildTree: function () {
+  buildTree: function (divId) {
     console.log('TreeView buildTree :');
 
     // Tree widget implemented with YUI TreeView
     // See http://developer.yahoo.com/yui/treeview/
     // Every TreeNode is an object with a type: 'text' and a label:
-    var div = MvoEdge.getPath('viewsPage.treeView');
+    var div = MvoEdge.getPath(divId);
+    
     //create a new treeWidget
     //id of the div: this solution works but it's not optimal
     //var divTree = div.parentView.toString().split(':')[1];
@@ -51,7 +58,7 @@ MvoEdge.TreeView = SC.View.extend(
     for (var i = 0; i < enumerator._length; i++) {
       var currentNode = enumerator.nextObject();
       if (!this.handleNodes[currentNode]) {
-        this.addNode(currentNode, treeWidget.getRoot());
+        this._addNode(currentNode, treeWidget.getRoot());
       }
     }
 
@@ -61,7 +68,7 @@ MvoEdge.TreeView = SC.View.extend(
       console.info('label ' + node.node.label);
       var tn = node.node.data.treeNode;
       console.info("TreeNode : " + tn);
-      MvoEdge.treeController.set('treeSelection', tn);
+      this.set('treeSelection', tn);
     });
     console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
@@ -74,7 +81,7 @@ MvoEdge.TreeView = SC.View.extend(
     @param {Object} node the TreeNode
     @param {YAHOO.widget.Node} parentWidgetNode the TreeNode's parent node
   */
-  addNode: function (node, parentWidgetNode) {
+  _addNode: function (node, parentWidgetNode) {
     // Build TextNode with the label and the treeNode
     var obj = {label: node.get('label'), treeNode: node};
     var currentWidgetNode = new YAHOO.widget.TextNode(obj, parentWidgetNode, false);
@@ -86,7 +93,7 @@ MvoEdge.TreeView = SC.View.extend(
     var nodeChildren = node.get('children');
     if (nodeChildren) {
       for (var idx = 0; idx < nodeChildren.length; idx++) {
-        this.addNode(this.nodeById[nodeChildren[idx]], currentWidgetNode);
+        this._addNode(this.nodeById[nodeChildren[idx]], currentWidgetNode);
       }
     }
   },
@@ -94,10 +101,10 @@ MvoEdge.TreeView = SC.View.extend(
   /**
     Update selected node in the tree widget.
   
-    @observes MvoEdge.treeController.treeSelection
+    @observes treeSelection
   */
-  selectNode: function () {
-    var treeSelection = MvoEdge.treeController.get('treeSelection');
+  _treeSelectionDidChange: function () {
+    var treeSelection = this.get('treeSelection');
     if (treeSelection) {
       var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
       if (nodeToFocus) {
@@ -105,6 +112,6 @@ MvoEdge.TreeView = SC.View.extend(
         nodeToFocus.focus();
       }
     }
-  }.observes('MvoEdge.treeController.treeSelection')
+  }.observes('treeSelection')
 
 });
