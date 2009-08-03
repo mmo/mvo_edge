@@ -81,7 +81,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
 
     // make sure the selection has actually changed, (to avoid loopbacks)
     if (newThumbnail && newThumbnail !== this.get('selection').firstObject()) {
-      this.set('selection', SC.SelectionSet.create().addObject(newThumbnail));
+      this.set('selection', SC.SelectionSet.create().add(content, newThumbnail));
     }
 
     console.info('MvoEdge.thumbnailController#_masterSelectionDidChange: ' +

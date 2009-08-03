@@ -21,6 +21,11 @@ MvoEdge.TreeView = SC.View.extend(
   handleNodes: [],
   listOfTreeNode: {},
   nodeById: {},
+  
+  /**
+    For use in event subscription closure
+  */
+  absoluteThis: this,
 
   render: function (context, firstTime) {
     console.log('TreeView render :');
@@ -68,7 +73,7 @@ MvoEdge.TreeView = SC.View.extend(
       console.info('label ' + node.node.label);
       var tn = node.node.data.treeNode;
       console.info("TreeNode : " + tn);
-      this.set('treeSelection', tn);
+      node.node.data.topTreeView.set('treeSelection', tn);
     });
     console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
@@ -83,7 +88,10 @@ MvoEdge.TreeView = SC.View.extend(
   */
   _addNode: function (node, parentWidgetNode) {
     // Build TextNode with the label and the treeNode
-    var obj = {label: node.get('label'), treeNode: node};
+    // Note: the 'topTreeView' must be included in 'obj' so that the function
+    // that will be attached to the 'clickEvent' knows how to call this view
+    // object, to notify it of a change in the selection
+    var obj = {label: node.get('label'), treeNode: node, topTreeView: this};
     var currentWidgetNode = new YAHOO.widget.TextNode(obj, parentWidgetNode, false);
 
     // mark node as added
