@@ -17,6 +17,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
 
   selectedThumbnail: function () {
+  console.log('selectedThumbnail');
     if (this.selection() && (this.selection() !== undefined)) {
       return this.selection().firstObject();      
     }
