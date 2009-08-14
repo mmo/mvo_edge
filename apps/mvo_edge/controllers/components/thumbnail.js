@@ -18,93 +18,75 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
 
   /**
-    Returns the currently selected thumbnail.
-  
-    @property {SC.SelectionSet} selection
-  */
-  selectedThumbnail: function () {
-    var selThumbnail = this.get('selection');
-    if (selThumbnail) {
-      var thumbnail = selThumbnail.firstObject();
-      if (thumbnail) {
-        return thumbnail;
-      }
-    }
-  }.property('selection').cacheable(),
-
-  /**
-    Changes the currently selected thumbnail, 
-    given the coreDocumentNode's guid.
-    
-    @param {String} coreDocumentNodeId the guid of an object of type 
-    {@link MvoEdge.CoreDocumentNode}
+    Binds to the master selection
+    @property {String}
    */
-  changeSelection: function (coreDocumentNodeId) {
-    var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, 
-        conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
-    var imageObjects = MvoEdge.store.findAll(q);
-    if (imageObjects) {
-      var sizeImageObjects = imageObjects.get('length');
-      if (sizeImageObjects > 0) {
-        var imageObject = imageObjects.firstObject();
-        var selThumbnail = this.get('selectedThumbnail');
-        if (imageObject && imageObject !== selThumbnail) {
-          console.info('Change selection');
-          // note: selection is set an SelectionSet
-          this.set('selection', 
-              SC.SelectionSet.create().addObject(imageObject));
-        }
-      } else {
-        console.error("There is no MvoEdge.Thumbnail in the store" + 
-            " with the coreDocumentNodeId '" + coreDocumentNodeId + "' !");
-        return null;
-      }
-    }
-  },
+  masterSelectionBinding: "MvoEdge.masterController.masterSelection",
 
   /**
-    Updates the masterController if the currently selected thumbnail 
-    has been changed.
+    A conversion table (masterSelection -> thumbnail) used to quickly determine
+    the thumbnail associated with a certain master selection
+   */
+  _masterSelectionToThumbnail: {},
+   
+   /**
+    If 'content' changes, the _masterSelectionToThumbnail conversion table must
+    be updated (this should only happen once, during aplication setup)
+   */
+  _contentDidChange: function () {
+    var newTable = {};
+    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    if (thumbnails && thumbnails.isEnumerable) {
+      thumbnails.forEach(function (thumbnail) {
+        var coreDocumentNode = thumbnail.get('coreDocumentNode');
+        newTable[coreDocumentNode] = thumbnail;
+      });
+    }
+    this.set('_masterSelectionToThumbnail', newTable);
+
+    console.info('MvoEdge.thumbnailController#_contentDidChange');
+
+  }.observes('content'),
+
+  /**
+    Updates the masterSelection binding if the currently selected thumbnail 
+    has changed.
     
     @observes selection
    */
-  thumbnailSelectionDidChange: function () {
-    var selThumbnail = this.get('selectedThumbnail');
-    if (selThumbnail) {
-      // Get the coreDocumentNodeId of the currently selected thumbnail
-      var cdn = selThumbnail.get('coreDocumentNode');
-      var masterController = MvoEdge.masterController.get('selectedObjectId');
-      if (cdn && cdn !== masterController) {
-        console.info('Thumbnail --> Change masterController');
-        MvoEdge.masterController.changeSelection(cdn);
-      }
+  _selectionDidChange: function () {
+    var coreDocumentNodeId =
+        this.get('selection').firstObject().get('coreDocumentNode');
+    // make sure the selection has actually changed, (to avoid loopbacks)
+    if (coreDocumentNodeId &&
+        coreDocumentNodeId !== this.get('masterSelection')) {
+      this.set('masterSelection', coreDocumentNodeId);
     }
+
+    console.info('MvoEdge.thumbnailController#_selectionDidChange: ' +
+        'new selection is ' + this.get('selection').firstObject().get('guid'));
+
   }.observes('selection'),
 
   /**
     Updates thumbnail selection by observing changes in master controller's
-    object selection
+    master selection
     
-    NOTE: we're assuming here that the guid of the master controller's
-    selected object is the same as the corresponding thumbnail's guid;
-    that may not be the case (a translation guid->guid may be needed)
-
-    @observes MvoEdge.masterController.selectedObjectId
+    @observes masterSelection
   */
-  masterObjectSelectionDidChange: function () {
-    var masterSelection = MvoEdge.masterController.get('selectedObjectId');
-    if (masterSelection) {
-      var sel = this.get('selectedThumbnail');
-      if (sel) {
-        // Get the coreDocumentNodeId of the currently selected thumbnail
-        var cdn = sel.get('coreDocumentNode');
-        if (cdn && cdn !== masterSelection) {
-          this.changeSelection(masterSelection);
-        }
-      } else {
-        this.changeSelection(masterSelection);
-      }
+  _masterSelectionDidChange: function () {
+    // find the thumbnail that corresponds to the current master selection
+    var newThumbnail =
+        this.get('_masterSelectionToThumbnail')[this.get('masterSelection')];
+
+    // make sure the selection has actually changed, (to avoid loopbacks)
+    if (newThumbnail && newThumbnail !== this.get('selection').firstObject()) {
+      this.set('selection', SC.SelectionSet.create().add(content, newThumbnail));
     }
-  }.observes('MvoEdge.masterController.selectedObjectId')
+
+    console.info('MvoEdge.thumbnailController#_masterSelectionDidChange: ' +
+        'new master selection is ' + this.get('masterSelection'));
+
+  }.observes('masterSelection')
 
 });
