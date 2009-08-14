@@ -77,4 +77,4 @@ MvoEdge.layoutController = SC.Object.create(
       .appendChild(MvoEdge.getPath(viewPath));
   }
 
-});                                                                                   
+});

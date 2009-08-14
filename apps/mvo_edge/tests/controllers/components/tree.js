@@ -7,7 +7,7 @@
 module("MvoEdge.tree");
 
 // TODO: Replace with real unit test for MvoEdge.tree
-test("test description", function() {
+test("test description", function () {
   var expected = "test";
   var result   = "test";
   equals(result, expected, "test should equal test");
