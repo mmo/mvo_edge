@@ -26,8 +26,7 @@ MvoEdge.viewsPage = SC.Page.design({
     
     contentView: SC.ImageView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: SC.Binding.
-        from("MvoEdge.thumbnailController.selection").reduceFromArray(),
+      contentBinding: 'MvoEdge.masterController.selectedObject',
       contentValueKey: 'url'
     })
   }),
@@ -59,8 +58,8 @@ MvoEdge.viewsPage = SC.Page.design({
   
     contentView: MvoEdge.TreeView.design({
       classNames: 'yui-skin-sam',
-      //id is not used
-      id: 'treeId'
+      //layerId is used by the YAHOO tree widget
+      layerId: 'treeId'
     })
   }),
 

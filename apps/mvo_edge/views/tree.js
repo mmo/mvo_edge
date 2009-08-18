@@ -39,15 +39,8 @@ MvoEdge.TreeView = SC.View.extend(
 
     // Tree widget implemented with YUI TreeView
     // See http://developer.yahoo.com/yui/treeview/
-    // Every TreeNode is an object with a type: 'text' and a label:
-    var div = MvoEdge.getPath(divId);
-    
-    //create a new treeWidget
-    //id of the div: this solution works but it's not optimal
-    //var divTree = div.parentView.toString().split(':')[1];
-    //var treeWidget = new YAHOO.widget.TreeView(div.parentView._view_layer.id); 
-    // div.parentView._view_layer.id
-    var treeWidget = new YAHOO.widget.TreeView(div.parentView.toString().split(':')[1]);
+
+    var treeWidget = new YAHOO.widget.TreeView('treeId');
     var treeNodeRecords = MvoEdge.store.findAll(MvoEdge.Tree);
     
     //create hashtable of node
@@ -73,7 +66,7 @@ MvoEdge.TreeView = SC.View.extend(
       console.info('label ' + node.node.label);
       var tn = node.node.data.treeNode;
       console.info("TreeNode : " + tn);
-      node.node.data.topTreeView.set('treeSelection', tn);
+      node.node.data.topTreeView._changeTreeSelection(tn);
     });
     console.log('TreeView buildTree treeWidget number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
@@ -105,6 +98,17 @@ MvoEdge.TreeView = SC.View.extend(
       }
     }
   },
+  
+  /**
+    update the treeSelection of the treeController
+    
+    @param {YAHOO:widget.Node} selected treeNode
+    */
+  _changeTreeSelection: function (treeNode) {
+    SC.RunLoop.begin();
+    this.set('treeSelection', treeNode );
+    SC.RunLoop.end();
+  },
    
   /**
     Update selected node in the tree widget.
@@ -112,11 +116,12 @@ MvoEdge.TreeView = SC.View.extend(
     @observes treeSelection
   */
   _treeSelectionDidChange: function () {
+    console.log('set focus '+ this.get('treeSelection'));
     var treeSelection = this.get('treeSelection');
     if (treeSelection) {
       var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
       if (nodeToFocus) {
-        console.info('Set focus on the good treeNode');
+        console.info('Set focus on the good treeNode ');
         nodeToFocus.focus();
       }
     }

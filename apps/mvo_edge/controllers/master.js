@@ -37,6 +37,35 @@ MvoEdge.masterController = SC.ArrayController.create(
   */
   descriptiveMetadataDictionary: function () {
     return this.arrangedObjects().firstObject().get('metadata');
-  }.property()
+  }.property(),
+  
+  /**
+    The selected object that is currently being displayed by the
+    application
+
+    @property {MvoEdge.Thumbnail} selectedObjectId
+  */
+  selectedObject: function () {
+    var coreDocumentNodeId = this.get('masterSelection');
+    if (coreDocumentNodeId) {
+      var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, 
+          conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
+      var imageObjects = MvoEdge.store.findAll(q);
+      if (imageObjects) {
+        var sizeImageObjects = imageObjects.get('length');
+        if (sizeImageObjects > 0) {
+          return imageObjects.firstObject();
+        } else {
+          console.error("There is no MvoEdge.Thumbnail in the store" + 
+              " with the coreDocumentNodeId '" + coreDocumentNodeId + "' !");
+          return null;
+        }
+      } else {
+        console.error("Unable to retrieve the coreDocumentNodeId '" + 
+            coreDocumentNodeId + "' in the store of MvoEdge.Thumbnail.");
+        return null;
+      }
+    }
+  }.property('masterSelection'),
 
 });

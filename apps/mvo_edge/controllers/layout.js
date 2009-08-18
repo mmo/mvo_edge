@@ -51,10 +51,12 @@ MvoEdge.layoutController = SC.Object.create(
   */
   initializeWorkspace: function () {
     //this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.titleView');
+    SC.RunLoop.begin();
     this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.metadataView');
     this.layoutView(MvoEdge.LAYOUT_LEFT, 'viewsPage.thumbnailView');
     this.layoutView(MvoEdge.LAYOUT_CENTRAL, 'viewsPage.mainContentView');
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
+    SC.RunLoop.end();
     MvoEdge.getPath('viewsPage.treeView.contentView').
         buildTree('viewsPage.treeView');
   },
