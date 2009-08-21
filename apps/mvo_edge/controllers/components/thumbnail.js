@@ -28,6 +28,46 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
     the thumbnail associated with a certain master selection
    */
   _masterSelectionToThumbnail: {},
+  
+  /**
+    @initialize
+    
+    Initialize this controller => set its content
+  */
+  initialize: function () {
+    var nodes = MvoEdge.masterController.get('content');
+    this._createModel(nodes);
+    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    this.set('content', thumbnails);
+    console.info('MvoEdge.thumbnailController# initialize finish');
+  },
+  
+  /**
+    @createModel
+    
+    Create the thumbnail model from the CDM
+    
+    @private
+    @param {SC.Array} nodes CDM nodes
+    */
+    _createModel: function (nodes) {
+      var guidId = 1;
+      nodes.forEach(function (node) {
+        //create a new thumbnail record
+        if(node.get('urlDefault') !== null){
+          var guid = 'f0000'+guidId;
+          guidId++;
+          var tempUrl = node.get('urlDefault');
+          var staticUrl = "/static/mvo_edge/en/current/images/VAA";
+          staticUrl += tempUrl.substring(tempUrl.lastIndexOf("/"));
+          SC.imageCache.loadImage(staticUrl);
+          var thumbnail = MvoEdge.store.createRecord(MvoEdge.Thumbnail,
+          {url: staticUrl, image_url: tempUrl, coreDocumentNode: node.get('guid')}, guid);
+          var res = MvoEdge.store.commitRecord(MvoEdge.Thumbnail,thumbnail.get('guid'), thumbnail.storeKey); 
+        }
+      });
+      console.info('MvoEdge.thumbnailController# createModel');
+    },
    
    /**
     If 'content' changes, the _masterSelectionToThumbnail conversion table must

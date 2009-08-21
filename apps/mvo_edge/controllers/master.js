@@ -19,6 +19,16 @@ MvoEdge.masterController = SC.ArrayController.create(
 /** @scope MvoEdge.masterController.prototype */ {
 
   allowsMultipleSelection: NO,
+  
+  /**
+    @initialize
+    
+    Initialize the master controller => set its content
+  */
+  initialize: function () {
+    var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
+    this.set('content', nodes);
+  },  
 
   /**
     The guid of the selected file/object that is currently being displayed by
@@ -67,5 +77,22 @@ MvoEdge.masterController = SC.ArrayController.create(
       }
     }
   }.property('masterSelection'),
+  
+  /**
+    @masterSelectionDidChange
+    
+    Master selection has changed, update the new size of the view
+
+    @observes masterSelection
+  */
+  
+  masterSelectionDidChange: function () {
+    var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
+    var tempIm = new Image();
+    tempIm.src = this.get('selectedObject').get('url');
+    div.adjust('width', tempIm.width+20);
+    div.adjust('height', tempIm.height+20);
+    console.log('MvoEdge.masterController#masterSelectionDidChange');
+  }.observes('masterSelection'),
 
 });
