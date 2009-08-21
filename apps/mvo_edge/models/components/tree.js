@@ -16,7 +16,7 @@ MvoEdge.Tree = SC.Record.extend(
 
   label: SC.Record.attr(String),
   children: SC.Record.attr(Array),
-  coreDocumentNode: SC.Record.attr(MvoEdge.CoreDocumentNode),
+  coreDocumentNode: SC.Record.attr(String),
   objectIds: SC.Record.attr(Array)
 
 });
