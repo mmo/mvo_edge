@@ -16,6 +16,6 @@ MvoEdge.Thumbnail = SC.Record.extend(
 
   url: SC.Record.attr(String),
   image_url: SC.Record.attr(String),
-  coreDocumentNode: SC.Record.attr(MvoEdge.CoreDocumentNode)
+  coreDocumentNode: SC.Record.attr(String)
  
 });

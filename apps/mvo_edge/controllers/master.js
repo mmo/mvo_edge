@@ -19,15 +19,25 @@ MvoEdge.masterController = SC.ArrayController.create(
 /** @scope MvoEdge.masterController.prototype */ {
 
   allowsMultipleSelection: NO,
+  
+  /**
+    @initialize
+    
+    Initialize the master controller => set its content
+  */
+  initialize: function () {
+    var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
+    this.set('content', nodes);
+  },  
 
   /**
     The guid of the selected file/object that is currently being displayed by
     the application
 
-    @property {String} selectedObjectId the guid of an object of type 
+    @property {String} masterSelection the guid of an object of type 
     MvoEdge.CoreDocumentNode
   */
-  selectedObjectId: undefined,
+  masterSelection: undefined,
 
   /**
     The root node of the CoreDocumentModel contains the document's
@@ -36,9 +46,9 @@ MvoEdge.masterController = SC.ArrayController.create(
     @property {Array} descriptiveMetadataDictionary
   */
   descriptiveMetadataDictionary: function () {
-    return this.arrangedObjects().objectAt(0).get('metadata');
+    return this.arrangedObjects().firstObject().get('metadata');
   }.property(),
-
+  
   /**
     The selected object that is currently being displayed by the
     application
@@ -46,7 +56,7 @@ MvoEdge.masterController = SC.ArrayController.create(
     @property {MvoEdge.Thumbnail} selectedObjectId
   */
   selectedObject: function () {
-    var coreDocumentNodeId = this.get('selectedObjectId');
+    var coreDocumentNodeId = this.get('masterSelection');
     if (coreDocumentNodeId) {
       var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, 
           conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
@@ -66,15 +76,23 @@ MvoEdge.masterController = SC.ArrayController.create(
         return null;
       }
     }
-  }.property('selectedObjectId').cacheable(),
-
+  }.property('masterSelection'),
+  
   /**
-    Changes the currently selected object
+    @masterSelectionDidChange
+    
+    Master selection has changed, update the new size of the view
 
-    @param {String} guid the guid of an object of type MvoEdge.CoreDocumentNode
+    @observes masterSelection
   */
-  changeSelection: function (guid) {
-    this.set('selectedObjectId', guid);
-  }
+  
+  masterSelectionDidChange: function () {
+    var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
+    var tempIm = new Image();
+    tempIm.src = this.get('selectedObject').get('url');
+    div.adjust('width', tempIm.width+20);
+    div.adjust('height', tempIm.height+20);
+    console.log('MvoEdge.masterController#masterSelectionDidChange');
+  }.observes('masterSelection'),
 
 });
