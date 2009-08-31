@@ -1,0 +1,25 @@
+==============================================================================
+  Project:    MvoEdge - https://www.multivio.org/
+  Copyright:  (c) 2009 RERO
+  License:    See file license.js
+==============================================================================
+
+
+MvoEdge release 0.0.1 2009MMDD
+=============================================================================
+
+
+REQUIREMENTS
+=============================================================================
+
+SproutCore:
+    Abbot:                  commit f757aef6f5be07fb
+    SproutCore framework:   commit dd5d7ff8d6669309
+
+YUI: 2.6.0
+
+
+INSTALLATION PROCEDURE
+=============================================================================
+
+Follow the instructions at https://www.multivio.org/main/wiki/Environment#SproutCore
