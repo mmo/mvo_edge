@@ -36,12 +36,13 @@ MvoEdge.treeController = SC.ArrayController.create(
   _masterSelectionToTreeNode: {},
   
   /**
-    @initialize
-    
-    Initialize this controller => set its content
+    @method
+
+    Initialize this controller, create the sub-model and then set its content
+
+    @param {SC.RecordArray} nodes are records of the CDM
   */
-  initialize: function () {
-    var nodes = MvoEdge.masterController.get('content');
+  initialize: function (nodes) {
     this._createModel(nodes, this);
     var treeLabels = MvoEdge.store.findAll(MvoEdge.Tree);
     this.set('content', treeLabels);
@@ -49,148 +50,154 @@ MvoEdge.treeController = SC.ArrayController.create(
   },
   
   /**
-    @_createModel
-    
-    Create the tree model from the CDM
+    @method
+
+    Create the model for the treeController from nodes of the CDM
     
     @private
-    @param {SC.Array} nodes CDM nodes
+    @param {SC.RecordArray} nodes are records of the CDM
+    @param {MvoEdge.treeController} that = this
     */  
   _createModel: function (nodes, that) {
-    var tempRecord = {};
+	//list of all MvoEdge.Tree
+    var ListOfTreeNode = {};
     var guidId = 1;
     nodes.forEach(function (node) {
-      //create a new tree record
-      if(node.get('label') !== null && node.get('metadata') === null){
-        var cdmNodeId = node.get('guid');
-        var nodeAlreadyExist = tempRecord[cdmNodeId];
-        if(nodeAlreadyExist === undefined){
-          nodeAlreadyExist = that._getTreeAttributes(node, guidId);
+      //a MvoEdge.Tree is an MvoEdge.CoreDocumentNode that has a label
+      //we don't take the root node of the CDM
+      if (node.get('label') !== null && node.get('parentId') !== 'undefined') {
+        var nodeId = node.get('guid');
+        var currentTreeNode = ListOfTreeNode[nodeId];
+        // if it is the first time the node is visited, get needed attributes
+        // for the tree record 
+        if (currentTreeNode === undefined) {
+          currentTreeNode = that._getTreeAttributes(node, guidId);
           guidId++;
         }
+        //list of children of the treeNode a child is a treeNode too
         var treeChildren = [];
+        //list of CDM node with an url link with this treeNode
         var objectIds = [];
+        //list of the children of the current CDM node
         var children = node.get('children');
         var isFirst = YES;
         children.forEach(function (child) {
+	      //a child node of the current CDM node can become a children
+		  //of the current tree node => it's a node with a label
+		  //or an objectId  => it's has an url (or it has a child with an url)
           var nodeWithObjectIds = that._getObjectIds(child, nodes, isFirst);
           isFirst = NO;
-          if(nodeWithObjectIds !== null){
-            if(typeof(nodeWithObjectIds) === 'object'){
+          if (nodeWithObjectIds !== null) {
+            if (typeof(nodeWithObjectIds) === 'object') {
               objectIds = objectIds.concat(nodeWithObjectIds);
             }
-            else{
+            else {
               objectIds.push(nodeWithObjectIds);
             }
           }
           var nodeWithLabel = that._getNodeLabel(child, nodes);
-          if(nodeWithLabel !== null){
+          if (nodeWithLabel !== null) {
             var attributes = that._getTreeAttributes(nodeWithLabel, guidId);
             guidId++;
-            tempRecord[nodeWithLabel.get('guid')] = attributes;
-            treeChildren.push(attributes[0]); 
+            ListOfTreeNode[nodeWithLabel.get('guid')] = attributes;
+            treeChildren.push(attributes.guid); 
           }
         });
-        var tree = null;
-        if(treeChildren.length !== 0){
-          tree = MvoEdge.store.createRecord(MvoEdge.Tree, 
-          {label: nodeAlreadyExist[1], coreDocumentNode: nodeAlreadyExist[2],
-           children: treeChildren, objectIds: objectIds}, nodeAlreadyExist[0]);
-          MvoEdge.store.commitRecord(MvoEdge.Tree,tree.get('guid'), tree.storeKey);  
-        } 
-        else{
-          tree = MvoEdge.store.createRecord(MvoEdge.Tree, 
-          {label: nodeAlreadyExist[1], coreDocumentNode: nodeAlreadyExist[2],
-           children: treeChildren, objectIds: objectIds}, nodeAlreadyExist[0]);
-          MvoEdge.store.commitRecord(MvoEdge.Tree,tree.get('guid'), tree.storeKey);  
-        }
+        //create the record and store it
+        var tree = MvoEdge.store.createRecord(MvoEdge.Tree, 
+        {guid: currentTreeNode.guid, label: currentTreeNode.label, coreDocumentNode: currentTreeNode.cdmId,
+        children: treeChildren, objectIds: objectIds}, currentTreeNode.guid);
+        MvoEdge.store.commitRecord(MvoEdge.Tree, tree.get('guid'), tree.storeKey);  
       } 
     });
   }, 
 
   /**
-    @_getNodeLabel
-    
+    @method
+
     Return the node of the CDM if it has a label or null
     
     @private
     @param {String} nodeId id of the CDM node
-    @param {SC.Array} nodes CDM nodes
-    @returns {MvoEdge.Tree}
+    @param {SC.RecordArray} nodes are records of the CDM
+    @returns {MvoEdge.CoreDocumentNode}
     */
-  _getNodeLabel: function(nodeId, nodes){
-    var query = SC.Query.create({conditions: "guid = '" + nodeId+"'", recordType: MvoEdge.CoreDocumentNode});
+  _getNodeLabel: function (nodeId, nodes) {
+    var query = SC.Query.create({conditions: "guid = '" + nodeId + "'", recordType: MvoEdge.CoreDocumentNode});
     var res = nodes.findAll(query);
-    if(res.firstObject().get('label') !== null){
+    if (res.firstObject().get('label') !== null) {
       return res.firstObject();
     }
-    else{
+    else {
       return null;
     }
   },
   
   /**
-    @_getObjectIds
-  
+    @method
+
     Return the list of id of CDM nodes link with a node with a label. 
     
     @private
     @param {String} oneNode id of the CDM node
-    @param {SC.Array} nodes CDM nodes  
+    @param {SC.RecordArray} nodes are records of the CDM
     @param {Boolean} isFirst is the first child of this node   
     @returns {SC.Array}
   */
-  _getObjectIds: function(oneNode, nodes, isFirst){
-    var query = SC.Query.create({conditions: "guid = '" + oneNode+"'", recordType: MvoEdge.CoreDocumentNode});
+  _getObjectIds: function (oneNode, nodes, isFirst) {
+    var query = SC.Query.create({conditions: "guid = '" + oneNode + "'", recordType: MvoEdge.CoreDocumentNode});
     var res = nodes.findAll(query);
-    if(res.firstObject().get('label') !== null){
-      if(isFirst){
+    //if the node has a label it's not an objectId
+    if (res.firstObject().get('label') !== null) {
+      if (isFirst) {
         return MvoEdge.treeController._getObjectIds(res.firstObject().get('children')[0], nodes, false);
       }
-      else{
+      else {
         return null;
       }
     }
-    else if(res.firstObject().get('urlDefault') !== null){
+    //if the node has an url is an objectId
+    else if (res.firstObject().get('urlDefault') !== null) {
       return res.firstObject().get('guid');
     }
-    else{
+    //else see if it children is an objectId
+    else {
       var listOfChildren = res.firstObject().get('children'); 
-      if(listOfChildren !== null){
+      if (listOfChildren !== null) {
         var listObjectId = [];
         listOfChildren.forEach(function (childId) {
           var objectId = MvoEdge.treeController._getObjectIds(childId, nodes, false);
-          if(objectId !== null){
+          if (objectId !== null) {
             listObjectId.push(objectId);
           }
         });
         return listObjectId;
       }
-      else{
+      else {
         return null;
       }
     }
   },
   
   /**
-    @_getTreeAttributes
-    
+    @method
+
     Get some attributes (guid, label, cdmId) of an MvoEdge.Tree
     
     @private
     @param {MvoEdge.CoreDocumentNode} node one CDM node
     @param {Integer} nb sequence number to create a new guid
-    @returns {SC.Array}
+    @returns {SC.Object}
     */  
-  _getTreeAttributes: function(node, nb) {
-    var listOfAttribute = [];
+  _getTreeAttributes: function (node, nb) {
+    var treeRecordAttributes = {};
     var label = node.get('label');
     var guid = 't0000' + nb;
     var cdmId = node.get('guid');
-    listOfAttribute.push(guid);
-    listOfAttribute.push(label);
-    listOfAttribute.push(cdmId);
-    return listOfAttribute;
+    treeRecordAttributes.guid =  guid;
+    treeRecordAttributes.label = label;
+    treeRecordAttributes.cdmId = cdmId;
+    return treeRecordAttributes;
   },  
    
    /**
@@ -226,39 +233,11 @@ MvoEdge.treeController = SC.ArrayController.create(
     // make sure the masterSelection must change
     // no change if call after _masterSelectionDidChange
     var objectIdInArray = NO;
-    var currentSelection = this.get('masterSelection');
     var objectIds = this.get('treeSelection').get('objectIds');
-    if (objectIds && objectIds.length > 0) {
-      for (var i = 0; i < objectIds.length; i++) {
-        if (objectIds[i] === currentSelection) {
-          objectIdInArray = YES;
-          break;
-        }
-      }
-    }
-
-    // make sure the selection has actually changed, (to avoid loopbacks)
-    if (!objectIdInArray) {
-      this.set('masterSelection', objectIds.firstObject());
-    }
-
-    console.info('MvoEdge.treeController#_treeSelectionDidChange: ' +
-        'new treeSelection is ' + this.get('treeSelection').get('guid'));
-
-  }.observes('treeSelection'),
-
-  /**
-    Updates treeSelection by observing changes in master controller's master
-    selection
-    
-    @observes masterSelection
-  */
-  _masterSelectionDidChange: function () {
-    var objectIdInArray = NO;
-    var currentSelection = this.get('masterSelection');
-    // make sure the treeSelection must change
-    if(this.get('treeSelection')){
-      var objectIds = this.get('treeSelection').get('objectIds');
+    //verify if masterSelection is not undefined
+    var masterS = this.get('masterSelection');
+    if (masterS !== undefined) {
+      var currentSelection = this.get('masterSelection').get('guid');
       if (objectIds && objectIds.length > 0) {
         for (var i = 0; i < objectIds.length; i++) {
           if (objectIds[i] === currentSelection) {
@@ -270,8 +249,31 @@ MvoEdge.treeController = SC.ArrayController.create(
     }
     // make sure the selection has actually changed, (to avoid loopbacks)
     if (!objectIdInArray) {
+      var CDMguid = objectIds.firstObject();
+      var res = MvoEdge.store.find(MvoEdge.CoreDocumentNode, CDMguid);
+      this.set('masterSelection', res);
+    }
+
+    console.info('MvoEdge.treeController#_treeSelectionDidChange: ' +
+        'new treeSelection is ' + this.get('treeSelection').get('guid'));
+
+  }.observes('treeSelection'),
+
+  /**
+    @method
+
+    Updates treeSelection by observing changes in master controller's master
+    selection
+    
+    @observes masterSelection
+  */
+  _masterSelectionDidChange: function () {
+    var objectIdInArray = NO;
+    var currentSelection = this.get('masterSelection');
+    // make sure the selection has actually changed, (to avoid loopbacks)
+    if (!objectIdInArray) {
       // find the tree node that corresponds to the current master selection
-      var newTreeNode = this.get('_masterSelectionToTreeNode')[this.get('masterSelection')];
+      var newTreeNode = this.get('_masterSelectionToTreeNode')[this.get('masterSelection').get('guid')];
       // make sure the selection has actually changed, (to avoid loopbacks)
       if (newTreeNode && newTreeNode !== this.get('treeSelection')) {
         // update the current tree selection

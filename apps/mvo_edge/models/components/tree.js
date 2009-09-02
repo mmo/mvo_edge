@@ -13,7 +13,8 @@
 */
 MvoEdge.Tree = SC.Record.extend(
 /** @scope MvoEdge.Tree.prototype */ {
-
+	
+  guid: SC.Record.attr(String),
   label: SC.Record.attr(String),
   children: SC.Record.attr(Array),
   coreDocumentNode: SC.Record.attr(String),

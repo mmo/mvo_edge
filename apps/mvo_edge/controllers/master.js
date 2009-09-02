@@ -21,12 +21,13 @@ MvoEdge.masterController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
   
   /**
-    @initialize
-    
-    Initialize the master controller => set its content
+    @method
+
+    Initialize the master controller, set its content
+
+    @param {SC.RecordArray} nodes are records of the CDM
   */
-  initialize: function () {
-    var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
+  initialize: function (nodes) {
     this.set('content', nodes);
   },  
 
@@ -34,8 +35,7 @@ MvoEdge.masterController = SC.ArrayController.create(
     The guid of the selected file/object that is currently being displayed by
     the application
 
-    @property {String} masterSelection the guid of an object of type 
-    MvoEdge.CoreDocumentNode
+    @property {MvoEdge.CoreDocumentNode} masterSelection the CDM node selected
   */
   masterSelection: undefined,
 
@@ -48,51 +48,41 @@ MvoEdge.masterController = SC.ArrayController.create(
   descriptiveMetadataDictionary: function () {
     return this.arrangedObjects().firstObject().get('metadata');
   }.property(),
-  
-  /**
-    The selected object that is currently being displayed by the
-    application
 
-    @property {MvoEdge.Thumbnail} selectedObjectId
+  /**
+    @method
+
+    Create a local Url used to load the images.
+
+    @returns {String} currentUrl
   */
-  selectedObject: function () {
-    var coreDocumentNodeId = this.get('masterSelection');
-    if (coreDocumentNodeId) {
-      var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, 
-          conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
-      var imageObjects = MvoEdge.store.findAll(q);
-      if (imageObjects) {
-        var sizeImageObjects = imageObjects.get('length');
-        if (sizeImageObjects > 0) {
-          return imageObjects.firstObject();
-        } else {
-          console.error("There is no MvoEdge.Thumbnail in the store" + 
-              " with the coreDocumentNodeId '" + coreDocumentNodeId + "' !");
-          return null;
-        }
-      } else {
-        console.error("Unable to retrieve the coreDocumentNodeId '" + 
-            coreDocumentNodeId + "' in the store of MvoEdge.Thumbnail.");
-        return null;
-      }
+  currentUrl: function () {
+    var currentSelection = this.get('masterSelection');
+    if (currentSelection) {
+      var defaultUrl = currentSelection.get('urlDefault');
+      var currentUrl = "/static/mvo_edge/en/current/images/VAA";
+      currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
+      return currentUrl;
+    }
+    else {
+      return null;
     }
   }.property('masterSelection'),
   
   /**
-    @masterSelectionDidChange
-    
     Master selection has changed, update the new size of the view
 
     @observes masterSelection
-  */
-  
+  */  
   masterSelectionDidChange: function () {
     var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
-    var tempIm = new Image();
-    tempIm.src = this.get('selectedObject').get('url');
-    div.adjust('width', tempIm.width+20);
-    div.adjust('height', tempIm.height+20);
+    var tempIm = new Image();	
+    tempIm.src = this.get('currentUrl');
+    if (tempIm.complete) {
+      div.adjust('width', tempIm.width + 20);
+      div.adjust('height', tempIm.height + 20);
+    }
     console.log('MvoEdge.masterController#masterSelectionDidChange');
-  }.observes('masterSelection'),
+  }.observes('masterSelection')
 
 });

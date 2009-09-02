@@ -3,7 +3,7 @@
 // Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
-require('views/tree');
+//require('views/tree');
 
 MvoEdge.viewsPage = SC.Page.design({
 
@@ -26,8 +26,9 @@ MvoEdge.viewsPage = SC.Page.design({
     
     contentView: SC.ImageView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: 'MvoEdge.masterController.selectedObject',
-      contentValueKey: 'url'
+      contentBinding: 'MvoEdge.masterController.arrangedObjects',
+      selectionBinding: 'MvoEdge.masterController.masterSelection',
+      contentValueKey: 'currentUrl'
     })
   }),
   
