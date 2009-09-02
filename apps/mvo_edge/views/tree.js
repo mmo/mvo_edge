@@ -27,12 +27,10 @@ MvoEdge.TreeView = SC.View.extend(
   },
   
   /**
-    @buildTree
-    
     Create the TreeView using YAHOO tree widget.    
   */
   buildTree: function () {
-    console.log('MvoEdge.treeController# buildTree beginning' );
+    console.log('MvoEdge.treeController# buildTree beginning');
 
     // Tree widget implemented with YUI TreeView
     // See http://developer.yahoo.com/yui/treeview/
@@ -64,15 +62,12 @@ MvoEdge.TreeView = SC.View.extend(
       console.info("TreeNode : " + tn);
       node.node.data.topTreeView._changeTreeSelection(tn);
     });
-    console.info('MvoEdge.treeController#buildTree number of node : ' 
-    + treeWidget.getNodeCount());
+    console.info('MvoEdge.treeController#buildTree number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
     treeWidget.expandAll();
   },
   
   /**
-    @_addNode
-    
     Add a node to his parent
     
     @private
@@ -100,8 +95,6 @@ MvoEdge.TreeView = SC.View.extend(
   },
   
   /**
-    @_changeTreeSelection
-    
     Event 'clickEvent' need to update the treeSelection
     
     Note: Need to call 'set('treeSelection')' into an outer
@@ -112,7 +105,7 @@ MvoEdge.TreeView = SC.View.extend(
     */
   _changeTreeSelection: function (treeNode) {
     SC.RunLoop.begin();
-    this.set('treeSelection', treeNode );
+    this.set('treeSelection', treeNode);
     SC.RunLoop.end();
   },
    
@@ -124,9 +117,9 @@ MvoEdge.TreeView = SC.View.extend(
   _treeSelectionDidChange: function () {
     var treeSelection = this.get('treeSelection');
     if (treeSelection) {
-      var nodeToFocus = this.listOfTreeNode[treeSelection.get('id')];
+      var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
       if (nodeToFocus) {
-        console.info('Set focus on the good treeNode ');
+        console.info('Set focus on the good treeNode ' + nodeToFocus);
         nodeToFocus.focus();
       }
     }
