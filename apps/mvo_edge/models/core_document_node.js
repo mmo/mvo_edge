@@ -14,7 +14,7 @@
 MvoEdge.CoreDocumentNode = SC.Record.extend(
 /** @scope MvoEdge.CoreDocumentNode.prototype */ {
 
-  parentId: SC.Record.attr(String),
+  parentId: SC.Record.attr(Array),
   nextId: SC.Record.attr(String),
   previousId: SC.Record.attr(String),
   sequenceNumber: SC.Record.attr(Number),

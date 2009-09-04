@@ -57,6 +57,30 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
     MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
   },
+  
+  
+  /**
+    Sets up the views for the HTML pages in the workspace.
+
+    This setup cannot be done in this object's init() function because when
+    this object is created, the other views have not yet been initialized, so
+    they cannot yet be referenced.
+
+    This function must therefore be explicitly called from the main() function
+    during application setup.
+    
+    @see MvoEdge.main
+  */
+  initializeHTMLWorkspace: function () {
+    //this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.titleView');
+    SC.RunLoop.begin();
+    this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.metadataView');
+    this.layoutView(MvoEdge.LAYOUT_LEFT, 'viewsPage.htmlThumbnailView');
+    this.layoutView(MvoEdge.LAYOUT_CENTRAL, 'viewsPage.htmlMainContentView');
+    this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
+    SC.RunLoop.end();
+    MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
+  },
 
   /**
     This method lays out a view in one of the defined screen regions.
