@@ -30,12 +30,13 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   _masterSelectionToThumbnail: {},
   
   /**
-    @initialize
-    
-    Initialize this controller => set its content
+    @method
+
+    Initialize this controller, create the sub-model and then set its content
+
+    @param {SC.RecordArray} nodes are records of the CDM
   */
-  initialize: function () {
-    var nodes = MvoEdge.masterController.get('content');
+  initialize: function (nodes) {
     this._createModel(nodes);
     var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
     this.set('content', thumbnails);
@@ -43,31 +44,31 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   },
   
   /**
-    @createModel
-    
-    Create the thumbnail model from the CDM
+    @method
+
+    Create the thumbnail model from the CDM nodes
     
     @private
-    @param {SC.Array} nodes CDM nodes
-    */
-    _createModel: function (nodes) {
-      var guidId = 1;
-      nodes.forEach(function (node) {
-        //create a new thumbnail record
-        if(node.get('urlDefault') !== null){
-          var guid = 'f0000'+guidId;
-          guidId++;
-          var tempUrl = node.get('urlDefault');
-          var staticUrl = "/static/mvo_edge/en/current/images/VAA";
-          staticUrl += tempUrl.substring(tempUrl.lastIndexOf("/"));
-          SC.imageCache.loadImage(staticUrl);
-          var thumbnail = MvoEdge.store.createRecord(MvoEdge.Thumbnail,
-          {url: staticUrl, image_url: tempUrl, coreDocumentNode: node.get('guid')}, guid);
-          var res = MvoEdge.store.commitRecord(MvoEdge.Thumbnail,thumbnail.get('guid'), thumbnail.storeKey); 
-        }
-      });
-      console.info('MvoEdge.thumbnailController# createModel');
-    },
+    @param {SC.RecordArray} nodes are records of the CDM    
+  */
+  _createModel: function (nodes) {
+    var guidId = 1;
+    nodes.forEach(function (node) {
+      //create a new thumbnail record
+      if (node.get('urlDefault') !== null) {
+        var guid = 'f0000' + guidId;
+        guidId++;       
+        var tempUrl = node.get('urlDefault');
+        var staticUrl = "/static/mvo_edge/en/current/images/VAA";
+        staticUrl += tempUrl.substring(tempUrl.lastIndexOf("/"));
+        SC.imageCache.loadImage(staticUrl);
+        var thumbnail = MvoEdge.store.createRecord(MvoEdge.Thumbnail,
+        {guid: guid, url: staticUrl, image_url: tempUrl, coreDocumentNode: node.get('guid')}, guid);
+        var res = MvoEdge.store.commitRecord(MvoEdge.Thumbnail, thumbnail.get('guid'), thumbnail.storeKey); 
+      }
+    });
+    console.info('MvoEdge.thumbnailController# createModel');
+  },
    
    /**
     If 'content' changes, the _masterSelectionToThumbnail conversion table must
@@ -95,12 +96,10 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
     @observes selection
    */
   _selectionDidChange: function () {
-    var coreDocumentNodeId =
-        this.get('selection').firstObject().get('coreDocumentNode');
+    var coreDocumentNode = this.get('selection').firstObject().get('coreDocumentNode');
     // make sure the selection has actually changed, (to avoid loopbacks)
-    if (coreDocumentNodeId &&
-        coreDocumentNodeId !== this.get('masterSelection')) {
-      this.set('masterSelection', coreDocumentNodeId);
+    if (coreDocumentNode && coreDocumentNode !== this.get('masterSelection')) {
+      this.set('masterSelection', coreDocumentNode);
     }
 
     console.info('MvoEdge.thumbnailController#_selectionDidChange: ' +
@@ -116,8 +115,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   */
   _masterSelectionDidChange: function () {
     // find the thumbnail that corresponds to the current master selection
-    var newThumbnail =
-        this.get('_masterSelectionToThumbnail')[this.get('masterSelection')];
+    var newThumbnail = this.get('_masterSelectionToThumbnail')[this.get('masterSelection')];
 
     // make sure the selection has actually changed, (to avoid loopbacks)
     if (this.get('selection') === undefined || newThumbnail && newThumbnail !== this.get('selection').firstObject()) {
