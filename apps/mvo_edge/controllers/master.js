@@ -53,27 +53,6 @@ MvoEdge.masterController = SC.ArrayController.create(
   */
   descriptiveMetadataDictionary: function () {
     return this.arrangedObjects().firstObject().get('metadata');
-  }.property(),
-
-  /**
-    Master selection has changed, update the new size of the view
-
-    @private
-    @observes masterSelection
-  */
-  // TODO this method should belong to a ContainerView class
-  _masterSelectionDidChange: function () {
-    var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
-    var tempIm = new Image();
-    if (!SC.none(this.get('masterSelection'))) {
-      tempIm.src = this.get('masterSelection').get('staticUrl');
-      if (tempIm.complete) {
-        div.adjust('width', tempIm.width + 20);
-        div.adjust('height', tempIm.height + 20);
-      }
-      console.info('MvoEdge.masterController#_masterSelectionDidChange: %@'.
-          fmt(this.get('masterSelection').get('guid')));
-    }
-  }.observes('masterSelection')
+  }.property()
 
 });
