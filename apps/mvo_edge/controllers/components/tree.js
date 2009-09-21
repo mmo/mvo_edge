@@ -97,7 +97,7 @@ MvoEdge.treeController = SC.ArrayController.create(
         if CDM node is a leaf:
           return leaf id
         else:
-          initialize list L1 of leaf node ids (empty)
+          initialize list L1 of CDM leaf node ids (empty)
           initialize list L2 of child tree nodes (empty)
           for all CDM node children:
             visit(child)
@@ -107,19 +107,18 @@ MvoEdge.treeController = SC.ArrayController.create(
               add new tree node to L2
           if CDM node of kind B.1 (with label):
             return new tree node using:
-              - L1 as associated leaf node ids;
+              - L1 as associated CDM leaf node ids;
               - L2 as children;
-              - first element of L1 as associated CDM node
+              - first element of L1 as target CDM node
           else (CDM node of kind B.2, without label):
             return L1
 
-    @returns {Object} hash table with keys {newNode, cdm, leaves};
+    @returns {Object} hash table with keys {newNode, leaves};
     - 'newNode' is the id of a newly created tree node;
-    - 'cdm' is the id of the CDM node associated with that same tree node;
     - 'leaves' is a list of CDM leaf nodes collected during the execution;
-    not all the values are returned each time the function is called; if a new
-    tree node is created, then 'newNode' and 'cdm' are returned, otherwise
-    only 'leaves' is returned;
+    the properties are not both returned each time the function is called; if
+    a new tree node is created, then 'newNode' holds a value, otherwise it is
+    'leaves' that holds a value;
   */
   _visitCdmNode: function (cdmNode) {
     var cdmNodeLabel    = cdmNode.get('label'),
@@ -136,8 +135,7 @@ MvoEdge.treeController = SC.ArrayController.create(
     }
     else { // inner node
       var listOfLeaves   = [],
-          listOfChildren = [],
-          lastCdm        = undefined;
+          listOfChildren = [];
 
       // visit cdmNode children
       if (!SC.none(cdmNodeChildren) && cdmNodeChildren.isEnumerable) {
@@ -148,8 +146,7 @@ MvoEdge.treeController = SC.ArrayController.create(
             var result = this._visitCdmNode(cdmChild);
             // if child returned a new tree node id
             if (!SC.none(result.newNode)) {
-              listOfChildren.push(result.newNode);
-              lastCdm = result.cdm;
+              listOfChildren.push(result.newNode.get('guid'));
             }
             else if (!SC.none(result.leaves)) { // child returned list of leaves
               listOfLeaves = listOfLeaves.concat(result.leaves);
@@ -165,11 +162,43 @@ MvoEdge.treeController = SC.ArrayController.create(
         var treeNodeHash = {
             guid:             newTreeNodeId,
             label:            cdmNodeLabel,
-            cdmLeafNodeIds:   listOfLeaves,
-            coreDocumentNode: listOfLeaves.length > 0 ?
-                listOfLeaves[0] : lastCdm
+            cdmLeafNodeIds:   listOfLeaves
           };
-        if (listOfChildren.length > 0) treeNodeHash.children = listOfChildren;
+          
+        // if the new tree node has CDM leaf nodes of its own then the
+        // 'targetCdmLeaf' property corresponds to its first CDM leaf node; if
+        // the new tree node has child tree nodes, then its 'targetCdmLeaf'
+        // property is inherited from its first child; if both are present, then
+        // the 'targetCdmLeaf' property corresponds to the earliest of them in
+        // the sequence
+        if (listOfChildren.length > 0) {
+          treeNodeHash.children = listOfChildren;
+
+          var firstTreeChild =
+              MvoEdge.store.find(MvoEdge.Tree, listOfChildren[0]);
+          var firstTreeChildCdmLeaf =
+              firstTreeChild.get('targetCdmLeaf').get('guid');
+
+          if (SC.typeOf(firstTreeChildCdmLeaf) === SC.T_STRING) {
+            if (SC.typeOf(listOfLeaves[0]) === SC.T_STRING) {
+              // there is both a 'firstTreeChildCdmLeaf' and a first direct leaf;
+              // pick the earliest (TODO: based on the id - not trustworthy!)
+              if (firstTreeChildCdmLeaf < listOfLeaves[0]) {
+                treeNodeHash.targetCdmLeaf = firstTreeChildCdmLeaf;
+              }
+              else {
+                treeNodeHash.targetCdmLeaf = listOfLeaves[0];
+              }
+            }
+            else {
+              treeNodeHash.targetCdmLeaf = firstTreeChildCdmLeaf;
+            }
+          }
+        }
+        else {
+          // 'targetCdmLeaf' is the first direct CDM leaf
+          treeNodeHash.targetCdmLeaf = listOfLeaves[0];
+        }
         // add the new tree node to the store and commit
         var newTreeNode = MvoEdge.store.createRecord(
             MvoEdge.Tree, treeNodeHash, newTreeNodeId);
@@ -178,7 +207,7 @@ MvoEdge.treeController = SC.ArrayController.create(
         for (var j = 0; j < listOfLeaves.length; j++) {
           this._cdmNodeToTreeNode[listOfLeaves[j]] = treeNodeHash.guid;
         }
-        return {newNode: newTreeNode.get('guid'), cdm: listOfLeaves[0]};
+        return { newNode: newTreeNode };
       }
       else { // CDM node of kind B.2 (without label)
         return {leaves: listOfLeaves};
@@ -214,8 +243,7 @@ MvoEdge.treeController = SC.ArrayController.create(
         }
         if (!cdmLeafNodeIdInArray) {
           SC.RunLoop.begin();
-          this.set('masterSelection',
-              treeSelection.get('coreDocumentNode'));
+          this.set('masterSelection', treeSelection.get('targetCdmLeaf'));
           SC.RunLoop.end();
 
           console.info('MvoEdge.treeController#_treeSelectionDidChange: %@'.
