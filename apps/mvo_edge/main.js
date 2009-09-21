@@ -24,11 +24,9 @@ MvoEdge.main = function main() {
   // Set the content property on your primary controller
   // ex: .contactsController.set('content',.contacts);
   var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
-  MvoEdge.masterController.set('content', nodes);
-  var images = MvoEdge.store.findAll(MvoEdge.Thumbnail);
-  MvoEdge.thumbnailController.set('content', images);
-  var labels = MvoEdge.store.findAll(MvoEdge.Tree);
-  MvoEdge.treeController.set('content', labels);
+  MvoEdge.masterController.initialize(nodes);
+  MvoEdge.thumbnailController.initialize(nodes);
+  MvoEdge.treeController.initialize(nodes);
 
   // Call the layout controller in order to setup the interface components
   MvoEdge.layoutController.initializeWorkspace();

@@ -17,114 +17,239 @@ MvoEdge.treeController = SC.ArrayController.create(
 
   /**
     Binds to the master selection
-    @property {String}
+    @property {MvoEdge.CoreDocumentNode}
    */
   masterSelectionBinding: "MvoEdge.masterController.masterSelection",
 
   /**
     Currently selected treeNode.
-
-    @property {MvoEdge.Tree}
-    @default undefined
+    @property {String}
   */
   treeSelection: undefined,
 
   /**
-    A conversion table (masterSelection -> treeNode) used to quickly determine
-    the treeNode associated with a certain master selection
+    A conversion table (masterSelectionId -> treeNodeId) used to quickly
+    determine the treeNode associated with a certain master selection
    */
-  _masterSelectionToTreeNode: {},
-   
-   /**
-    If 'content' changes, the _masterSelectionToTreeNode conversion table must
-    be updated (this should only happen once, during aplication setup)
-   */
-  _contentDidChange: function () {
-    var newTable = {};
-    var treeNodes = MvoEdge.store.findAll(MvoEdge.Tree);
-    if (treeNodes && treeNodes.isEnumerable) {
-      treeNodes.forEach(function (treeNode) {
-        var objectIds = treeNode.get('objectIds');
-        if (objectIds && objectIds.isEnumerable) {
-          objectIds.forEach(function (objectId) {
-            newTable[objectId] = treeNode;
-          });
-        }
-      });
+  _cdmNodeToTreeNode: {},
+
+  /**
+    @method
+
+    Initialize this controller, create the sub-model and then set its content
+
+    @param {SC.RecordArray} nodes are records of the CDM
+  */
+  initialize: function (nodes) {
+    this._createSubmodel(nodes);
+    var treeLabels = MvoEdge.store.findAll(MvoEdge.Tree);
+    this.set('content', treeLabels);
+  },
+
+  /**
+    @method
+
+    Creates the tree submodel
+
+    @private
+    @param {SC.RecordArray} cdmNodes
+  */
+  _createSubmodel: function (cdmNodes) {
+    // start the submodel creation from the CDM root node
+    this._visitCdmNode(cdmNodes.firstObject());
+
+    // TODO document this and define where to put it
+    var treeNodes =
+        MvoEdge.store.findAll(MvoEdge.Tree).sortProperty('guid').enumerator();
+    var treeNodesArray = [];
+    for (var t = 0; t < treeNodes._length; t++) {
+      var treeNodeHash = JSON.stringify(treeNodes.nextObject().attributes());
+      treeNodesArray.push(treeNodeHash);
     }
-    this.set('_masterSelectionToTreeNode', newTable);
+    treeNodes.reset();
 
-    console.info('MvoEdge.treeController#_contentDidChange');
+    var treeNodesJSON = JSON.stringify(treeNodesArray);
+    console.log(treeNodesJSON);
+  },
 
-  }.observes('content'),
+  /**
+    @method
+
+    Recursive function that handles a CDM node during the construction of the
+    tree submodel.
+
+    There are 2 main kinds of CDM nodes:
+    - A: leaf:
+        they have a sequenceNumber, a urlDefault and no children; these are
+        the nodes with content to be displayed
+    - B: inner nodes, with two subkinds:
+        - B.1: inner nodes with label
+            they have a label and children; a new tree node is created for
+            each CDM node of this kind
+        - B.2: inner nodes without label:
+            they have no label but they have children; they exist mainly in
+            order to group a list of leaf nodes under no specific label, which
+            means that the user cannot navigate
+
+    General algorithm:
+      start by visit(CDM root node)
+      visit(CDM node):
+        if CDM node is a leaf:
+          return leaf id
+        else:
+          initialize list L1 of leaf node ids (empty)
+          initialize list L2 of child tree nodes (empty)
+          for all CDM node children:
+            visit(child)
+            if child returned one or more ids:
+              add id(s) to L1
+            else if child returned a new tree node:
+              add new tree node to L2
+          if CDM node of kind B.1 (with label):
+            return new tree node using:
+              - L1 as associated leaf node ids;
+              - L2 as children;
+              - first element of L1 as associated CDM node
+          else (CDM node of kind B.2, without label):
+            return L1
+
+    @returns {Object} hash table with keys {newNode, cdm, leaves};
+    - 'newNode' is the id of a newly created tree node;
+    - 'cdm' is the id of the CDM node associated with that same tree node;
+    - 'leaves' is a list of CDM leaf nodes collected during the execution;
+    not all the values are returned each time the function is called; if a new
+    tree node is created, then 'newNode' and 'cdm' are returned, otherwise
+    only 'leaves' is returned;
+  */
+  _visitCdmNode: function (cdmNode) {
+    var cdmNodeLabel    = cdmNode.get('label'),
+        cdmNodeChildren = cdmNode.get('children');
+
+    // integrity check: cdmNode should be either a leaf node or an inner node
+    if (!cdmNode.get('isLeafNode') && !cdmNode.get('isInnerNode')) {
+      throw "cdmNode does not qualify either as leaf or as inner node";
+    }
+
+    // if CDM node is a leaf:
+    if (cdmNode.get('isLeafNode')) {
+      return {leaves: [cdmNode.get('guid')]};
+    }
+    else { // inner node
+      var listOfLeaves   = [],
+          listOfChildren = [],
+          lastCdm        = undefined;
+
+      // visit cdmNode children
+      if (!SC.none(cdmNodeChildren) && cdmNodeChildren.isEnumerable) {
+        // recursively visit child nodes of cdmNode
+        for (var i = 0; i < cdmNodeChildren.length(); i++) {
+          var cdmChild = cdmNodeChildren.objectAt(i);
+          if (!SC.none(cdmChild)) {
+            var result = this._visitCdmNode(cdmChild);
+            // if child returned a new tree node id
+            if (!SC.none(result.newNode)) {
+              listOfChildren.push(result.newNode);
+              lastCdm = result.cdm;
+            }
+            else if (!SC.none(result.leaves)) { // child returned list of leaves
+              listOfLeaves = listOfLeaves.concat(result.leaves);
+            }
+          }
+        }
+      }
+      // if CDM node of kind B.1 (with label)
+      if (SC.typeOf(cdmNodeLabel) === SC.T_STRING && cdmNodeLabel.length > 0) {
+        // tree node guid is based on the id of cdmNode, for easier tracing
+        var newTreeNodeId = 't%@'.fmt(cdmNode.get('guid'));
+        // create hash
+        var treeNodeHash = {
+            guid:             newTreeNodeId,
+            label:            cdmNodeLabel,
+            cdmLeafNodeIds:   listOfLeaves,
+            coreDocumentNode: listOfLeaves.length > 0 ?
+                listOfLeaves[0] : lastCdm
+          };
+        if (listOfChildren.length > 0) treeNodeHash.children = listOfChildren;
+        // add the new tree node to the store and commit
+        var newTreeNode = MvoEdge.store.createRecord(
+            MvoEdge.Tree, treeNodeHash, newTreeNodeId);
+        MvoEdge.store.commitRecord(MvoEdge.Tree, newTreeNodeId);
+        // update the table _cdmNodeToTreeNode
+        for (var j = 0; j < listOfLeaves.length; j++) {
+          this._cdmNodeToTreeNode[listOfLeaves[j]] = treeNodeHash.guid;
+        }
+        return {newNode: newTreeNode.get('guid'), cdm: listOfLeaves[0]};
+      }
+      else { // CDM node of kind B.2 (without label)
+        return {leaves: listOfLeaves};
+      }
+    }
+  },
 
   /**
     Updates the masterSelection binding if the currently selected tree node has
     changed.
-    
+
     @observes treeSelection
    */
   _treeSelectionDidChange: function () {
-    // make sure the masterSelection must change
-    // no change if call after _masterSelectionDidChange
-    var objectIdInArray = NO;
-    var currentSelection = this.get('masterSelection');
-    var objectIds = this.get('treeSelection').get('objectIds');
-    if (objectIds && objectIds.length > 0) {
-      for (var i = 0; i < objectIds.length; i++) {
-        if (objectIds[i] === currentSelection) {
-          objectIdInArray = YES;
-          break;
+    var cdmLeafNodeIdInArray = NO;
+    var treeSelectionId = this.get('treeSelection');
+    var masterSelectionId = !SC.none(this.get('masterSelection')) ?
+        this.get('masterSelection').get('guid') : undefined;
+    // make sure the selection must actually change, (to avoid loopbacks)
+    if (SC.typeOf(treeSelectionId) === SC.T_STRING) {
+      var treeSelection = MvoEdge.store.find(MvoEdge.Tree, treeSelectionId);
+      if (!SC.none(treeSelection)) {
+        var cdmLeafNodeIds = treeSelection.get('cdmLeafNodeIds');
+        if (SC.typeOf(cdmLeafNodeIds) === SC.T_ARRAY) {
+          for (var i = 0; i < cdmLeafNodeIds.length; i++) {
+            if (cdmLeafNodeIds[i] === masterSelectionId) {
+              // the change in the tree selection does not imply a change of
+              // the master selection
+              cdmLeafNodeIdInArray = YES;
+              break;
+            }
+          }
+        }
+        if (!cdmLeafNodeIdInArray) {
+          SC.RunLoop.begin();
+          this.set('masterSelection',
+              treeSelection.get('coreDocumentNode'));
+          SC.RunLoop.end();
+
+          console.info('MvoEdge.treeController#_treeSelectionDidChange: %@'.
+              fmt(treeSelectionId));
         }
       }
     }
-
-    // make sure the selection has actually changed, (to avoid loopbacks)
-    if (!objectIdInArray) {
-      this.set('masterSelection', objectIds.firstObject());
-    }
-
-    console.info('MvoEdge.treeController#_treeSelectionDidChange: ' +
-        'new treeSelection is ' + this.get('treeSelection').get('guid'));
-
   }.observes('treeSelection'),
 
   /**
+    @method
+
     Updates treeSelection by observing changes in master controller's master
     selection
-    
+
     @observes masterSelection
   */
   _masterSelectionDidChange: function () {
-    var objectIdInArray = NO;
-    var currentSelection = this.get('masterSelection');
-    // make sure the treeSelection must change
-    if(this.get('treeSelection')){
-      var objectIds = this.get('treeSelection').get('objectIds');
-      console.log('treeSelection objectIds '+ objectIds.length);
-      if (objectIds && objectIds.length > 0) {
-        for (var i = 0; i < objectIds.length; i++) {
-          if (objectIds[i] === currentSelection) {
-            objectIdInArray = YES;
-            break;
-          }
-        }
-      }
-    }
-    // make sure the selection has actually changed, (to avoid loopbacks)
-    if (!objectIdInArray) {
+    var masterSelection = this.get('masterSelection');
+    if (!SC.none(masterSelection)) {
       // find the tree node that corresponds to the current master selection
-      var newTreeNode = this.get('_masterSelectionToTreeNode')[this.get('masterSelection')];
+      var newTreeSelection =
+          this.get('_cdmNodeToTreeNode')[masterSelection.get('guid')];
+
       // make sure the selection has actually changed, (to avoid loopbacks)
-      if (newTreeNode && newTreeNode !== this.get('treeSelection')) {
+      var treeSelection = this.get('treeSelection');
+      if (SC.none(treeSelection) || newTreeSelection !== treeSelection) {
         // update the current tree selection
-        this.set('treeSelection', newTreeNode);
+        this.set('treeSelection', newTreeSelection);
+
+        console.info('MvoEdge.treeController#_masterSelectionDidChange: %@'.
+            fmt(this.get('masterSelection').get('guid')));
       }
     }
-    
-    console.info('MvoEdge.treeController#_masterSelectionDidChange: ' + 
-    'new masterSelection is ' + this.get('masterSelection'));
-
   }.observes('masterSelection')
 
 });
