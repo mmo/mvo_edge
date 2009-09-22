@@ -4,6 +4,7 @@
 // ==========================================================================
 /*globals MvoEdge */
 //require('views/tree');
+//require('views/content');
 
 MvoEdge.viewsPage = SC.Page.design({
 
@@ -24,10 +25,9 @@ MvoEdge.viewsPage = SC.Page.design({
   mainContentView: SC.ScrollView.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
     
-    contentView: SC.ImageView.design({
+    contentView: MvoEdge.ContentView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: 'MvoEdge.masterController.arrangedObjects',
-      selectionBinding: 'MvoEdge.masterController.masterSelection',
+      contentBinding: 'MvoEdge.masterController.masterSelection',
       contentValueKey: 'staticUrl'
     })
   }),

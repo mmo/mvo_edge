@@ -18,7 +18,7 @@ MvoEdge.Tree = SC.Record.extend(
   label: SC.Record.attr(String),
   children: SC.Record.toMany("MvoEdge.Tree"),
   // the CDM node that should be selected after this tree node
-  coreDocumentNode: SC.Record.toOne("MvoEdge.CoreDocumentNode"),
+  targetCdmLeaf: SC.Record.toOne("MvoEdge.CoreDocumentNode"),
   // the CDM leaf nodes that can be active when this tree node is selected;
   // this is useful to know if the tree selection must actually change if the
   // selected CDM leaf node changes (in many cases it doesn't)
