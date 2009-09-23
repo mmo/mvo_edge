@@ -24,6 +24,10 @@ MvoEdge.main = function main() {
     MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_HTML;
     MvoEdge.Tree.FIXTURES = MvoEdge.Tree.FIXTURES_HTML;
     MvoEdge.Thumbnail.FIXTURES = MvoEdge.Thumbnail.FIXTURES_HTML;
+  } else if (type === 2) {
+    MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
+    MvoEdge.Tree.FIXTURES = MvoEdge.Tree.FIXTURES_PDF_RENDERER;
+    MvoEdge.Thumbnail.FIXTURES = MvoEdge.Thumbnail.FIXTURES_PDF_RENDERER;
   }
   
   MvoEdge.getPath('mainPage.mainPane').append();
@@ -43,6 +47,8 @@ MvoEdge.main = function main() {
     MvoEdge.layoutController.initializeWorkspace();
   } else if (type === 1) {
     MvoEdge.layoutController.initializeHTMLWorkspace();
+  } else if (type === 2) {
+    MvoEdge.layoutController.initializePDFRendererWorkspace();
   }
   
 };
