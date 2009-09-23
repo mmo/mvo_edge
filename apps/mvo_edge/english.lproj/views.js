@@ -5,6 +5,7 @@
 /*globals MvoEdge */
 //require('views/tree');
 //require('views/content');
+//require('views/pdf_renderer');
 
 MvoEdge.viewsPage = SC.Page.design({
 
@@ -42,6 +43,17 @@ MvoEdge.viewsPage = SC.Page.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
       contentBinding: 'MvoEdge.masterController.selectedObject',
       contentValueKey: 'url'
+    })
+  }),
+
+  /**
+    PDFRenderer Main content view
+  */
+  pdfRendererMainContentView: SC.ScrollView.design({
+    layout: { top: 0, bottom: 0, left: 0, right: 0 },
+				  
+    contentView: MvoEdge.PDFRendererView.design({
+	  	layerId: 'PdfRendererId'
     })
   }),
   
@@ -94,6 +106,94 @@ MvoEdge.viewsPage = SC.Page.design({
     contentView: MvoEdge.TreeView.design({
       classNames: 'yui-skin-sam'
     })
+  }),
+  
+  /**
+    Navigation view
+  */
+  navigationView: SC.View.design({
+    layout: { top: 0, bottom: 0, left: 0, right: 0 },
+
+    childViews: 'firstPageView previousPageView textPageView nextPageView lastPageView zoomPageView'.w(),
+    
+    firstPageView: SC.ButtonView.design({
+      layout: { centerX: -70, centerY: 0, width: 30, height: 25 },
+      titleMinWidth : 30,
+      title: "<<",
+      target: "MvoEdge.navigationController", 
+      action: "goToFirstPage" 
+    }),
+    
+    previousPageView: SC.ButtonView.design({
+      layout: { centerX: -35, centerY: 0,  width: 30, height: 25 },
+      titleMinWidth : 30,
+      title: "<",
+      target: "MvoEdge.navigationController", 
+      action: "goToPreviousPage"
+    }),
+    
+    textPageView: SC.TextFieldView.design({ 
+      layout: { centerX: 0, centerY: 0, width: 30, height: 20 },
+      isEditing: YES,
+      textAlign: SC.ALIGN_CENTER,
+      hint: "Page",
+      tagName: "h3", 
+      value: "1",
+      valueBinding: "MvoEdge.navigationController.currentPage",
+      validator: 'Number'
+    }),  
+    
+    nextPageView: SC.ButtonView.design({
+      layout: { centerX: 35, centerY: 0, width: 30, height: 25 },
+      titleMinWidth : 30,
+      title: ">",      
+      target: "MvoEdge.navigationController", 
+      action: "goToNextPage"
+    }),
+    
+    lastPageView: SC.ButtonView.design({
+      layout: { centerX: 70, centerY: 0, width: 30, height: 25 },
+      titleMinWidth : 30,
+      title: ">>",
+      target: "MvoEdge.navigationController", 
+      action: "goToLastPage"
+    }),
+    
+    zoomPageView: SC.ToolbarView.design({
+      layout: { centerX: 140, centerY: 0, width: 105, height: 25 },
+      layerId: "zoomPageId",
+      
+      childViews: 'zoomInPageView originalSizePageView zoomOutPageView'.w(),
+      
+      zoomInPageView: SC.ButtonView.design({
+        layout: { centerX: -35, centerY: 0, width: 30, height: 25 },
+        layerId: "zoomInPageId",
+        titleMinWidth : 30,
+        title: "-",
+        target: "MvoEdge.navigationController", 
+        action: "doZoomIn"
+      }),
+      
+      originalSizePageView: SC.ButtonView.design({
+        layout: { centerX: 0, centerY: 0, width: 30, height: 25 },
+        layerId: "originalSizePageId",
+        titleMinWidth : 30,
+        title: "o",
+        target: "MvoEdge.navigationController", 
+        action: "retrieveOriginalSize"
+      }),      
+      
+      zoomOutPageView: SC.ButtonView.design({
+        layout: { centerX: 35, centerY: 0, width: 30, height: 25 },
+        layerId: "zoomOutPageId",
+        titleMinWidth : 30,
+        title: "+",
+        target: "MvoEdge.navigationController", 
+        action: "doZoomOut"
+      })
+      
+    })
+      
   }),
 
   /**
