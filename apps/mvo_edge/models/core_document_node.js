@@ -31,7 +31,15 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   staticUrl: function () {
     var defaultUrl = this.get('urlDefault');
     if (SC.typeOf(defaultUrl) === SC.T_STRING) {
-      var currentUrl = "/static/mvo_edge/en/current/images/VAA";
+      var type = MvoEdge.get('type');
+      var currentUrl;
+      if (type === 0) {
+        currentUrl = "/static/mvo_edge/en/current/images/VAA";
+      } else if (type === 1) {
+        currentUrl = "/static/mvo_edge/en/current/PDFHTML";
+      } else if (type === 2) {
+        currentUrl = "/static/mvo_edge/en/current/PDFRenderer";
+      }
       currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
       return currentUrl;
     }
