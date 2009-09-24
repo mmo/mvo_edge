@@ -55,11 +55,13 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
       if (node.get('isLeafNode')) {
         var cdmNodeId = node.get('guid');
         var id = 'f%@'.fmt(cdmNodeId);
+        var label = node.get('label');
         var staticUrl = node.get('staticUrl');
         SC.imageCache.loadImage(staticUrl);
         var thumbnailHash = {
             guid: id,
             url: staticUrl,
+            label: label,
             coreDocumentNode: cdmNodeId
           };
         // create a new thumbnail record
