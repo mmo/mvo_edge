@@ -37,6 +37,7 @@ MvoEdge.main = function main() {
   MvoEdge.masterController.initialize(nodes);
   MvoEdge.thumbnailController.initialize(nodes);
   MvoEdge.treeController.initialize(nodes);
+  MvoEdge.navigationController.initialize();
 
   // Call the layout controller in order to setup the interface components
   if (type === 0) {
