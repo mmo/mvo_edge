@@ -20,6 +20,7 @@ MvoEdge.ContentView = SC.ImageView.extend(
     @observes masterSelection
   */
   _contentDidChange: function () {
+    console.info("Call _contentDidChange");
     var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
     var tempIm = new Image();
     if (!SC.none(this.get('content'))) {

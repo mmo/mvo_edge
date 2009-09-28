@@ -33,6 +33,8 @@ MvoEdge.masterController = SC.ArrayController.create(
     var sortedNodes = nodes.sortProperty('guid');
     for (var i = 0; i < sortedNodes.length; i++) {
       if (sortedNodes[i].get('isLeafNode')) {
+        console.info("Set the first leafNode of the document for the masterSelection ('%@')."
+            .fmt(sortedNodes[i].get('guid')));
         this.set('masterSelection', sortedNodes[i]);
         break;
       }
