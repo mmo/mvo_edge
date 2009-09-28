@@ -41,8 +41,8 @@ MvoEdge.viewsPage = SC.Page.design({
     
     contentView: SC.WebView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: 'MvoEdge.masterController.selectedObject',
-      contentValueKey: 'url'
+      contentBinding: 'MvoEdge.masterController.masterSelection',
+      contentValueKey: 'staticUrl'
     })
   }),
 
@@ -53,7 +53,9 @@ MvoEdge.viewsPage = SC.Page.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
 				  
     contentView: MvoEdge.PDFRendererView.design({
-	  	layerId: 'PdfRendererId'
+	  	layerId: 'PdfRendererId',
+      contentBinding: 'MvoEdge.masterController.masterSelection',
+      contentValueKey: 'guid'
     })
   }),
   
@@ -122,7 +124,7 @@ MvoEdge.viewsPage = SC.Page.design({
       title: "<<",
       target: "MvoEdge.navigationController", 
       action: "goToFirstPage" 
-    }),
+    }),    
     
     previousPageView: SC.ButtonView.design({
       layout: { centerX: -35, centerY: 0,  width: 30, height: 25 },
@@ -130,19 +132,17 @@ MvoEdge.viewsPage = SC.Page.design({
       title: "<",
       target: "MvoEdge.navigationController", 
       action: "goToPreviousPage"
-    }),
+    }),    
     
     textPageView: SC.TextFieldView.design({ 
       layout: { centerX: 0, centerY: 0, width: 30, height: 20 },
       isEditing: YES,
       textAlign: SC.ALIGN_CENTER,
-      hint: "Page",
-      tagName: "h3", 
-      value: "1",
-      valueBinding: "MvoEdge.navigationController.currentPage",
+      hint: 'Page',
+      valueBinding: 'MvoEdge.navigationController.currentPage',
       validator: 'Number'
-    }),  
-    
+    }),
+
     nextPageView: SC.ButtonView.design({
       layout: { centerX: 35, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 30,
@@ -150,14 +150,14 @@ MvoEdge.viewsPage = SC.Page.design({
       target: "MvoEdge.navigationController", 
       action: "goToNextPage"
     }),
-    
+
     lastPageView: SC.ButtonView.design({
       layout: { centerX: 70, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 30,
       title: ">>",
       target: "MvoEdge.navigationController", 
       action: "goToLastPage"
-    }),
+    }),    
     
     zoomPageView: SC.ToolbarView.design({
       layout: { centerX: 140, centerY: 0, width: 105, height: 25 },
@@ -170,7 +170,7 @@ MvoEdge.viewsPage = SC.Page.design({
         layerId: "zoomInPageId",
         titleMinWidth : 30,
         title: "-",
-        target: "MvoEdge.navigationController", 
+        target: "MvoEdge.zoomController", 
         action: "doZoomIn"
       }),
       
@@ -179,7 +179,7 @@ MvoEdge.viewsPage = SC.Page.design({
         layerId: "originalSizePageId",
         titleMinWidth : 30,
         title: "o",
-        target: "MvoEdge.navigationController", 
+        target: "MvoEdge.zoomController", 
         action: "retrieveOriginalSize"
       }),      
       
@@ -188,12 +188,12 @@ MvoEdge.viewsPage = SC.Page.design({
         layerId: "zoomOutPageId",
         titleMinWidth : 30,
         title: "+",
-        target: "MvoEdge.navigationController", 
+        target: "MvoEdge.zoomController", 
         action: "doZoomOut"
       })
       
-    })
-      
+    })    
+          
   }),
 
   /**

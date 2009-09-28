@@ -56,6 +56,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_LEFT, 'viewsPage.thumbnailView');
     this.layoutView(MvoEdge.LAYOUT_CENTRAL, 'viewsPage.mainContentView');
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
+    this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
     MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
   },
@@ -80,6 +81,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_LEFT, 'viewsPage.htmlThumbnailView');
     this.layoutView(MvoEdge.LAYOUT_CENTRAL, 'viewsPage.htmlMainContentView');
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
+    this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
     MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
   },
