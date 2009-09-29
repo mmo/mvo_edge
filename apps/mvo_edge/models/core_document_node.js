@@ -13,7 +13,7 @@
 */
 MvoEdge.CoreDocumentNode = SC.Record.extend(
 /** @scope MvoEdge.CoreDocumentNode.prototype */ {
-
+  guid: SC.Record.attr(String),
   parentId: SC.Record.attr(String),
   nextId: SC.Record.attr(String),
   previousId: SC.Record.attr(String),
@@ -31,9 +31,15 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   staticUrl: function () {
     var defaultUrl = this.get('urlDefault');
     if (SC.typeOf(defaultUrl) === SC.T_STRING) {
-      var currentUrl = "/static/mvo_edge/en/current/images/VAA";
-      currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
-      return currentUrl;
+      //if defaultUrl contains 'localhost' => don't modify the url
+      if (!defaultUrl.match("localhost")) {
+        var currentUrl = "/static/mvo_edge/en/current/images/VAA";
+        currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
+        return currentUrl;
+      }
+      else {
+        return defaultUrl;
+      }
     }
     return null;
   }.property('urlDefault').cacheable(),
@@ -64,7 +70,8 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   */
   isInnerNode: function () {
     var children = this.get('children');
-    return !SC.none(children) && children.isEnumerable && children.length() > 0;
+    return !SC.none(children) && children.isEnumerable &&
+     children.length() > 0;
   }.property('children').cacheable()
 
 });

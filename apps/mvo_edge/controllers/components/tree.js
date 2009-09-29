@@ -57,9 +57,9 @@ MvoEdge.treeController = SC.ArrayController.create(
   _createSubmodel: function (cdmNodes) {
     // start the submodel creation from the CDM root node
     this._visitCdmNode(cdmNodes.firstObject());
-
+    
     // TODO document this and define where to put it
-    var treeNodes =
+    var treeNodes = 
         MvoEdge.store.findAll(MvoEdge.Tree).sortProperty('guid').enumerator();
     var treeNodesArray = [];
     for (var t = 0; t < treeNodes._length; t++) {

@@ -82,5 +82,5 @@ MvoEdge.CoreDocumentNode.FIXTURES = [
   { guid: 'n00071', parentId: 'n00001', nextId: 'n00072', previousId: 'n00070', label: 'Back Matter', children: ['n00072'] },
   { guid: 'n00072', parentId: 'n00071', nextId: 'n00073', previousId: 'n00071', label: 'Preservation colophon', children: ['n00073'] }, 
   { guid: 'n00073', parentId: 'n00072', nextId: 'undefined', previousId: 'n00072', sequenceNumber: 51, urlDefault: 'http://purl.dlib.indiana.edu/iudl/brittlebooks/page/VAA1194-51-screen.gif' }
-  
+
 ];
