@@ -1,6 +1,6 @@
 // ==========================================================================
 // Project:   MvoEdge.Tree
-// Copyright: ©2009 My Company, Inc.
+// Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
 /** @class
@@ -14,7 +14,7 @@ MvoEdge.TreeView = SC.View.extend(
 
   /**
     Binds to the tree selection in the tree controller
-    @property {MvoEdge.Tree}
+    @property {String}
    */
   treeSelectionBinding: "MvoEdge.treeController.treeSelection",
 
@@ -22,47 +22,47 @@ MvoEdge.TreeView = SC.View.extend(
   listOfTreeNode: {},
   nodeById: {},
   
-  render: function (context, firstTime) {
-    console.log('TreeView render :');    
+  render: function (context) {
+    context.push("<div id='treeContainer'></div>");
   },
   
   /**
-    Create the TreeView using YAHOO tree widget.    
+    Create the TreeView using YAHOO tree widget.
+    
+    This method is launched automatically when the view's layer is ready and
+    integrated in the DOM
   */
   buildTree: function () {
-    console.log('MvoEdge.treeController# buildTree beginning');
-
     // Tree widget implemented with YUI TreeView
     // See http://developer.yahoo.com/yui/treeview/
-    var treeWidget = new YAHOO.widget.TreeView('treeId');
-    var treeNodeRecords = MvoEdge.store.findAll(MvoEdge.Tree);
-    
-    //create hashtable of node
-    var enumerator = treeNodeRecords.enumerator();
+    var treeWidget = new YAHOO.widget.TreeView('treeContainer');
 
-    for (var t = 0; t < enumerator._length; t++) {
-      var obj = enumerator.nextObject();
-      this.nodeById[obj.get('id')] = obj;
+    var treeNodeRecords =
+        MvoEdge.store.findAll(MvoEdge.Tree).sortProperty('guid');
+    for (var i = 0; i < treeNodeRecords.length; i++) {
+      var node = treeNodeRecords[i];
+      this.nodeById[node.get('guid')] = node;
     }
-    enumerator.reset();
 
-    //retreive all node
-    for (var i = 0; i < enumerator._length; i++) {
-      var currentNode = enumerator.nextObject();
-      if (!this.handleNodes[currentNode]) {
-        this._addNode(currentNode, treeWidget.getRoot());
+/*
+    for (i = 0; i < treeNodeRecords.length; i++) {
+      node = treeNodeRecords[i];
+      if (!this.handleNodes[node]) {
+        this._addNode(node, treeWidget.getRoot());
       }
     }
+*/
+    this._addNode(treeNodeRecords[0], treeWidget.getRoot());
+
 
     // subscribe to the clickEvent event on every tree node
     treeWidget.subscribe('clickEvent', function (node) {
+      SC.RunLoop.begin();
       // when a tree node is selected, update the selection in the controller
-      console.info('label ' + node.node.label);
       var tn = node.node.data.treeNode;
-      console.info("TreeNode : " + tn);
       node.node.data.topTreeView._changeTreeSelection(tn);
+      SC.RunLoop.end();
     });
-    console.info('MvoEdge.treeController#buildTree number of node : ' + treeWidget.getNodeCount());
     treeWidget.render();
     treeWidget.expandAll();
   },
@@ -80,16 +80,18 @@ MvoEdge.TreeView = SC.View.extend(
     // that will be attached to the 'clickEvent' knows how to call this view
     // object, to notify it of a change in the selection
     var obj = {label: node.get('label'), treeNode: node, topTreeView: this};
-    var currentWidgetNode = new YAHOO.widget.TextNode(obj, parentWidgetNode, false);
+    var currentWidgetNode =
+        new YAHOO.widget.TextNode(obj, parentWidgetNode, false);
 
     // mark node as added
-    this.listOfTreeNode[node.get('id')] = currentWidgetNode;
+    this.listOfTreeNode[node.get('guid')] = currentWidgetNode;
     this.handleNodes[node] = true;
     // add children of the node
     var nodeChildren = node.get('children');
     if (nodeChildren) {
-      for (var idx = 0; idx < nodeChildren.length; idx++) {
-        this._addNode(this.nodeById[nodeChildren[idx]], currentWidgetNode);
+      for (var i = 0; i < nodeChildren.length(); i++) {
+        this._addNode(this.nodeById[nodeChildren.objectAt(i).get('guid')],
+            currentWidgetNode);
       }
     }
   },
@@ -105,7 +107,7 @@ MvoEdge.TreeView = SC.View.extend(
     */
   _changeTreeSelection: function (treeNode) {
     SC.RunLoop.begin();
-    this.set('treeSelection', treeNode);
+    this.set('treeSelection', treeNode.get('guid'));
     SC.RunLoop.end();
   },
    
@@ -116,10 +118,9 @@ MvoEdge.TreeView = SC.View.extend(
   */
   _treeSelectionDidChange: function () {
     var treeSelection = this.get('treeSelection');
-    if (treeSelection) {
-      var nodeToFocus = this.listOfTreeNode[treeSelection.get('guid')];
+    if (!SC.none(treeSelection)) {
+      var nodeToFocus = this.listOfTreeNode[treeSelection];
       if (nodeToFocus) {
-        console.info('Set focus on the good treeNode ' + nodeToFocus);
         nodeToFocus.focus();
       }
     }

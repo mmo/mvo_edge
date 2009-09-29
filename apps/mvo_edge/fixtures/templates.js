@@ -72,7 +72,7 @@
       - preformatted text --> if you want to show code examples such as:
         {{{
           if (!objectIdInArray) {
-            this.set('masterSelection', objectIds.firstObject());
+            this.set('masterSelection', cdmLeafNodeIds.firstObject());
           }
         }}}
     - lists --> just add a dash and a space "- " in front of a sentence to make it a bullet in a list (but don't break the sentence)
