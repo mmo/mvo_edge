@@ -101,7 +101,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
 		}
 
 		if (firstTime) {
-      console.info('FirstTime');
+      console.info('Build the Applet');
     
       // Retrieve the url of the PDF document from the CDM
       var cdmStore = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
@@ -116,9 +116,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
         throw errMess;   
       }
  
-      var url = "file:///D:/Tests/Test_ADOBE_PDF/ThinkingInPostScript.pdf";
-      //var url = "http://www.rightbrain.com/download/books/ThinkingInPostScript.pdf";
-      //var url = cdmObjects.firstObject().get('urlDefault');    
+      var url = cdmObjects.firstObject().get('urlDefault'); 
       
 			context = context.begin('div').attr('align', 'center');
 			context = context.begin('applet').attr('id', 'appletId').
@@ -132,27 +130,18 @@ MvoEdge.PDFRendererView = SC.View.extend(
 			context = context.end(); // End of applet tag
 			context = context.end(); // End of div tag
 		} else {
-			var awd = document.appletId.width;
-			if (wd && wd < awd) {
-				document.appletId.width = wd - 20;
-			} 
-			var ahg = document.appletId.height;
-			if (hg && hg < ahg) {
-				document.appletId.height = hg - 20;
-			}
+      var appId = this.get('_getAppletId');
+			appId.width = wd - 20;
+			appId.height = hg - 20;
 		}
 		sc_super();
 	},
   
-  retrieveHeightMainPanel: function () {
-    console.info('retrieveHeightMainPanel');
-    var hg = this.get('heightMainPanel');
-    console.info('HG : ' + hg);
-  }.observes('heightMainPanel'),
-  
   /**
+    @method
+    
     If the master selection changes, readjust the size of the view
-    and go to specific page.
+    and go to specific page if it's necessary.
 
     @private
     
