@@ -21,6 +21,58 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   label: SC.Record.attr(String),
   metadata: SC.Record.attr(Object),
   urlDefault: SC.Record.attr(String),
-  children: SC.Record.attr(Array)
+  children: SC.Record.toMany("MvoEdge.CoreDocumentNode"),
+
+  /**
+    @property {String}
+    The static URL equivalent of 'urlDefault', used to load the images.
+    @default {null}
+  */
+  staticUrl: function () {
+    var defaultUrl = this.get('urlDefault');
+    if (SC.typeOf(defaultUrl) === SC.T_STRING) {
+      var type = MvoEdge.get('type');
+      var currentUrl;
+      if (type === 0) {
+        currentUrl = "/static/mvo_edge/en/current/images/VAA";
+      } else if (type === 1) {
+        currentUrl = "/static/mvo_edge/en/current/PDFHTML";
+      } else if (type === 2) {
+        currentUrl = "/static/mvo_edge/en/current/PDFRenderer";
+      }
+      currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
+      return currentUrl;
+    }
+    return null;
+  }.property('urlDefault').cacheable(),
+
+  /**
+    @property {Boolean}
+    Is this a leaf CDM node?
+    A CDM leaf node has:
+      - no children;
+      - a urlDefault;
+      - a sequenceNumber;
+    @default {NO}
+  */
+  isLeafNode: function () {
+    var children       = this.get('children'),
+        sequenceNumber = this.get('sequenceNumber'),
+        urlDefault     = this.get('urlDefault');
+    return (SC.none(children) ||
+        (children.isEnumerable && children.length() === 0)) &&
+        (!SC.none(urlDefault) && !SC.none(sequenceNumber));
+  }.property('children', 'sequenceNumber', 'urlDefault').cacheable(),
+
+  /**
+    @property {Boolean}
+    Is this an inner CDM node?
+    An inner CDM node has children
+    @default {NO}
+  */
+  isInnerNode: function () {
+    var children = this.get('children');
+    return !SC.none(children) && children.isEnumerable && children.length() > 0;
+  }.property('children').cacheable()
 
 });

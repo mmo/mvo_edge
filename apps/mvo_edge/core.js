@@ -33,3 +33,21 @@ MvoEdge = SC.Object.create(
   // TODO: Add global constants or singleton objects needed by your app here.
 
 });
+
+/**
+  Binding template for transforming the return value of the binding into a
+  single object if it is an array (returns the first object in the array)
+
+  @see <a href="http://docs.sproutcore.com/symbols/SC.html">Adding Custom
+  Transforms</a> in SC.Binding
+  @see SC.Binding
+ */
+SC.Binding.reduceFromArray = function () {
+  return this.transform(function (value, binding) {
+    var result = value;
+    if (value && value.isEnumerable) {
+      result = value.firstObject();
+    }
+    return result;
+  });
+};

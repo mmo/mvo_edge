@@ -19,62 +19,42 @@ MvoEdge.masterController = SC.ArrayController.create(
 /** @scope MvoEdge.masterController.prototype */ {
 
   allowsMultipleSelection: NO,
+  
+  /**
+    @method
+
+    Initialize the master controller, its content and the initial selection
+
+    @param {SC.RecordArray} nodes records of the Core Document Model
+  */
+  initialize: function (nodes) {
+    this.set('content', nodes);
+    // initialize the selection with the first CDM leaf node
+    var sortedNodes = nodes.sortProperty('guid');
+    for (var i = 0; i < sortedNodes.length; i++) {
+      if (sortedNodes[i].get('isLeafNode')) {
+        console.info("Set the first leafNode of the document for the masterSelection ('%@')."
+            .fmt(sortedNodes[i].get('guid')));
+        this.set('masterSelection', sortedNodes[i]);
+        break;
+      }
+    }
+  },
 
   /**
     The guid of the selected file/object that is currently being displayed by
     the application
-
-    @property {String} selectedObjectId the guid of an object of type 
-    MvoEdge.CoreDocumentNode
+    @property {MvoEdge.CoreDocumentNode} masterSelection the selected CDM node
   */
-  selectedObjectId: undefined,
+  masterSelection: undefined,
 
   /**
-    The root node of the CoreDocumentModel contains the document's
-    descriptive metadata
-
+    The the document's descriptive metadata contained in the root node of the
+    CoreDocumentModel
     @property {Array} descriptiveMetadataDictionary
   */
   descriptiveMetadataDictionary: function () {
-    return this.arrangedObjects().objectAt(0).get('metadata');
-  }.property(),
-
-  /**
-    The selected object that is currently being displayed by the
-    application
-
-    @property {MvoEdge.Thumbnail} selectedObjectId
-  */
-  selectedObject: function () {
-    var coreDocumentNodeId = this.get('selectedObjectId');
-    if (coreDocumentNodeId) {
-      var q = SC.Query.create({ recordType: MvoEdge.Thumbnail, 
-          conditions: "coreDocumentNode = '" + coreDocumentNodeId + "'"});
-      var imageObjects = MvoEdge.store.findAll(q);
-      if (imageObjects) {
-        var sizeImageObjects = imageObjects.get('length');
-        if (sizeImageObjects > 0) {
-          return imageObjects.firstObject();
-        } else {
-          console.error("There is no MvoEdge.Thumbnail in the store" + 
-              " with the coreDocumentNodeId '" + coreDocumentNodeId + "' !");
-          return null;
-        }
-      } else {
-        console.error("Unable to retrieve the coreDocumentNodeId '" + 
-            coreDocumentNodeId + "' in the store of MvoEdge.Thumbnail.");
-        return null;
-      }
-    }
-  }.property('selectedObjectId').cacheable(),
-
-  /**
-    Changes the currently selected object
-
-    @param {String} guid the guid of an object of type MvoEdge.CoreDocumentNode
-  */
-  changeSelection: function (guid) {
-    this.set('selectedObjectId', guid);
-  }
+    return this.arrangedObjects().firstObject().get('metadata');
+  }.property()
 
 });
