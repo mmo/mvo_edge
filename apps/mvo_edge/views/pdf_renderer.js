@@ -225,13 +225,12 @@ MvoEdge.PDFRendererView = SC.View.extend(
   /**
     @method
     
-    Change page.
-    
-    @private
+    Go to page.
     
     @param {Integer} newPage The new page.
-  */
-  _changePage: function (newPage) {
+  */  
+  goToPage: function (newPage) {
+    console.info("Go To Page '%@'".fmt(newPage));
     var nbPages = this.get('retrieveNumberOfPages');
     if (newPage >= 1 && newPage <= nbPages) {	
       var appId = this.get('_appletId');
@@ -246,53 +245,29 @@ MvoEdge.PDFRendererView = SC.View.extend(
     } else {
       // TODO : log warning
       console.warn("You are typed '%@'.\n You must type a valid page number between 1 to %@.".fmt(newPage, nbPages));
-    }
-  },  
-
-  /**
-    @method
-    
-    Go to page.
-    
-    @param {Integer} newPage The new page.
-  */  
-  goToPage: function (newPage) {
-    console.info("Go To Page '%@'".fmt(newPage));
-    this._changePage(newPage);
+    }    
   },
 
   /**
     @method
     
-    Do zoom.
+    Zoom in the applet.
     
     @observes zoomValue
   */  
   doZoom: function () {
-    if (!SC.none(this.get('zoomValue'))) {
-      this._doZoom(this.get('zoomValue'));
+    var zoomVal = this.get('zoomValue');
+    if (!SC.none(zoomVal)) {
+      var appId = this.get('_getAppletId');
+      try {
+        appId.doZoom(zoomVal);
+      } catch (e) {
+        // TODO : throw exception and log error
+        var errMess = "Unable to zoom with the value %@ :\n%@".fmt(zoomVal, e);
+        console.error(errMess);
+        throw errMess;
+      }        
     }
-  }.observes('zoomValue'),
+  }.observes('zoomValue')
   
-  /**
-    @method
-    
-    Zoom in the applet.
-    
-    @private
-    
-    @param {Integer} zoomVal The value of the zoom.
-  */
-  _doZoom: function (zoomVal) {
-    var appId = this.get('_getAppletId');
-    try {
-      appId.doZoom(zoomVal);
-    } catch (e) {
-      // TODO : throw exception and log error
-      var errMess = "Unable to zoom with the value %@ :\n%@".fmt(zoomVal, e);
-      console.error(errMess);
-      throw errMess;
-    }      
-  }
-
 });
