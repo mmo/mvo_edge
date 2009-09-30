@@ -116,11 +116,13 @@ MvoEdge.PDFRendererView = SC.View.extend(
         throw errMess;   
       }
  
-      var url = cdmObjects.firstObject().get('urlDefault'); 
+      var url = cdmObjects.firstObject().get('staticUrl');//get('urlDefault'); 
+      console.info('staticUrl : ' + url);
       
 			context = context.begin('div').attr('align', 'center');
 			context = context.begin('applet').attr('id', 'appletId').
           attr('name', 'pdfRendererApplet').
+          attr('codebase', '/').
           attr('code', 'com.rero.ch.pdfrenderer.MyPDFViewerApplet.class').
           attr('width', wd - 20).
           attr('height', hg - 20).
@@ -203,20 +205,18 @@ MvoEdge.PDFRendererView = SC.View.extend(
       try {
         // Call Applet method
         nbPages = appId.getNbPages();
-        if (!SC.none(nbPages)) {
+        if (!SC.none(nbPages) && nbPages !== 0) {
           this._numberOfPages = nbPages; 
           console.info('There are %@ pages.'.fmt(nbPages));
         } else {
-          // TODO : throw exception and log error
+          // TODO : log warn
           var errMess1 = "'nbPages' expects a non-null value.";
-          console.error(errMess1);
-          throw errMess1;
+          console.warn(errMess1);
         }
       } catch (e) {
-        // TODO : throw exception and log error
+        // TODO : log error
         var errMess2 = "Unable to retrieve the number of pages :\n%@".fmt(e);
         console.error(errMess2);
-        throw errMess2;
       }
     }
     return nbPages;
