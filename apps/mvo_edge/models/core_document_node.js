@@ -14,6 +14,7 @@
 MvoEdge.CoreDocumentNode = SC.Record.extend(
 /** @scope MvoEdge.CoreDocumentNode.prototype */ {
 
+  guid: SC.Record.attr(String),
   parentId: SC.Record.attr(Array),
   nextId: SC.Record.attr(String),
   previousId: SC.Record.attr(String),
@@ -31,17 +32,24 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   staticUrl: function () {
     var defaultUrl = this.get('urlDefault');
     if (SC.typeOf(defaultUrl) === SC.T_STRING) {
-      var type = MvoEdge.get('type');
-      var currentUrl;
-      if (type === 0) {
-        currentUrl = "/static/mvo_edge/en/current/images/VAA";
-      } else if (type === 1) {
-        currentUrl = "/static/mvo_edge/en/current/PDFHTML";
-      } else if (type === 2) {
-        currentUrl = "/static/mvo_edge/en/current/PDFRenderer";
+      // if defaultUrl contains 'localhost:8080' it means it has been generated
+      // by the server, no need to modify it
+      if (defaultUrl.match("localhost:8080")) {
+        return defaultUrl;
       }
-      currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
-      return currentUrl;
+      else {
+        var type = MvoEdge.get('type');
+        var currentUrl;
+        if (type === 0) {
+          currentUrl = "/static/mvo_edge/en/current/images/VAA";
+        } else if (type === 1) {
+          currentUrl = "/static/mvo_edge/en/current/PDFHTML";
+        } else if (type === 2) {
+          currentUrl = "/static/mvo_edge/en/current/PDFRenderer";
+        }
+        currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
+        return currentUrl;
+      }
     }
     return null;
   }.property('urlDefault').cacheable(),
@@ -72,7 +80,8 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   */
   isInnerNode: function () {
     var children = this.get('children');
-    return !SC.none(children) && children.isEnumerable && children.length() > 0;
+    return !SC.none(children) && children.isEnumerable &&
+     children.length() > 0;
   }.property('children').cacheable()
 
 });

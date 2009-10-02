@@ -11,43 +11,10 @@
 // As you develop your application you will probably want to override this.
 // See comments for some pointers on what to do next.
 //
+
 MvoEdge.main = function main() {
-
-  // Step 1: Instantiate Your Views
-  // The default code here will make the mainPane for your application visible
-  // on screen.  If you app gets any level of complexity, you will probably 
-  // create multiple pages and panes.
-  
-  var type = MvoEdge.get('type');
-  
-  if (type === 1) {
-    MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_HTML;
-  } else if (type === 2) {
-    MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
-  }
-  
-  MvoEdge.getPath('mainPage.mainPane').append();
-  
-  // Step 2. Set the content property on your primary controller.
-  // This will make your app come alive!
-  // Set the content property on your primary controller
-  // ex: .contactsController.set('content',.contacts);
-  var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
-
-  MvoEdge.masterController.initialize(nodes);
-  MvoEdge.thumbnailController.initialize(nodes);
-  MvoEdge.treeController.initialize(nodes);
-  MvoEdge.navigationController.initialize();
-
-  // Call the layout controller in order to setup the interface components
-  if (type === 0) {
-    MvoEdge.layoutController.initializeWorkspace();
-  } else if (type === 1) {
-    MvoEdge.layoutController.initializeHTMLWorkspace();
-  } else if (type === 2) {
-    MvoEdge.layoutController.initializePDFRendererWorkspace();
-  }
-  
+  // retrieve parameters contain in the URL
+  SC.routes.add(':', MvoEdge.configurator, 'initialize');
 };
 
 function main() {

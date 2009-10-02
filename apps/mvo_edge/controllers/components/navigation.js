@@ -65,10 +65,7 @@ MvoEdge.navigationController = SC.ObjectController.create(
       // make sure the selection has actually changed, (to avoid loopbacks)
       if (SC.none(currentNavigationValue) ||
           (!SC.none(newPage) && newPage !== currentNavigationValue)) {
-        console.info('Change page %@ to %@'.fmt(currentNavigationValue, newPage));
         this.set('currentPage', newPage);
-        console.info('MvoEdge.navigationController#_contentDidChange: %@'.
-            fmt(currentMasterSelection.get('guid')));
       }    
     } else {
       // TODO : throw exception and log error
@@ -100,12 +97,9 @@ MvoEdge.navigationController = SC.ObjectController.create(
         var imageObjects = cdmStore.findAll(q);
         var cdmObject = imageObjects.firstObject();
         if (!SC.none(cdmObject)) {
-          console.info('Change masterSelection %@1 to %@2'.fmt(currentContent.get('guid'), cdmObject.get('guid')));
           SC.RunLoop.begin();
           this.set('content', cdmObject);
           SC.RunLoop.end();
-          console.info('MvoEdge.navigationController#_currentPageDidChange: %@'.
-            fmt(this.get('currentPage')));
         }
       }
     }
@@ -118,9 +112,7 @@ MvoEdge.navigationController = SC.ObjectController.create(
     
   */ 
   goToNextPage: function () {
-    console.info(this.get('currentPage'));
     var np = this.get('currentPage') + 1;
-    console.info(np);
     if (np <= this.get('_numberOfPages')) {
       this.set('currentPage', np);
     }
@@ -133,9 +125,7 @@ MvoEdge.navigationController = SC.ObjectController.create(
     
   */    
   goToPreviousPage: function () {
-    console.info(this.get('currentPage'));
     var pp = this.get('currentPage') - 1;
-    console.info(pp);
     if (pp > 0) {
       this.set('currentPage', pp);
     }
@@ -148,9 +138,7 @@ MvoEdge.navigationController = SC.ObjectController.create(
     
   */    
   goToFirstPage: function () {
-    console.info(this.get('currentPage'));
     var fp = 1;
-    console.info(fp);
     this.set('currentPage', 1);
   },
   

@@ -21,106 +21,100 @@ MvoEdge.PDFRendererView = SC.View.extend(
 
   /** 
     Applet Id.
- 
+
     @private
     @property {String}
     @default undefined
   */
-  _appletId: undefined,  
-  
+  _appletId: undefined,
+
   /** 
     Number of pages.
-    
+
     @private
-    
+
     @property {Integer}
     @default undefined
   */
   _numberOfPages: undefined,  
-  
+
   /**
     CurrentPage.
-    
+
     @private
-    
+
     @property {String}
     @default undefined
   */
   _currentPage: undefined,
-  
+
   /**
     Binds to the zoomValue in the zoom controller.
-    
+
     @property {Integer}
    */
   zoomValueBinding: SC.Binding.oneWay('MvoEdge.zoomController.content'),    
 
   /**
     Check if the view should be adjusted.
- 
+
     @property {Integer}
     @default undefined
   */
   heightMainPanel: undefined,
-  
+
   /**
     Check if the view should be adjusted.
- 
+
     @property {Boolean}
     @default NO
   */  
   autoResize: NO,
-  
+
   /**
     Make sure view will auto-rerender.
-    
+
     @property {Array}
   */  
   displayProperties: 'autoResize'.w(),
 
   /**
     @method
-    
+
     Render HTML.
-    
+
     @param {SC.RenderContext} context The context of the view.
     @param {Boolean} firstTime True for the initialization.
   */
   render: function (context, firstTime) {
-    console.log('PDFRendererView render :');
-    
     var wd = MvoEdge.getPath('viewsPage.pdfRendererMainContentView')._scroll_contentWidth;
-		// Max Width : 800
-		if (wd && wd > 800) {
-			wd = 800;
-		}
-		var hg = MvoEdge.getPath('viewsPage.pdfRendererMainContentView')._scroll_contentHeight;
-		// Max Height : 800
-		if (hg && hg > 800) {
-			hg = 800;
-		}
+    // Max Width : 800
+    if (wd && wd > 800) {
+      wd = 800;
+    }
+    var hg = MvoEdge.getPath('viewsPage.pdfRendererMainContentView')._scroll_contentHeight;
+    // Max Height : 800
+    if (hg && hg > 800) {
+      hg = 800;
+    }
 
-		if (firstTime) {
-      console.info('Build the Applet');
-    
+    if (firstTime) {
       // Retrieve the url of the PDF document from the CDM
       var cdmStore = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
       var q = SC.Query.create({ recordType: MvoEdge.CoreDocumentNode, 
           conditions: "urlDefault != undefined"});
       var cdmObjects = cdmStore.findAll(q);
-        
+
       if (!cdmObjects.firstObject()) {
         // TODO : throw exception and log error
         var errMess = "Unable to retrieve the 'urlDefault' !!";
         console.error(errMess);
         throw errMess;   
       }
- 
+
       var url = cdmObjects.firstObject().get('staticUrl');//get('urlDefault'); 
-      console.info('staticUrl : ' + url);
-      
-			context = context.begin('div').attr('align', 'center');
-			context = context.begin('applet').attr('id', 'appletId').
+      context = context.begin('div').attr('align', 'center');
+      context = context.begin('applet').attr('id', 'appletId').
           attr('name', 'pdfRendererApplet').
           attr('codebase', '/').
           attr('code', 'com.rero.ch.pdfrenderer.MyPDFViewerApplet.class').
@@ -129,48 +123,45 @@ MvoEdge.PDFRendererView = SC.View.extend(
           attr('archive', 'pdf_renderer/PDFRenderer-2009_06_07.jar,pdf_renderer/MyPDFViewerApplet.jar');
       context = context.begin('param').attr('name', 'url').
           attr('value', "%@".fmt(url)).end(); // End of param tag
-			context = context.end(); // End of applet tag
-			context = context.end(); // End of div tag
-		} else {
+      context = context.end(); // End of applet tag
+      context = context.end(); // End of div tag
+    } else {
       var appId = this.get('_getAppletId');
-			appId.width = wd - 20;
-			appId.height = hg - 20;
-		}
-		sc_super();
-	},
-  
+      appId.width = wd - 20;
+      appId.height = hg - 20;
+    }
+    sc_super();
+  },
+
   /**
     @method
-    
+
     If the master selection changes, readjust the size of the view
     and go to specific page if it's necessary.
 
     @private
-    
+
     @observes content
   */
   _contentDidChange: function () {
-    console.info("Call _contentDidChange");
     if (!SC.none(this.get('content'))) {
       var tmp = this.get('autoResize') ? this.set('autoResize', NO) : this.set('autoResize', YES);
-      console.info('Resize the view');
       tmp = this.get('_currentPage');
       var sq = this.getPath('content.sequenceNumber');
       if (SC.none(tmp) || tmp !== sq) {
         this.goToPage(sq);
-        //Update _currentPage
         this._currentPage = sq;
       }
     }
   }.observes('content'),
-  
+
   /**
     @method
-    
+
     Retrieve the Applet Id.
 
     @private
-    
+
     @property {String} _appletId The Applet Id.
     @returns {String} Return the Applet Id.
   */    
@@ -189,10 +180,10 @@ MvoEdge.PDFRendererView = SC.View.extend(
     }
     return appId;
   }.property('_appletId').cacheable(),
-  
+
   /**
     @method
-    
+
     Retrieve the number of pages.
 
     @property {Integer} _numberOfPages The number of pages.
@@ -207,7 +198,6 @@ MvoEdge.PDFRendererView = SC.View.extend(
         nbPages = appId.getNbPages();
         if (!SC.none(nbPages) && nbPages !== 0) {
           this._numberOfPages = nbPages; 
-          console.info('There are %@ pages.'.fmt(nbPages));
         } else {
           // TODO : log warn
           var errMess1 = "'nbPages' expects a non-null value.";
@@ -224,15 +214,14 @@ MvoEdge.PDFRendererView = SC.View.extend(
 
   /**
     @method
-    
+
     Go to page.
-    
+
     @param {Integer} newPage The new page.
   */  
   goToPage: function (newPage) {
-    console.info("Go To Page '%@'".fmt(newPage));
     var nbPages = this.get('retrieveNumberOfPages');
-    if (newPage >= 1 && newPage <= nbPages) {	
+    if (newPage >= 1 && newPage <= nbPages) { 
       var appId = this.get('_appletId');
       try {
         appId.gotoPage(newPage - 1);
@@ -244,15 +233,17 @@ MvoEdge.PDFRendererView = SC.View.extend(
       }        
     } else {
       // TODO : log warning
-      console.warn("You are typed '%@'.\n You must type a valid page number between 1 to %@.".fmt(newPage, nbPages));
-    }    
+      console.warn("You have typed '%@'.\n" +
+          "You must type a valid page number between 1 and %@."
+          .fmt(newPage, nbPages));
+    }
   },
 
   /**
     @method
-    
+
     Zoom in the applet.
-    
+
     @observes zoomValue
   */  
   doZoom: function () {
@@ -269,5 +260,5 @@ MvoEdge.PDFRendererView = SC.View.extend(
       }        
     }
   }.observes('zoomValue')
-  
+
 });
