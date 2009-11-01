@@ -218,6 +218,11 @@ MvoEdge.viewsPage = SC.Page.design({
         contentValueKey: 'creator'
       })
     ]
-  }).classNames('workspace'.w())
+  }).classNames('workspace'.w()),
+
+  box1View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY}),
+  box2View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY}),
+  box3View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY}),
+  box4View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY})
 
 });

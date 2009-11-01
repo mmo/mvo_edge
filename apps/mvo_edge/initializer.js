@@ -104,6 +104,7 @@ MvoEdge.initializer = SC.Object.create(
     // Call the layout controller in order to setup the interface components
     if (type === 0) {
       MvoEdge.layoutController.initializeWorkspace();
+      MvoEdge.gridLayout.initializeWorkspace();
     } else if (type === 1) {
       MvoEdge.layoutController.initializeHTMLWorkspace();
     } else if (type === 2) {
