@@ -4,4 +4,4 @@
 # ===========================================================================
 
 # Add initial buildfile information here
-config :all, :required => [:sproutcore, :YUI, :pdf_renderer]
+config :all, :required => [:sproutcore, :YUI, :pdf_renderer, :LOG]

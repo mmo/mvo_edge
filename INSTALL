@@ -16,8 +16,14 @@ SproutCore:
     Abbot:                  commit f757aef6f5be07fb
     SproutCore framework:   commit dd5d7ff8d6669309
 
+SproutCore (works with ERRH):
+    Abbot:                  commit 13102279d6a3068d
+    SproutCore framework:   commit 5780edc3bbacc1a7
+
 YUI: 2.6.0
 
+Log4js: 0.3.0 - The file log4js.js was modified at the line 2501 (last line):
+					   log4jsLogger.setLevel(Log4js.Level.ALL) -->log4jsLogger.setLevel(Log4js.Level.OFF);
 
 INSTALLATION PROCEDURE
 =============================================================================

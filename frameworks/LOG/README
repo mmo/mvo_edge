@@ -1,0 +1,3 @@
+The file log4js.js was modified at the line 2501 (last line) to avoid usless popoup window:
+BEFORE: log4jsLogger.setLevel(Log4js.Level.ALL)
+AFTER: log4jsLogger.setLevel(Log4js.Level.OFF);

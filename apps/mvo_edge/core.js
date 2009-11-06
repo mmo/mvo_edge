@@ -15,6 +15,7 @@ MvoEdge = SC.Object.create(
 
   NAMESPACE: 'MvoEdge',
   VERSION: '0.1.0',
+  CLIENT_NAME: 'EIAFR Francesco',
   
   /** 
     Type of document.
@@ -31,9 +32,20 @@ MvoEdge = SC.Object.create(
   // of your model data.  You can also set a data source on this store to
   // connect to a backend server.  The default setup below connects the store
   // to any fixtures you define.
-  store: SC.Store.create().from(SC.Record.fixtures)
+  store: SC.Store.create().from(SC.Record.fixtures),
   
   // TODO: Add global constants or singleton objects needed by your app here.
+  /**
+Define Config file
+*/
+  CONFIG: {
+    "log": {
+      "ajax" : "LOG_ERROR",
+      "console" : "LOG_INFO",
+      "browserConsole" : "LOG_INFO"
+    },
+    "logFile": "/zircon/Client?cl=error.Logger&act=add&ClientName="
+  }
 
 });
 
