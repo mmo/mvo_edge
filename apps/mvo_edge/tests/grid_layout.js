@@ -1,9 +1,13 @@
-// ==========================================================================
-// Project:   MvoEdge.LayoutManager Unit Test
-// Copyright: ©2009 My Company, Inc.
-// ==========================================================================
+/**
+==============================================================================
+  Project:    MvoEdge - https://www.multivio.org/
+  Copyright:  (c) 2009 RERO
+  License:    See file license.js
+==============================================================================
+*/
+
 /*globals MvoEdge module test ok equals same stop start */
-sc_require('layout_manager');
+sc_require('grid_layout');
 
 var pane, v1, v2, v3, v4, v5, v6;
 
@@ -20,7 +24,7 @@ var testVisibility = function () {
   return result;
 }
 
-module("MvoEdge.LayoutManager", {
+module("MvoEdge.GridLayout", {
   setup: function () {
 
     // create views for being laid out on the grid
@@ -51,7 +55,7 @@ module("MvoEdge.LayoutManager", {
     });
     pane.append();
 
-    SC.mixin(pane, MvoEdge.LayoutManager);
+    SC.mixin(pane, MvoEdge.GridLayout);
     
     pane.layoutGrid(
         100, //leftStripWidth

@@ -20,7 +20,7 @@
   @extends SC.Object
   @since 0.0.1
 */
-MvoEdge.LayoutManager = {
+MvoEdge.GridLayout = {
 
   /**
     @property {Array}
