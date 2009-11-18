@@ -44,7 +44,46 @@ Define Config file
       "console" : "LOG_INFO",
       "browserConsole" : "LOG_INFO"
     },
-    "logFile": "/zircon/Client?cl=error.Logger&act=add&ClientName="
+    "logFile": "/zircon/Client?cl=error.Logger&act=add&ClientName=",
+    "usco": {
+      "error": {
+        "message" : "ERROR",
+        "description" : "free",
+        "caption" : "",
+        "button1" : "Ok",
+        "button2" : "",
+        "button3" : "",
+        "controller" : this
+      },
+      "warn": {
+        "message" : "WARNING",
+        "description" : "free",
+        "caption" : "",
+        "button1" : "Ok",
+        "button2" : "Cancel",
+        "button3" : "",
+        "controller" : this
+      },
+      "info": {
+        "message" : "free",
+        "description" : "free",
+        "caption" : "",
+        "button1" : "Ok",
+        "button2" : "",
+        "button3" : "",
+        "controller" : this
+      },
+      "simple": {
+        "message" : "free",
+        "description" : "free",
+        "caption" : "free",
+        "button1" : "free",
+        "button2" : "",
+        "button3" : "",
+        "controller" : this
+      }
+      
+    }
   }
 
 });
