@@ -16,7 +16,7 @@ and the application.
 @since {0.1.0}
 */
  
-MvoEdge.usco2 = SC.Object.create(
+MvoEdge.usco = SC.Object.create(
 /** @scope MvoEdge.logger.prototype */ {
 
   panelType: undefined,  
