@@ -14,13 +14,13 @@ MvoEdge.LOG_DEBUG = 10000;
  
  
 /**
-@class
+  @class
  
-Object logger.
+  Object logger.
  
-@author {CHE}
-@extends {Object}
-@since {0.1.0}
+  @author {CHE}
+  @extends {Object}
+  @since {0.1.0}
 */
  
 MvoEdge.logger = SC.Object.create(
@@ -33,14 +33,14 @@ MvoEdge.logger = SC.Object.create(
  
   loggers: [],
  
-  /**
-@method
+/**
+  @method
  
-Initialize loggers, set level and add appender(s)
-We use 4 loggers => error, warning, info, debug; each one corresponds to a
-log level. The use of several loggers, one per log level, instead of a
-single global logger, is because log4js does not allow different appenders
-to receive different log levels.
+  Initialize loggers, set level and add appender(s)
+  We use 4 loggers => error, warning, info, debug; each one corresponds to a
+  log level. The use of several loggers, one per log level, instead of a
+  single global logger, is because log4js does not allow different appenders
+  to receive different log levels.
 */
   init: function () {
  
@@ -69,7 +69,7 @@ to receive different log levels.
         var appenderObject = undefined;
         switch (appender) {
         case 'ajax':
-          appenderObject = new Log4js.AjaxAppender(MvoEdge.CONFIG.logFile + MvoEdge.CLIENT_NAME);
+          appenderObject = new Log4js.AjaxAppender(MvoEdge.CONFIG.logFile);
           appenderObject.setLayout(new Log4js.JSONLayout());
           break;
         case 'console' :
@@ -87,16 +87,16 @@ to receive different log levels.
   
  
   /**
-@method
+  @method
  
-Attach the given appender to the appropriate log level logger
+  Attach the given appender to the appropriate log level logger
  
-It also attaches it to all log levels above it. For example,
-if log level = LOG_INFO, then the appender should also be attached to
-warningLogger and errorLogger.
+  It also attaches it to all log levels above it. For example,
+  if log level = LOG_INFO, then the appender should also be attached to
+vwarningLogger and errorLogger.
  
-@private
-@param Object appender
+  @private
+  @param Object appender
 */
   _attachAppender: function (appender, level) {
     for (var i = 0; i < this.loggers.length; i++) {
