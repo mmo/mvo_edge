@@ -34,7 +34,7 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     if (SC.typeOf(defaultUrl) === SC.T_STRING) {
       // if defaultUrl contains 'localhost:8080' it means it has been generated
       // by the server, no need to modify it
-      if (defaultUrl.match("localhost:8080")) {
+      if (!defaultUrl.match("localhost:4020")) {
         return defaultUrl;
       }
       else {
@@ -64,13 +64,9 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     @default {NO}
   */
   isLeafNode: function () {
-    var children       = this.get('children'),
-        sequenceNumber = this.get('sequenceNumber'),
-        urlDefault     = this.get('urlDefault');
-    return (SC.none(children) ||
-        (children.isEnumerable && children.length() === 0)) &&
-        (!SC.none(urlDefault) && !SC.none(sequenceNumber));
-  }.property('children', 'sequenceNumber', 'urlDefault').cacheable(),
+    var urlDefault     = this.get('urlDefault');
+    return (!SC.none(urlDefault));
+  }.property('urlDefault').cacheable(),
 
   /**
     @property {Boolean}
@@ -79,9 +75,8 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     @default {NO}
   */
   isInnerNode: function () {
-    var children = this.get('children');
-    return !SC.none(children) && children.isEnumerable &&
-     children.length() > 0;
-  }.property('children').cacheable()
+    var urlDefault     = this.get('urlDefault');
+    return (SC.none(urlDefault));
+  }.property('urlDefault').cacheable()
 
 });

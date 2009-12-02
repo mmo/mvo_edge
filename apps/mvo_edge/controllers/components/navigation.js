@@ -57,8 +57,9 @@ MvoEdge.navigationController = SC.ObjectController.create(
   */
   _contentDidChange: function () {
     // find the page that corresponds to the current master selection
-    var currentNavigationValue = !SC.none(this.get('currentPage')) ?
-        this.get('currentPage') : undefined;
+		var currentPageValue = this.get('currentPage');
+    var currentNavigationValue = !SC.none(currentPageValue) ?
+        currentPageValue : undefined;
     var currentMasterSelection = this.get('content');
     if (!SC.none(currentMasterSelection)) {
       var newPage = currentMasterSelection.get('sequenceNumber');

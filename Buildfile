@@ -5,3 +5,4 @@
 
 # Add initial buildfile information here
 config :all, :required => [:sproutcore, :YUI, :pdf_renderer, :LOG]
+proxy '/multivio', :to => 'localhost:4041' 

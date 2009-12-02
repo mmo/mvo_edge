@@ -31,14 +31,18 @@ MvoEdge.initializer = SC.Object.create(
     @observes {properties}     
   */
   _propertiesDidChange: function () {
-    var recid = !SC.none(this.get('properties')) ?
-        this.get('properties').recid : undefined;
-    if (recid !== undefined) {
-      console.info('send this request id ' + recid);
-      var request = SC.Request.getUrl('/zircon/Client?req=' + recid);
+    var url = !SC.none(this.get('properties')) ?
+        this.get('properties').url : undefined;
+    if (url !== undefined) {
+      console.info('send this url' + url);
+      var request = SC.Request.getUrl('/multivio/document/get?url=' + url).json().notify(this, this._storeCDM);
       request.set('isAsynchronous', NO);
+      request.set('isJSON', YES);
       request.send();
-      this._storeCDM(request.response());
+			console.info(request);
+			//var res = request.response();
+			//console.info(res);
+      //this._storeCDM(res);
     }
     if (this.isFirstTime) {
       this.isFirstTime = NO;
@@ -56,19 +60,21 @@ MvoEdge.initializer = SC.Object.create(
     @param {String} {response} {response received from the server}
   */ 
   _storeCDM: function (response) {
-    console.info('response received: ' + response);
-    var jsonRes = SC.json.decode(response);
+    console.info('response received: ' + response.get("body"));
+    var jsonRes = response.get("body");
+		MvoEdge.store = SC.Store.create();
     for (var key in jsonRes) {
       if (jsonRes.hasOwnProperty(key)) {
         var oneNode = jsonRes[key];
         var cdmRecord = MvoEdge.store.createRecord(MvoEdge.CoreDocumentNode,
             oneNode, key);
-        var res = MvoEdge.store.commitRecord(MvoEdge.CoreDocumentNode,
-        cdmRecord.get('id'), cdmRecord.storeKey); 
+        //var res = MvoEdge.store.commitRecord(MvoEdge.CoreDocumentNode,
+        //cdmRecord.get('id')); 
       } 
     }
+		MvoEdge.store.flush();
     console.info('number of CDM nodes: ' + 
-    MvoEdge.store.findAll(MvoEdge.CoreDocumentNode).length());
+		MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.CoreDocumentNode})).length());
   },
       
   /**

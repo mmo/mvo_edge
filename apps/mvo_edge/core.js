@@ -43,7 +43,7 @@ Define Config file
       "console" : "LOG_INFO",
       "browserConsole" : "LOG_INFO"
     },
-    "logFile": "/zircon/Client?cl=error.Logger&act=add"
+    "logFile": "/multivio/document/get"
   }
 
 });
