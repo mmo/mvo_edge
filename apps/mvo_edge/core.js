@@ -43,7 +43,7 @@ Define Config file
       "console" : "LOG_INFO",
       "browserConsole" : "LOG_INFO"
     },
-    "logFile": "/multivio/document/get"
+    "logFile": "/multivio/log"
   }
 
 });
