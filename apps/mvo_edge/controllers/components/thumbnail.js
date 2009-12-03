@@ -110,15 +110,6 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
 
         console.info('MvoEdge.thumbnailController#_selectionDidChange: %@'.
             fmt(this.get('selection').firstObject()));
-				MvoEdge.logger.error('Hello world!');
-				/*try{
-					addToto();
-				}
-				catch(ex){
-					MvoEdge.logger.logException(ex, "Un message de jojo");
-				}
-				*/
-        //MvoEdge.logger.error("{'msg': 'Click'}");
       }
     }
   }.observes('selection'),

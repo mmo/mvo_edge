@@ -35,14 +35,12 @@ MvoEdge.initializer = SC.Object.create(
         this.get('properties').url : undefined;
     if (url !== undefined) {
       console.info('send this url' + url);
-      var request = SC.Request.getUrl('/multivio/document/get?url=' + url).json().notify(this, this._storeCDM);
+      var request = SC.Request.getUrl('/multivio/document/get?url=' + url).json().notify(this, this._storeCDM);  // to be used with the python server
+      //var request = SC.Request.getUrl('/zircon/Client?cl=dfst.StructureParser&act=getDoc&recid=' + recid); // to be used with the Java servlet
       request.set('isAsynchronous', NO);
       request.set('isJSON', YES);
       request.send();
-			console.info(request);
-			//var res = request.response();
-			//console.info(res);
-      //this._storeCDM(res);
+      console.info(request);
     }
     if (this.isFirstTime) {
       this.isFirstTime = NO;
@@ -68,8 +66,6 @@ MvoEdge.initializer = SC.Object.create(
         var oneNode = jsonRes[key];
         var cdmRecord = MvoEdge.store.createRecord(MvoEdge.CoreDocumentNode,
             oneNode, key);
-        //var res = MvoEdge.store.commitRecord(MvoEdge.CoreDocumentNode,
-        //cdmRecord.get('id')); 
       } 
     }
 		MvoEdge.store.flush();
@@ -108,7 +104,7 @@ MvoEdge.initializer = SC.Object.create(
     MvoEdge.thumbnailController.initialize(nodes);
     MvoEdge.treeController.initialize(nodes);
     // Call the layout controller in order to setup the interface components
-    if (type === 0) {
+    if (type === 0 || type === 3) {
       MvoEdge.layoutController.initializeWorkspace();
     } else if (type === 1) {
       MvoEdge.layoutController.initializeHTMLWorkspace();
