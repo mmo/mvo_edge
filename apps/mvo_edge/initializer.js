@@ -31,14 +31,16 @@ MvoEdge.initializer = SC.Object.create(
     @observes {properties}     
   */
   _propertiesDidChange: function () {
-    var recid = !SC.none(this.get('properties')) ?
-        this.get('properties').recid : undefined;
-    if (recid !== undefined) {
-      console.info('send this request id ' + recid);
-      var request = SC.Request.getUrl('/zircon/Client?req=' + recid);
+    var url = !SC.none(this.get('properties')) ?
+        this.get('properties').url : undefined;
+    if (url !== undefined) {
+      console.info('send this url' + url);
+      var request = SC.Request.getUrl('/multivio/document/get?url=' + url).json().notify(this, this._storeCDM);  // to be used with the python server
+      //var request = SC.Request.getUrl('/zircon/Client?cl=dfst.StructureParser&act=getDoc&recid=' + recid); // to be used with the Java servlet
       request.set('isAsynchronous', NO);
+      request.set('isJSON', YES);
       request.send();
-      this._storeCDM(request.response());
+      console.info(request);
     }
     if (this.isFirstTime) {
       this.isFirstTime = NO;
@@ -56,19 +58,19 @@ MvoEdge.initializer = SC.Object.create(
     @param {String} {response} {response received from the server}
   */ 
   _storeCDM: function (response) {
-    console.info('response received: ' + response);
-    var jsonRes = SC.json.decode(response);
+    console.info('response received: ' + response.get("body"));
+    var jsonRes = response.get("body");
+		MvoEdge.store = SC.Store.create();
     for (var key in jsonRes) {
       if (jsonRes.hasOwnProperty(key)) {
         var oneNode = jsonRes[key];
         var cdmRecord = MvoEdge.store.createRecord(MvoEdge.CoreDocumentNode,
             oneNode, key);
-        var res = MvoEdge.store.commitRecord(MvoEdge.CoreDocumentNode,
-        cdmRecord.get('id'), cdmRecord.storeKey); 
       } 
     }
+		MvoEdge.store.flush();
     console.info('number of CDM nodes: ' + 
-    MvoEdge.store.findAll(MvoEdge.CoreDocumentNode).length());
+		MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.CoreDocumentNode})).length());
   },
       
   /**
@@ -102,7 +104,7 @@ MvoEdge.initializer = SC.Object.create(
     MvoEdge.thumbnailController.initialize(nodes);
     MvoEdge.treeController.initialize(nodes);
     // Call the layout controller in order to setup the interface components
-    if (type === 0) {
+    if (type === 0 || type === 3) {
       MvoEdge.layoutController.initializeWorkspace();
       MvoEdge.gridLayout.initializeWorkspace();
     } else if (type === 1) {

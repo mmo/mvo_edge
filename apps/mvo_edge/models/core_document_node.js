@@ -34,22 +34,20 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     if (SC.typeOf(defaultUrl) === SC.T_STRING) {
       // if defaultUrl contains 'localhost:8080' it means it has been generated
       // by the server, no need to modify it
-      if (defaultUrl.match("localhost:8080")) {
-        return defaultUrl;
-      }
-      else {
-        var type = MvoEdge.get('type');
-        var currentUrl;
-        if (type === 0) {
-          currentUrl = "/static/mvo_edge/en/current/images/VAA";
-        } else if (type === 1) {
-          currentUrl = "/static/mvo_edge/en/current/PDFHTML";
-        } else if (type === 2) {
-          currentUrl = "/static/mvo_edge/en/current/PDFRenderer";
-        }
-        currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
+      var type = MvoEdge.get('type');
+      var currentUrl;
+      if (type === 0) {
+        currentUrl = "/static/mvo_edge/en/current/images/VAA";
+      } else if (type === 1) {
+        currentUrl = "/static/mvo_edge/en/current/PDFHTML";
+      } else if (type === 2) {
+        currentUrl = "/static/mvo_edge/en/current/PDFRenderer";
+      } else if (type === 3) {
+        currentUrl = defaultUrl;
         return currentUrl;
       }
+      currentUrl += defaultUrl.substring(defaultUrl.lastIndexOf("/"));
+      return currentUrl;
     }
     return null;
   }.property('urlDefault').cacheable(),
@@ -64,13 +62,10 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     @default {NO}
   */
   isLeafNode: function () {
-    var children       = this.get('children'),
-        sequenceNumber = this.get('sequenceNumber'),
-        urlDefault     = this.get('urlDefault');
-    return (SC.none(children) ||
-        (children.isEnumerable && children.length() === 0)) &&
-        (!SC.none(urlDefault) && !SC.none(sequenceNumber));
-  }.property('children', 'sequenceNumber', 'urlDefault').cacheable(),
+  	// TODO check function logic (compare with previous version c24c9996)
+    var urlDefault     = this.get('urlDefault');
+    return (!SC.none(urlDefault));
+  }.property('urlDefault').cacheable(),
 
   /**
     @property {Boolean}
@@ -79,9 +74,9 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     @default {NO}
   */
   isInnerNode: function () {
-    var children = this.get('children');
-    return !SC.none(children) && children.isEnumerable &&
-     children.length() > 0;
-  }.property('children').cacheable()
+  	// TODO check function logic (compare with previous version c24c9996)
+    var urlDefault     = this.get('urlDefault');
+    return (SC.none(urlDefault));
+  }.property('urlDefault').cacheable()
 
 });
