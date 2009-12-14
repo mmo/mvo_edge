@@ -99,7 +99,7 @@ MvoEdge.initializer = SC.Object.create(
     // This will make your app come alive!
     // Set the content property on your primary controller
     // ex: .contactsController.set('content',.contacts);
-    var nodes = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
+    var nodes = MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.CoreDocumentNode}));
     MvoEdge.masterController.initialize(nodes);
     MvoEdge.thumbnailController.initialize(nodes);
     MvoEdge.treeController.initialize(nodes);
