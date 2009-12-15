@@ -40,8 +40,11 @@ MvoEdge.treeController = SC.TreeController.create(
     @param {SC.RecordArray} nodes are records of the CDM
   */
   initialize: function (nodes) {
-    this._createSubmodel(nodes);
-    this._buildTree();
+    if (nodes.get('length') !== 0) {
+      this._createSubmodel(nodes);
+      this._buildTree();
+      MvoEdge.logger.info('treeController initialized');
+    }
   },
 
 
@@ -69,7 +72,7 @@ MvoEdge.treeController = SC.TreeController.create(
     this._visitCdmNode(cdmNodes.firstObject());
     
     // TODO document this and define where to put it
-    var treeNodes = 
+    /*var treeNodes = 
         MvoEdge.store.findAll(MvoEdge.Tree).sortProperty('guid').enumerator();
     var treeNodesArray = [];
     for (var t = 0; t < treeNodes._length; t++) {
@@ -78,7 +81,7 @@ MvoEdge.treeController = SC.TreeController.create(
     }
     treeNodes.reset();
     var treeNodesJSON = JSON.stringify(treeNodesArray);
-    console.log(treeNodesJSON);
+    console.log(treeNodesJSON);*/
   },
   
   /**
@@ -91,10 +94,10 @@ MvoEdge.treeController = SC.TreeController.create(
   _buildTree: function () {
     console.info('building tree');
     var treeLabels = MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.Tree})).sortProperty('guid');
-    var tp =  MvoEdge.TreeContent.create(
+    var treeContent =  MvoEdge.TreeContent.create(
       {label: treeLabels.firstObject().get('label'), guidId: treeLabels.firstObject().get('guid'), treeItemIsExpanded: YES});
-    this._treeNodeById[tp.get('guidId')] = tp;
-    this.set('content', tp);
+    this._treeNodeById[treeContent.get('guidId')] = treeContent;
+    this.set('content', treeContent);
     MvoEdge.logger.info('The tree has been created');
   },
 
@@ -258,14 +261,16 @@ MvoEdge.treeController = SC.TreeController.create(
         var target = treeSelection.get('targetCdmLeaf');
         var cdmLeafNodeIds = treeSelection.get('cdmLeafNodeIds');
         var currentMasterSelection = this.get('masterSelection');
-        var masterSelectionId = currentMasterSelection.get('guid');
-        if (SC.typeOf(cdmLeafNodeIds) === SC.T_ARRAY) {
-          for (var i = 0; i < cdmLeafNodeIds.length; i++) {
-            if (cdmLeafNodeIds[i] === masterSelectionId) {
-              // the change in the three selection does not imply a change of
-              // the master selection
-              needToChange = NO;
-              break;
+        if (!SC.none(currentMasterSelection)) {
+          var masterSelectionId = currentMasterSelection.get('guid');
+          if (SC.typeOf(cdmLeafNodeIds) === SC.T_ARRAY) {
+            for (var i = 0; i < cdmLeafNodeIds.length; i++) {
+              if (cdmLeafNodeIds[i] === masterSelectionId) {
+                // the change in the three selection does not imply a change of
+                // the master selection
+                needToChange = NO;
+                break;
+              }
             }
           }
         }
@@ -274,11 +279,11 @@ MvoEdge.treeController = SC.TreeController.create(
             SC.RunLoop.begin();
             this.set('masterSelection', treeSelection.get('targetCdmLeaf'));
             SC.RunLoop.end();
+            console.info('MvoEdge.treeController#_selectionDidChange: %@'.
+                fmt(treeSelectionId));
           }
         }
       }
-      console.info('MvoEdge.treeController#_selectionDidChange: %@'.
-          fmt(treeSelectionId));
     }      
   }.observes('selection'),
 
@@ -309,10 +314,10 @@ MvoEdge.treeController = SC.TreeController.create(
                 break;
               }
             }
-          }
-          if (cdmLeafNodeIds.length === 0) { 
-            if (treeSelection.get('targetCdmLeaf').get('guid') === masterSelectionId) {
-              cdmLeafNodeIdInArray = YES;
+            if (cdmLeafNodeIds.length === 0) { 
+              if (treeSelection.get('targetCdmLeaf').get('guid') === masterSelectionId) {
+                cdmLeafNodeIdInArray = YES;
+              }
             }
           }
         }
@@ -320,9 +325,9 @@ MvoEdge.treeController = SC.TreeController.create(
       if (!cdmLeafNodeIdInArray) {
         var newSelection = this.get('_cdmNodeToTreeNode')[currentMasterSelection.get('guid')];
         this.set('selection', SC.SelectionSet.create().addObject(this._treeNodeById[newSelection]));
+        console.info('MvoEdge.treeController#_masterSelectionDidChange: %@'.
+          fmt(this.get('masterSelection').get('guid')));
       }
-      console.info('MvoEdge.treeController#_masterSelectionDidChange: %@'.
-        fmt(this.get('masterSelection').get('guid')));
     }
   }.observes('masterSelection')
 

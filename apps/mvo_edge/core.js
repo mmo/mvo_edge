@@ -25,7 +25,7 @@ MvoEdge = SC.Object.create(
     @property {Integer}
     @default 0
   */
-  type: 0, // to be used with the classic VAA example (based on fixtures)
+  //type: 0, // to be used with the classic VAA example (based on fixtures)
   // type: 1, // to be used with PDFTOHTML fixtures
   // type: 2, // to be used with PDFRenderer fixtures
   // type: 3, // to be used with a server
@@ -34,7 +34,12 @@ MvoEdge = SC.Object.create(
   // of your model data.  You can also set a data source on this store to
   // connect to a backend server.  The default setup below connects the store
   // to any fixtures you define.
-  store: SC.Store.create().from(SC.Record.fixtures),
+  //store: SC.Store.create().from(SC.Record.fixtures),
+  store: SC.Store.create(),
+  // 0 = unknown scenario
+  // 1 = remote access
+  // 2 = local acces (use Fixtures)
+  SCENARIO: 0,
   
   // TODO: Add global constants or singleton objects needed by your app here.
   /**

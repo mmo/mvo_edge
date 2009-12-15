@@ -40,6 +40,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
     this._createSubmodel(nodes);
     var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
     this.set('content', thumbnails);
+    MvoEdge.logger.info('thumbnailController initialized');
   },
   
   /**
@@ -57,6 +58,10 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         var id = 'f%@'.fmt(cdmNodeId);
         var label = node.get('label');
         var staticUrl = node.get('staticUrl');
+        //to create thumbnail url
+        if (MvoEdge.SCENARIO === 1) {
+          staticUrl = "/multivio/document/thumbnail?size=80&url=" + staticUrl;
+        }
         SC.imageCache.loadImage(staticUrl);
         var thumbnailHash = {
             guid: id,
@@ -132,8 +137,9 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
       // make sure the selection has actually changed, (to avoid loopbacks)
       if (SC.none(currentThumbnailSelection) ||
           (newThumbnail && newThumbnail !== currentThumbnailSelection)) {
+        SC.RunLoop.begin();
         this.set('selection', SC.SelectionSet.create().addObject(newThumbnail));
-
+        SC.RunLoop.end();
         console.info('MvoEdge.thumbnailController#_masterSelectionDidChange: %@'.
             fmt(this.get('masterSelection').get('guid')));
       }

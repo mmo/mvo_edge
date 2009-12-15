@@ -19,7 +19,7 @@ MvoEdge.ContentView = SC.ImageView.extend(
     @private
     @observes masterSelection
   */
-  _contentDidChange: function () {
+ /* _contentDidChange: function () {
     var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
     var tempIm = new Image();
     if (!SC.none(this.get('content'))) {
@@ -31,6 +31,6 @@ MvoEdge.ContentView = SC.ImageView.extend(
       console.info('MvoEdge.contentController#_contentDidChange: %@'.
           fmt(this.get('content').get('guid')));
     }
-  }.observes('content')
+  }.observes('content')*/
 
 });

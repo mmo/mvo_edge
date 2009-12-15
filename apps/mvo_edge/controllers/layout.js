@@ -58,6 +58,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
     this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
+    MvoEdge.logger.info('layoutController workspace initialized');
     //MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
   },
   
@@ -84,6 +85,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
     MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
+    MvoEdge.logger.info('layoutController HTMLworkspace initialized');
   },
 
   /**
@@ -108,6 +110,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
     MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
+    MvoEdge.logger.info('layoutController PDFworkspace initialized');
   },
 
   /**

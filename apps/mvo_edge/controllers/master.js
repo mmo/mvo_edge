@@ -30,13 +30,14 @@ MvoEdge.masterController = SC.ArrayController.create(
   initialize: function (nodes) {
     this.set('content', nodes);
     // initialize the selection with the first CDM leaf node
-    var sortedNodes = nodes.sortProperty('guid');
+   /* var sortedNodes = nodes.sortProperty('guid');
     for (var i = 0; i < sortedNodes.length; i++) {
       if (sortedNodes[i].get('isLeafNode')) {
         this.set('masterSelection', sortedNodes[i]);
         break;
       }
-    }
+    }*/
+    MvoEdge.logger.info('masterController initialized');
   },
 
   /**
@@ -52,7 +53,7 @@ MvoEdge.masterController = SC.ArrayController.create(
     @property {Array} descriptiveMetadataDictionary
   */
   descriptiveMetadataDictionary: function () {
-    return this.arrangedObjects().firstObject().get('metadata');
-  }.property()
-
+    var metadata = this.get('content').firstObject().get('metadata');
+    return metadata;
+  }.property('content')
 });

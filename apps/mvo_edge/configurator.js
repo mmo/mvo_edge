@@ -36,11 +36,22 @@ MvoEdge.configurator = SC.Object.create(
     @param {String} {params} 
   */
   initialize: function (params) {
+    //console.info('init...');
     var prop = {};
     for (var key in params) {
-      if (params.hasOwnProperty(key) && key !== "") {
-        var value = params[key];
-        prop[key] = value;
+      //console.info('key: '+ key+" =  "+params[key]);
+      if (params.hasOwnProperty(key)) {
+        if (key === "") {
+          if (params[key] === 'get') {
+            MvoEdge.SCENARIO = 1;
+          }
+          if (params[key] === 'fixtures') {
+            MvoEdge.SCENARIO = 2;
+          }
+        } else {
+          var value = params[key];
+          prop[key] = value;
+        }
       }
     }
     this.set('properties', prop);
