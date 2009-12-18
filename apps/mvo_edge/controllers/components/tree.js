@@ -40,13 +40,10 @@ MvoEdge.treeController = SC.TreeController.create(
     @param {SC.RecordArray} nodes are records of the CDM
   */
   initialize: function (nodes) {
-    if (nodes.get('length') !== 0) {
-      this._createSubmodel(nodes);
-      this._buildTree();
-      MvoEdge.logger.info('treeController initialized');
-    }
+    this._createSubmodel(nodes);
+    this._buildTree();
+    MvoEdge.logger.info('treeController initialized');
   },
-
 
   /**
     @method
@@ -67,21 +64,10 @@ MvoEdge.treeController = SC.TreeController.create(
       };
     var newTreeNode = MvoEdge.store.createRecord(
         MvoEdge.Tree, rootNodeHash, "tn00000");
-    MvoEdge.store.commitRecord(MvoEdge.Tree, "tn00000");
+    //MvoEdge.store.commitRecord(MvoEdge.Tree, "tn00000");
+    
     // start the submodel creation from the CDM root node
     this._visitCdmNode(cdmNodes.firstObject());
-    
-    // TODO document this and define where to put it
-    /*var treeNodes = 
-        MvoEdge.store.findAll(MvoEdge.Tree).sortProperty('guid').enumerator();
-    var treeNodesArray = [];
-    for (var t = 0; t < treeNodes._length; t++) {
-      var treeNodeHash = JSON.stringify(treeNodes.nextObject().attributes());
-      treeNodesArray.push(treeNodeHash);
-    }
-    treeNodes.reset();
-    var treeNodesJSON = JSON.stringify(treeNodesArray);
-    console.log(treeNodesJSON);*/
   },
   
   /**
@@ -92,12 +78,17 @@ MvoEdge.treeController = SC.TreeController.create(
   @private
   */  
   _buildTree: function () {
-    console.info('building tree');
-    var treeLabels = MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.Tree})).sortProperty('guid');
-    var treeContent =  MvoEdge.TreeContent.create(
-      {label: treeLabels.firstObject().get('label'), guidId: treeLabels.firstObject().get('guid'), treeItemIsExpanded: YES});
-    this._treeNodeById[treeContent.get('guidId')] = treeContent;
+    var treeLabels = MvoEdge.store.find(MvoEdge.Tree).sortProperty('guid');
+      
+    var treeContent =  MvoEdge.TreeContent.create({
+      label: treeLabels.firstObject().get('label'), 
+      treeNodeId: treeLabels.firstObject().get('guid'), 
+      treeItemIsExpanded: YES
+    });
+
+    this._treeNodeById[treeContent.get('treeNodeId')] = treeContent;
     this.set('content', treeContent);
+
     MvoEdge.logger.info('The tree has been created');
   },
 
@@ -231,7 +222,6 @@ MvoEdge.treeController = SC.TreeController.create(
         // add the new tree node to the store and commit
         var newTreeNode = MvoEdge.store.createRecord(
             MvoEdge.Tree, treeNodeHash, newTreeNodeId);
-        MvoEdge.store.commitRecord(MvoEdge.Tree, newTreeNodeId);
         // update the table _cdmNodeToTreeNode
         for (var j = 0; j < listOfLeaves.length; j++) {
           this._cdmNodeToTreeNode[listOfLeaves[j]] = treeNodeHash.guid;
@@ -245,24 +235,31 @@ MvoEdge.treeController = SC.TreeController.create(
   },
 
   /**
-    Updates the masterSelection binding if the currently selected tree node has
-    changed.
+    Updates the masterSelection binding if the currently 
+    selected tree node has changed.
 
     @observes treeSelection
    */
   _selectionDidChange: function () {
     var needToChange =  YES;
     var treeSelectionId = this.get('selection');
+    //if selection is not undefined, retreive the corresponding Tree record
     if (!SC.none(this.get('selection')) && 
       !SC.none(this.get('selection').firstObject()))  {
-      treeSelectionId = this.get('selection').firstObject().get('guidId');
+      treeSelectionId = this.get('selection').firstObject().get('treeNodeId');
       var treeSelection = MvoEdge.store.find(MvoEdge.Tree, treeSelectionId);
+      
+      //retreive target and leaf of this Tree record
       if (!SC.none(treeSelection)) {
         var target = treeSelection.get('targetCdmLeaf');
         var cdmLeafNodeIds = treeSelection.get('cdmLeafNodeIds');
+        
+        //retreive the master selection
         var currentMasterSelection = this.get('masterSelection');
         if (!SC.none(currentMasterSelection)) {
           var masterSelectionId = currentMasterSelection.get('guid');
+          
+          //verify if the selection is not the selected Tree Node
           if (SC.typeOf(cdmLeafNodeIds) === SC.T_ARRAY) {
             for (var i = 0; i < cdmLeafNodeIds.length; i++) {
               if (cdmLeafNodeIds[i] === masterSelectionId) {
@@ -274,13 +271,16 @@ MvoEdge.treeController = SC.TreeController.create(
             }
           }
         }
+        //verify the target !== masterSelection
         if (!SC.none(target) && this.get('masterSelection') !== target) {
+          //change the masterSelection if needed
           if (needToChange) {
             SC.RunLoop.begin();
             this.set('masterSelection', treeSelection.get('targetCdmLeaf'));
             SC.RunLoop.end();
-            console.info('MvoEdge.treeController#_selectionDidChange: %@'.
-                fmt(treeSelectionId));
+            
+            MvoEdge.logger.info('MvoEdge.treeController#_selectionDidChange:' + 
+              '%@'.fmt(treeSelectionId));
           }
         }
       }
@@ -296,39 +296,70 @@ MvoEdge.treeController = SC.TreeController.create(
     @observes masterSelection
   */
   _masterSelectionDidChange: function () {
-    var cdmLeafNodeIdInArray = NO;
+    var needToChange = YES;
     var currentMasterSelection = this.get('masterSelection');
+    //if masterSelection is not undefined retreive the guid
     if (!SC.none(currentMasterSelection)) {
-      if (!SC.none(this.get('selection')) && !SC.none(this.get('selection').firstObject())) {
-        var currentSelection = this.get('selection').firstObject().get('guidId');
+      var masterSelectionId = currentMasterSelection.get('guid');      
+      
+      //verify that the new masterSelection is not a leaf of the TreeNode
+      if (!SC.none(this.get('selection')) && 
+        !SC.none(this.get('selection').firstObject())) {
+        var currentSelection = 
+          this.get('selection').firstObject().get('treeNodeId');
         var treeSelection = MvoEdge.store.find(MvoEdge.Tree, currentSelection);
         if (!SC.none(treeSelection)) {
           var cdmLeafNodeIds = treeSelection.get('cdmLeafNodeIds');
-          var masterSelectionId = currentMasterSelection.get('guid');
+
           if (SC.typeOf(cdmLeafNodeIds) === SC.T_ARRAY) {
             for (var i = 0; i < cdmLeafNodeIds.length; i++) {
               if (cdmLeafNodeIds[i] === masterSelectionId) {
-                // the change in the content selection does not imply a change of
-                // the tree selection
-                cdmLeafNodeIdInArray = YES;
+                // the change in the content selection does not imply 
+                // a change of the tree selection
+                needToChange = NO;
                 break;
               }
             }
-            if (cdmLeafNodeIds.length === 0) { 
-              if (treeSelection.get('targetCdmLeaf').get('guid') === masterSelectionId) {
-                cdmLeafNodeIdInArray = YES;
-              }
+            if (treeSelection.get('targetCdmLeaf').get('guid') ===
+              masterSelectionId) {
+              needToChange = NO;
             }
           }
         }
       }
-      if (!cdmLeafNodeIdInArray) {
-        var newSelection = this.get('_cdmNodeToTreeNode')[currentMasterSelection.get('guid')];
-        this.set('selection', SC.SelectionSet.create().addObject(this._treeNodeById[newSelection]));
-        console.info('MvoEdge.treeController#_masterSelectionDidChange: %@'.
-          fmt(this.get('masterSelection').get('guid')));
+      //change the selection if needed
+      if (needToChange) {
+        var newSelection = 
+          this.get('_cdmNodeToTreeNode')[currentMasterSelection.get('guid')];
+        this.set('selection', 
+          SC.SelectionSet.create().addObject(this._treeNodeById[newSelection]));
+        
+        MvoEdge.logger.info('MvoEdge.treeController#_masterSelectionDidChange:' + 
+          '%@'.fmt(this.get('masterSelection').get('guid')));
       }
     }
-  }.observes('masterSelection')
+  }.observes('masterSelection'),
+  
+  /**
+    @method
+    
+    Write on the fireburg console the tree sub-model
+    
+    @private
+    */
+  _showTreeSubModel: function () {
+    // TODO document this and define where to put it
+    var treeNodes = MvoEdge.store.find(MvoEdge.Tree)
+      .sortProperty('guid').enumerator();
+    
+    var treeNodesArray = [];
+    for (var t = 0; t < treeNodes._length; t++) {
+      var treeNodeHash = JSON.stringify(treeNodes.nextObject().attributes());
+      treeNodesArray.push(treeNodeHash);
+    }
+    treeNodes.reset();
+    var treeNodesJSON = JSON.stringify(treeNodesArray);
+    console.log(treeNodesJSON);
+  }
 
 });

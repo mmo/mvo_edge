@@ -21,31 +21,45 @@ MvoEdge.masterController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
   
   /**
-    @method
-
-    Initialize the master controller, its content and the initial selection
-
-    @param {SC.RecordArray} nodes records of the Core Document Model
-  */
-  initialize: function (nodes) {
-    this.set('content', nodes);
-    // initialize the selection with the first CDM leaf node
-   /* var sortedNodes = nodes.sortProperty('guid');
-    for (var i = 0; i < sortedNodes.length; i++) {
-      if (sortedNodes[i].get('isLeafNode')) {
-        this.set('masterSelection', sortedNodes[i]);
-        break;
-      }
-    }*/
-    MvoEdge.logger.info('masterController initialized');
-  },
-
-  /**
     The guid of the selected file/object that is currently being displayed by
     the application
     @property {MvoEdge.CoreDocumentNode} masterSelection the selected CDM node
   */
   masterSelection: undefined,
+  
+  /**
+    @method
+
+    Initialize the master controller, its content
+
+    @param {SC.RecordArray} nodes records of the Core Document Model
+  */
+  initialize: function (nodes) {
+    this._addImageUrl(nodes);
+    var newNodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
+    console.info('NB: ' + newNodes.get('length')); 
+    this.set('content', newNodes);
+    MvoEdge.logger.info('masterController initialized');
+  },
+
+ /**
+    @method
+
+    Add imageUrl property to each Record
+    
+    @private
+    @param {SC.RecordArray} nodes are records of the CDM    
+  */
+  _addImageUrl: function (nodes) {
+    nodes.forEach(function (node) {
+      if (node.get('isLeafNode')) {
+        //create the imageUrl and add this property
+        var imageUrl = node.get('urlDefault');
+        imageUrl = MvoEdge.configurator.getImageUrl(imageUrl); 
+        node.writeAttribute('imageUrl', imageUrl, NO);
+      }
+    });
+  },
 
   /**
     The the document's descriptive metadata contained in the root node of the

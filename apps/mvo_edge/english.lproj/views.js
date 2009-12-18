@@ -42,7 +42,7 @@ MvoEdge.viewsPage = SC.Page.design({
     contentView: SC.WebView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
       contentBinding: 'MvoEdge.masterController.masterSelection',
-      contentValueKey: 'staticUrl'
+      contentValueKey: 'imageUrl'
     })
   }),
 
@@ -72,6 +72,7 @@ MvoEdge.viewsPage = SC.Page.design({
       rowHeight: 100,
       columnWidth: 60,
       exampleView: SC.ImageView,
+      useImageCache: NO,
       contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
       selectionBinding: 'MvoEdge.thumbnailController.selection',
       contentValueKey: 'url'

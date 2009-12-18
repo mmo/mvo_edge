@@ -14,7 +14,7 @@
 
 MvoEdge.main = function main() {
   // retrieve parameters contain in the URL
-  SC.routes.add(':', MvoEdge.configurator, 'initialize');
+  SC.routes.add(':', MvoEdge.configurator, 'readInputParameters');
 };
 
 function main() {

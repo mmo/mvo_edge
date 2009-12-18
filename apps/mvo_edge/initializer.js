@@ -19,10 +19,10 @@ MvoEdge.initializer = SC.Object.create(
   isFirstTime: YES,
 
   /**
-    Binds to the properties of the configurator
-    @property {MvoEdge.configurator.properties}
+    Binds to the inputParameters of the configurator
+    @property {MvoEdge.configurator.inputParameters}
    */
-  propertiesBinding: "MvoEdge.configurator.properties",
+  inputParametersBinding: "MvoEdge.configurator.inputParameters",
   
   /**
     @method
@@ -30,57 +30,71 @@ MvoEdge.initializer = SC.Object.create(
     Retrieve CDM.
     @observes {properties}     
   */
-  _propertiesDidChange: function () {
+  _inputParametersDidChange: function () {
     if (this.isFirstTime) {
       this.isFirstTime = NO;
     } else {
-      if (MvoEdge.SCENARIO === 1) {
-        MvoEdge.logger.info('remote access');
-        var url = !SC.none(this.get('properties')) ?
-            this.get('properties').url : undefined;
-        if (url !== undefined) {
-          console.info('send this url ' + url);
-          var request = SC.Request.getUrl('/multivio/document/get?url=' + url).json().notify(this, this._storeCDM);  // to be used with the python server
-          //var request = SC.Request.getUrl('/zircon/Client?cl=dfst.StructureParser&act=getDoc&recid=' + recid); // to be used with the Java servlet
-          request.set('isAsynchronous', NO);
-          request.set('isJSON', YES);
-          request.send();
-          console.info(request);
-        }
-        else {
-          MvoEdge.logger.error('there is no url parameter');
-        }
-      }
-      else if (MvoEdge.SCENARIO === 2) {
-        MvoEdge.logger.info('using fixtures');
-        var name = this.get('properties').name;
-        if (name !== undefined) {
-          if (name === 'VAA') {
-            console.info('VAA fixtures used');
-          }
-          else if (name === 'HTML') {
-            console.info('HTML fixtures used');
-            MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_HTML;
-          }
-          else if (name === 'PDF') {
-            console.info('PDF fixtures used');
-            MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
+      var scenario = this.get('inputParameters').scenario;
+      if (!SC.none(scenario)) {
+        switch (scenario) {
+        case 'get':
+          MvoEdge.logger.info('remote access');
+          var url = !SC.none(this.get('inputParameters')) ?
+          this.get('inputParameters').url : undefined;
+          if (url !== undefined) {
+            MvoEdge.logger.info('send this url ' + url);
+            var serverAdress = MvoEdge.configurator.get('urlParameters').get;            
+            var request = SC.Request.getUrl(
+            serverAdress + url).json().notify(this, this._storeCDM);  // to be used with the python server
+            request.set('isAsynchronous', NO);
+            request.set('isJSON', YES);
+            request.send();
           }
           else {
-            console.error(name + 'is an invalid parameter');
+            //stop the application now
+            MvoEdge.logger.error('there is no url parameter');
+            alert("You have to call Multivio with : \n" +
+            "#fixtures&name=VAA or\n #get&url=http://doc.rero.ch/record/9495/export/xd");
+            return NO;
           }
+          break;
+        case 'fixtures':
+          MvoEdge.logger.info('using fixtures');
+          var name = this.get('inputParameters').name;
+          switch (name) {
+          case 'VAA': 
+            MvoEdge.logger.info('VAA fixtures used');
+            break;
+          case 'HTML':
+            MvoEdge.logger.info('HTML fixtures used');
+            MvoEdge.CoreDocumentNode.FIXTURES = 
+              MvoEdge.CoreDocumentNode.FIXTURES_HTML;
+            break;
+          case 'PDF':
+            MvoEdge.logger.info('PDF fixtures used');
+            MvoEdge.CoreDocumentNode.FIXTURES = 
+              MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
+            break;
+          default:
+            MvoEdge.logger.error(name + ' is an invalid parameter');
+            break;
+          }
+          MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
+          break;
+        default:
+          // stop the application now
+          MvoEdge.logger.error('there is no name parameter');
+          alert("You have to call Multivio with : \n" +
+          "#fixtures&name=VAA or\n #get&url=http://doc.rero.ch/record/9495/export/xd");
+          return NO;
         }
-        else {
-          console.error('there is no name parameter');
-        }
-        MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
       }
       else {
         MvoEdge.logger.error('invalid request');
       }
       this._initializeComponent();
     }
-  }.observes('properties'),
+  }.observes('inputParameters'),
  
   /**
     @method
@@ -91,9 +105,9 @@ MvoEdge.initializer = SC.Object.create(
     @param {String} {response} {response received from the server}
   */ 
   _storeCDM: function (response) {
-    console.info('response received: ' + response.get("body"));
+    MvoEdge.logger.info('response received: ' + response.get("body"));
     var jsonRes = response.get("body");
-		MvoEdge.store = SC.Store.create();
+    MvoEdge.store = SC.Store.create();
     for (var key in jsonRes) {
       if (jsonRes.hasOwnProperty(key)) {
         var oneNode = jsonRes[key];
@@ -101,9 +115,9 @@ MvoEdge.initializer = SC.Object.create(
             oneNode, key);
       } 
     }
-		MvoEdge.store.flush();
-    console.info('number of CDM nodes: ' + 
-		MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.CoreDocumentNode})).length());
+    //MvoEdge.store.flush();
+    MvoEdge.logger.info('number of CDM nodes: ' + 
+      MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
   },
       
   /**
@@ -121,45 +135,42 @@ MvoEdge.initializer = SC.Object.create(
     SC.RunLoop.begin();
     MvoEdge.getPath('mainPage.mainPane').append();
 
-    // adjust fixtures according to the selected example
-   /* var type = MvoEdge.get('type');
-    if (type === 1) {
-      MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_HTML;
-    } else if (type === 2) {
-      MvoEdge.CoreDocumentNode.FIXTURES = MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
-    }*/
-
     // Step 2. Set the content property on your primary controller.
     // This will make your app come alive!
     // Set the content property on your primary controller
     // ex: .contactsController.set('content',.contacts);
-    var nodes = MvoEdge.store.find(SC.Query.create({recordType: MvoEdge.CoreDocumentNode}));
-    console.info("nodes = " + nodes.get('length'));
+    var nodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
+    MvoEdge.logger.info("nodes = " + nodes.get('length'));
     MvoEdge.thumbnailController.initialize(nodes);
     MvoEdge.treeController.initialize(nodes);
     MvoEdge.masterController.initialize(nodes);
+    
     // Call the layout controller in order to setup the interface components
-    if (MvoEdge.SCENARIO === 2) {
-      var name = MvoEdge.configurator.get('properties').name;
-      if (name !== undefined) {
-        if (name === 'VAA') {
-          console.info('normal layout');
-          MvoEdge.layoutController.initializeWorkspace();
-        }
-        else if (name === 'HTML') {
-          console.info('create HTML layout');
-          MvoEdge.layoutController.initializeHTMLWorkspace();
-        }
-        else if (name === 'PDF') {
-          console.info('create PDF layout');
-          MvoEdge.layoutController.initializePDFRendererWorkspace();
-        }
+    var scenario = MvoEdge.configurator.get('inputParameters').scenario;
+    switch (scenario) {
+    case 'fixtures':
+      var name = MvoEdge.configurator.get('inputParameters').name;
+      switch (name) {
+      case 'VAA': 
+        MvoEdge.logger.info('normal layout');
+        MvoEdge.layoutController.initializeWorkspace();
+        break;        
+      case 'HTML':
+        MvoEdge.logger.info('create HTML layout');
+        MvoEdge.layoutController.initializeHTMLWorkspace();
+        break;
+      case 'PDF':
+        MvoEdge.logger.info('create PDF layout');
+        MvoEdge.layoutController.initializePDFRendererWorkspace();
+        break;
       }
-    }
-    else {
-      console.info('normal layout');
+      break;
+    default:
+      MvoEdge.logger.info('default normal layout');
       MvoEdge.layoutController.initializeWorkspace();
+      break;
     }
+    
     // initialize the selection with the first CDM leaf node
     var sortedNodes = nodes.sortProperty('guid');
     for (var i = 0; i < sortedNodes.length; i++) {
@@ -170,13 +181,6 @@ MvoEdge.initializer = SC.Object.create(
     }
     SC.RunLoop.end();
     MvoEdge.logger.info('end initializer');
-   /* if (type === 0 || type === 3) {
-      MvoEdge.layoutController.initializeWorkspace();
-    } else if (type === 1) {
-      MvoEdge.layoutController.initializeHTMLWorkspace();
-    } else if (type === 2) {
-      MvoEdge.layoutController.initializePDFRendererWorkspace();
-    }*/
   }
 
 });

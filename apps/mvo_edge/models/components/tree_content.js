@@ -8,7 +8,8 @@
   @class
 
   Model of a tree component. 
-  To have more information see the documentation of the SC.TreeController. 
+  To have more information see the documentation of the SC.TreeController
+  and the demo outline. 
 
   @author {CHE}      
   @extends {Object}   
@@ -18,31 +19,44 @@ MvoEdge.TreeContent = SC.Object.extend({
 
   treeItemIsExpanded: YES,
     
-  label: 'undefined',
+  label: undefined,
     
-  guidId: 'undefined',
+  treeNodeId: undefined,
   
+  /**
+    @method 
+    
+    Return the list of the children of this TreeItem
+  */
   treeItemChildren: function () {
     var ret = [];
-    var oneLab = MvoEdge.store.find(
-        SC.Query.create({recordType: MvoEdge.Tree, conditions: "guid = '" + this.guidId + "'"}));
-    var oneLabChild = oneLab.firstObject().get('children');  
-    if (oneLabChild.get('length') !== 0) {     
-      for (var i = 0; i < oneLabChild.get('length'); i++) {
-        var oneChild = MvoEdge.store.find(
-            SC.Query.create(
-              {recordType: MvoEdge.Tree, conditions: "guid = '" + oneLabChild.objectAt(i).get('guid') + "'"}));
-        var tp = null;
-        if (oneChild.firstObject().get('children').get('length') !== 0) {
-          tp = MvoEdge.TreeContent.create(
-            {label: oneChild.firstObject().get('label'), guidId: oneChild.firstObject().get('guid'), treeItemIsExpanded: YES}); 
+    var oneLabel = MvoEdge.store.find(MvoEdge.Tree, this.treeNodeId);
+    var oneLabelChildren = oneLabel.get('children');  
+    
+    if (oneLabelChildren.get('length') !== 0) {
+      //for each children create a new TreeContent     
+      for (var i = 0; i < oneLabelChildren.get('length'); i++) {
+        var oneChildLabel = MvoEdge.store.find(
+          MvoEdge.Tree, oneLabelChildren.objectAt(i).get('guid'));
+        var newTreeContent;
+        // child with children => continue to explore the Tree 
+        //=> treeItemIsExpanded = YES 
+        if (oneChildLabel.get('children').get('length') !== 0) {
+          newTreeContent = MvoEdge.TreeContent.create(
+            {label: oneChildLabel.get('label'),
+            treeNodeId: oneChildLabel.get('guid'),
+            treeItemIsExpanded: YES}); 
         }
+        //child with no children
         else {
-          tp = MvoEdge.TreeContent.create(
-            {label: oneChild.firstObject().get('label'), guidId: oneChild.firstObject().get('guid'), treeItemIsExpanded: NO});
+          newTreeContent = MvoEdge.TreeContent.create(
+            {label: oneChildLabel.get('label'), 
+            treeNodeId: oneChildLabel.get('guid'), 
+            treeItemIsExpanded: NO});
         }
-        MvoEdge.treeController._treeNodeById[tp.get('guidId')] = tp;
-        ret.push(tp);
+        MvoEdge.treeController._treeNodeById[newTreeContent.get('treeNodeId')] =
+         newTreeContent;
+        ret.push(newTreeContent);
       }
     }
     return ret;

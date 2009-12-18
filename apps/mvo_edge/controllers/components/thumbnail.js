@@ -38,7 +38,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   */
   initialize: function (nodes) {
     this._createSubmodel(nodes);
-    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    var thumbnails = MvoEdge.store.find(MvoEdge.Thumbnail);
     this.set('content', thumbnails);
     MvoEdge.logger.info('thumbnailController initialized');
   },
@@ -57,22 +57,19 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         var cdmNodeId = node.get('guid');
         var id = 'f%@'.fmt(cdmNodeId);
         var label = node.get('label');
-        var staticUrl = node.get('staticUrl');
         //to create thumbnail url
-        if (MvoEdge.SCENARIO === 1) {
-          staticUrl = "/multivio/document/thumbnail?size=80&url=" + staticUrl;
-        }
-        SC.imageCache.loadImage(staticUrl);
+        var thumbnailUrl = node.get('urlDefault');
+        thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(thumbnailUrl);
+
         var thumbnailHash = {
             guid: id,
-            url: staticUrl,
+            url: thumbnailUrl,
             label: label,
             coreDocumentNode: cdmNodeId
           };
         // create a new thumbnail record
         var thumbnail = MvoEdge.store.createRecord(
-              MvoEdge.Thumbnail, thumbnailHash, id);
-        var res = MvoEdge.store.commitRecord(MvoEdge.Thumbnail, id);
+          MvoEdge.Thumbnail, thumbnailHash, id);
       }
     });
   },
@@ -83,7 +80,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
    */
   _contentDidChange: function () {
     var newTable = {};
-    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    var thumbnails = MvoEdge.store.find(MvoEdge.Thumbnail);
     if (thumbnails && thumbnails.isEnumerable) {
       for (var i = 0; i < thumbnails.length(); i++) {
         var thumbnail = thumbnails.objectAt(i);
@@ -113,7 +110,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         this.set('masterSelection', coreDocumentNode);
         SC.RunLoop.end();
 
-        console.info('MvoEdge.thumbnailController#_selectionDidChange: %@'.
+        MvoEdge.logger.info('MvoEdge.thumbnailController#_selectionDidChange: %@'.
             fmt(this.get('selection').firstObject()));
       }
     }
@@ -140,7 +137,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         SC.RunLoop.begin();
         this.set('selection', SC.SelectionSet.create().addObject(newThumbnail));
         SC.RunLoop.end();
-        console.info('MvoEdge.thumbnailController#_masterSelectionDidChange: %@'.
+        MvoEdge.logger.info('MvoEdge.thumbnailController#_masterSelectionDidChange: %@'.
             fmt(this.get('masterSelection').get('guid')));
       }
     }

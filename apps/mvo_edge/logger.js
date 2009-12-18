@@ -43,7 +43,7 @@ MvoEdge.logger = SC.Object.create(
   to receive different log levels.
 */
   init: function () {
- 
+    
     this.errorLogger = Log4js.getLogger("error");
     this.errorLogger.setLevel(Log4js.Level.ERROR);
     this.loggers.push(this.errorLogger);
@@ -62,14 +62,15 @@ MvoEdge.logger = SC.Object.create(
  
     // create appenders according to the configuration in MvoEdge.CONFIG.log
     // (see file core.js)
-    var appenders = MvoEdge.CONFIG.log;
+    var appenders = MvoEdge.configurator.get('logParameters').log;
     for (var appender in appenders) {
       if (appenders.hasOwnProperty(appender)) {
         var level = MvoEdge.get(appenders[appender]);
         var appenderObject = undefined;
         switch (appender) {
         case 'ajax':
-          appenderObject = new Log4js.AjaxAppender(MvoEdge.CONFIG.logFile);
+          appenderObject = new Log4js.AjaxAppender(
+            MvoEdge.configurator.get('logParameters').logFile);
           //appenderObject.setLayout(new Log4js.BasicLayout());
           appenderObject.setLayout(new Log4js.JSONLayout());
           break;
@@ -136,7 +137,8 @@ vwarningLogger and errorLogger.
       exDetails = exDetails.substring(0, exDetails.length - 4);
     }
     exDetails += "}\n";
-    this.error("Exception Caught %@ \"custom message\": \"%@\"".loc(exDetails, customMessage));
+    this.error("Exception Caught %@ \"custom message\": \"%@\""
+    .loc(exDetails, customMessage));
   }
  
 });
