@@ -13,8 +13,14 @@
 //
 
 MvoEdge.main = function main() {
-  // retrieve parameters contain in the URL
+
+  // MvoEdge.configurator#readInputParameters() is declared as the callback
+  // function that parses the parameters given in the applications's URL; this
+  // is done using the SC.routes mechanism.
   SC.routes.add(':', MvoEdge.configurator, 'readInputParameters');
+  
+  // Launch the initalization process using MvoEdge.initializer
+  MvoEdge.initializer.initialize();
 };
 
 function main() {

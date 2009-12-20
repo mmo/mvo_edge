@@ -35,9 +35,10 @@ MvoEdge.masterController = SC.ArrayController.create(
     @param {SC.RecordArray} nodes records of the Core Document Model
   */
   initialize: function (nodes) {
+    // NOTE: why is the master controller doing this?
     this._addImageUrl(nodes);
     var newNodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
-    console.info('NB: ' + newNodes.get('length')); 
+    console.info('NB: ' + newNodes.get('length')); // NOTE: normalize or delete
     this.set('content', newNodes);
     MvoEdge.logger.info('masterController initialized');
   },
@@ -48,14 +49,18 @@ MvoEdge.masterController = SC.ArrayController.create(
     Add imageUrl property to each Record
     
     @private
-    @param {SC.RecordArray} nodes are records of the CDM    
+    @param {SC.RecordArray} nodes are records of the CDM
   */
+  // NOTE: why is the master controller updating the model? should the model do it itself? or the initializer?
   _addImageUrl: function (nodes) {
     nodes.forEach(function (node) {
       if (node.get('isLeafNode')) {
-        //create the imageUrl and add this property
+        // create the imageUrl and add this property
         var imageUrl = node.get('urlDefault');
-        imageUrl = MvoEdge.configurator.getImageUrl(imageUrl); 
+        // NOTE: here all the logic of MvoEdge.configurator.getImageUrl()
+        // is executed for each CDM leaf node; that logic could be factored out
+        // into a single variable, making the function execute only once 
+        imageUrl = MvoEdge.configurator.getImageUrl(imageUrl);
         node.writeAttribute('imageUrl', imageUrl, NO);
       }
     });

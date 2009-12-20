@@ -36,7 +36,7 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     @default {NO}
   */
   isLeafNode: function () {
-  	// TODO check function logic (compare with previous version c24c9996)
+    // TODO check function logic (compare with previous version c24c9996)
     var urlDefault = this.get('urlDefault');
     return (!SC.none(urlDefault));
   }.property('urlDefault').cacheable(),
@@ -48,7 +48,7 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
     @default {NO}
   */
   isInnerNode: function () {
-  	// TODO check function logic (compare with previous version c24c9996)
+    // TODO check function logic (compare with previous version c24c9996)
     var urlDefault = this.get('urlDefault');
     return SC.none(urlDefault);
   }.property('urlDefault').cacheable()

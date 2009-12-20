@@ -13,6 +13,7 @@
 MvoEdge.ContentView = SC.ImageView.extend(
 /** @scope MvoEdge.Content.prototype */ {
 
+  // NOTE/TODO: normalize or delete
   /**
     If the master selection changes, readjust the size of the view
 
@@ -28,7 +29,7 @@ MvoEdge.ContentView = SC.ImageView.extend(
         div.adjust('width', tempIm.width + 20);
         div.adjust('height', tempIm.height + 20);
       }
-      console.info('MvoEdge.contentController#_contentDidChange: %@'.
+      console.info('contentController#_contentDidChange: %@'.
           fmt(this.get('content').get('guid')));
     }
   }.observes('content')*/

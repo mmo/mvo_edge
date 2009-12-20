@@ -7,12 +7,12 @@
 /**
 Define Log levels
 */
-MvoEdge.LOG_ERROR = 40000;
-MvoEdge.LOG_WARN = 30000;
-MvoEdge.LOG_INFO = 20000;
-MvoEdge.LOG_DEBUG = 10000;
- 
- 
+MvoEdge.LOG_ERROR = 40;
+MvoEdge.LOG_WARN = 30;
+MvoEdge.LOG_INFO = 20;
+MvoEdge.LOG_DEBUG = 10;
+
+
 /**
   @class
  
@@ -33,15 +33,16 @@ MvoEdge.logger = SC.Object.create(
  
   loggers: [],
  
-/**
-  @method
+  /**
+    @method
  
-  Initialize loggers, set level and add appender(s)
-  We use 4 loggers => error, warning, info, debug; each one corresponds to a
-  log level. The use of several loggers, one per log level, instead of a
-  single global logger, is because log4js does not allow different appenders
-  to receive different log levels.
-*/
+    Initialize loggers, set level and add appender(s)
+
+    We use 4 loggers => error, warning, info, debug; each one corresponds to a
+    log level. The use of several loggers, one per log level, instead of a
+    single global logger, is because log4js does not allow different appenders
+    to receive different log levels.
+  */
   init: function () {
     
     this.errorLogger = Log4js.getLogger("error");
@@ -62,15 +63,16 @@ MvoEdge.logger = SC.Object.create(
  
     // create appenders according to the configuration in MvoEdge.CONFIG.log
     // (see file core.js)
-    var appenders = MvoEdge.configurator.get('logParameters').log;
+    var appenders = MvoEdge.configurator.getPath('logParameters.log');
     for (var appender in appenders) {
       if (appenders.hasOwnProperty(appender)) {
         var level = MvoEdge.get(appenders[appender]);
         var appenderObject = undefined;
         switch (appender) {
+        // TODO check if the ajax appender is removed in case a server is not available
         case 'ajax':
           appenderObject = new Log4js.AjaxAppender(
-            MvoEdge.configurator.get('logParameters').logFile);
+              MvoEdge.configurator.getPath('logParameters.logFile'));
           //appenderObject.setLayout(new Log4js.BasicLayout());
           appenderObject.setLayout(new Log4js.JSONLayout());
           break;
@@ -84,22 +86,21 @@ MvoEdge.logger = SC.Object.create(
         if (appenderObject) this._attachAppender(appenderObject, level);
       }
     }
-    this.info('end logger');
+    this.info('end of logger.init()');
   },
   
- 
   /**
-  @method
+    @method
  
-  Attach the given appender to the appropriate log level logger
+    Attach the given appender to the appropriate log level logger
  
-  It also attaches it to all log levels above it. For example,
-  if log level = LOG_INFO, then the appender should also be attached to
-vwarningLogger and errorLogger.
+    It also attaches it to all log levels above it. For example, if log level =
+    LOG_INFO, then the appender should also be attached to warningLogger and
+    errorLogger.
  
-  @private
-  @param Object appender
-*/
+    @private
+    @param Object appender
+  */
   _attachAppender: function (appender, level) {
     for (var i = 0; i < this.loggers.length; i++) {
       var aLogger = this.loggers[i];

@@ -16,6 +16,16 @@
 MvoEdge.initializer = SC.Object.create( 
 /** @scope MvoEdge.initializer.prototype */ {
 
+
+  /**
+    @method
+
+    Main initializer function.
+  */
+  initialize: function () {
+  },
+
+  // NOTE: what's the goal of this property?
   isFirstTime: YES,
 
   /**
@@ -23,7 +33,7 @@ MvoEdge.initializer = SC.Object.create(
     @property {MvoEdge.configurator.inputParameters}
    */
   inputParametersBinding: "MvoEdge.configurator.inputParameters",
-  
+
   /**
     @method
 
@@ -38,61 +48,60 @@ MvoEdge.initializer = SC.Object.create(
       if (!SC.none(scenario)) {
         switch (scenario) {
         case 'get':
-          MvoEdge.logger.info('remote access');
+          MvoEdge.logger.info('initializer: using remote access with URL: %@');
           var url = !SC.none(this.get('inputParameters')) ?
-          this.get('inputParameters').url : undefined;
+              this.get('inputParameters').url : undefined;
           if (url !== undefined) {
-            MvoEdge.logger.info('send this url ' + url);
-            var serverAdress = MvoEdge.configurator.get('urlParameters').get;            
-            var request = SC.Request.getUrl(
-            serverAdress + url).json().notify(this, this._storeCDM);  // to be used with the python server
+            MvoEdge.logger.debug('initializer: sending url to the server: ' +
+                url);
+            var serverAdress = MvoEdge.configurator.getPath('baseUrlParameters.get');            
+            var request = SC.Request.getUrl(serverAdress + url).
+                json().notify(this, this._storeCDM);  // to be used with the python server (NOTE: why python?)
             request.set('isAsynchronous', NO);
             request.set('isJSON', YES);
             request.send();
           }
           else {
-            //stop the application now
-            MvoEdge.logger.error('there is no url parameter');
-            alert("You have to call Multivio with : \n" +
-            "#fixtures&name=VAA or\n #get&url=http://doc.rero.ch/record/9495/export/xd");
+            // stop the application now
+            MvoEdge.logger.error('no URL parameter has been provided');
+            alert(this._usageMessage);
             return NO;
           }
           break;
         case 'fixtures':
-          MvoEdge.logger.info('using fixtures');
+          MvoEdge.logger.info('initializer: using fixtures');
           var name = this.get('inputParameters').name;
           switch (name) {
           case 'VAA': 
-            MvoEdge.logger.info('VAA fixtures used');
+            MvoEdge.logger.info('initializer: using VAA fixtures');
             break;
           case 'HTML':
-            MvoEdge.logger.info('HTML fixtures used');
+            MvoEdge.logger.info('initializer: using HTML fixtures');
             MvoEdge.CoreDocumentNode.FIXTURES = 
-              MvoEdge.CoreDocumentNode.FIXTURES_HTML;
+                MvoEdge.CoreDocumentNode.FIXTURES_HTML;
             break;
           case 'PDF':
-            MvoEdge.logger.info('PDF fixtures used');
+            MvoEdge.logger.info('initializer: using PDF fixtures');
             MvoEdge.CoreDocumentNode.FIXTURES = 
-              MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
+                MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
             break;
           default:
-            MvoEdge.logger.error(name + ' is an invalid parameter');
+            MvoEdge.logger.error('"%@" is an invalid parameter'.fmt(name));
             break;
           }
           MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
           break;
         default:
           // stop the application now
-          MvoEdge.logger.error('there is no name parameter');
-          alert("You have to call Multivio with : \n" +
-          "#fixtures&name=VAA or\n #get&url=http://doc.rero.ch/record/9495/export/xd");
+          MvoEdge.logger.error('the "name" parameter is missing');
+          alert(this._usageMessage);
           return NO;
         }
       }
       else {
         MvoEdge.logger.error('invalid request');
       }
-      this._initializeComponent();
+      this._initializeComponents();
     }
   }.observes('inputParameters'),
  
@@ -105,7 +114,8 @@ MvoEdge.initializer = SC.Object.create(
     @param {String} {response} {response received from the server}
   */ 
   _storeCDM: function (response) {
-    MvoEdge.logger.info('response received: ' + response.get("body"));
+    MvoEdge.logger.debug('initializer: response received from the server: %@'.
+        fmt(response.get("body")));
     var jsonRes = response.get("body");
     MvoEdge.store = SC.Store.create();
     for (var key in jsonRes) {
@@ -116,18 +126,18 @@ MvoEdge.initializer = SC.Object.create(
       } 
     }
     //MvoEdge.store.flush();
-    MvoEdge.logger.info('number of CDM nodes: ' + 
+    MvoEdge.logger.info('initializer: number of CDM nodes: ' + 
       MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
   },
       
   /**
     @method
 
-    Initialize controllers, view and layout
+    Initialize controllers, views and layout
 
     @private  
   */
-  _initializeComponent: function () { 
+  _initializeComponents: function () { 
     // Step 1: Instantiate Your Views
     // The default code here will make the mainPane for your application visible
     // on screen.  If you app gets any level of complexity, you will probably 
@@ -140,33 +150,34 @@ MvoEdge.initializer = SC.Object.create(
     // Set the content property on your primary controller
     // ex: .contactsController.set('content',.contacts);
     var nodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
-    MvoEdge.logger.info("nodes = " + nodes.get('length'));
+    MvoEdge.logger.info("initializer: number of CDM nodes: " +
+        nodes.get('length'));
     MvoEdge.thumbnailController.initialize(nodes);
     MvoEdge.treeController.initialize(nodes);
     MvoEdge.masterController.initialize(nodes);
     
     // Call the layout controller in order to setup the interface components
-    var scenario = MvoEdge.configurator.get('inputParameters').scenario;
+    var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
     switch (scenario) {
     case 'fixtures':
-      var name = MvoEdge.configurator.get('inputParameters').name;
+      var name = MvoEdge.configurator.getPath('inputParameters.name');
       switch (name) {
       case 'VAA': 
-        MvoEdge.logger.info('normal layout');
+        MvoEdge.logger.info('initializer: using layout for VAA fixtures');
         MvoEdge.layoutController.initializeWorkspace();
         break;        
       case 'HTML':
-        MvoEdge.logger.info('create HTML layout');
+        MvoEdge.logger.info('initializer: using layout for HTML fixtures');
         MvoEdge.layoutController.initializeHTMLWorkspace();
         break;
       case 'PDF':
-        MvoEdge.logger.info('create PDF layout');
+        MvoEdge.logger.info('initializer: using layout for PDF fixtures');
         MvoEdge.layoutController.initializePDFRendererWorkspace();
         break;
       }
       break;
     default:
-      MvoEdge.logger.info('default normal layout');
+      MvoEdge.logger.info('initializer: using default layout');
       MvoEdge.layoutController.initializeWorkspace();
       break;
     }
@@ -180,7 +191,20 @@ MvoEdge.initializer = SC.Object.create(
       }
     }
     SC.RunLoop.end();
-    MvoEdge.logger.info('end initializer');
-  }
+    MvoEdge.logger.info('end of initializer._initializeComponents()');
+  },
+
+  // TODO this message should be shown as HTML, replacing the usual application
+  // layout, and not as a JS alert popup; the provided links should be clickable
+  _currentBaseURL: '' + document.location.host + document.location.pathname,
+  _usageMessage: 'The syntax for calling Multivio is:\n\n' +
+      '%@#fixtures&name=<FIXTURE_SET>\n\n'.fmt(this._currentBaseURL) +
+      'or\n\n' +
+      '#get&url=<TARGET>\n\n' +
+      'where <FIXTURE_SET> can be: "VAA", "HTML" or "PDF"\n' +
+      'and <TARGET> is the URL of the content to be presented by Multivio\n\n' +
+      'Examples:\n\n' +
+      '%@#get&url=http://doc.rero.ch/record/9495/export/xd (Dublin Core target)\n\n'.fmt(this._currentBaseURL) +
+      '%@#get&url=http://era.ethz.ch/oai?verb=GetRecord&metadataPrefix=mets&identifier=oai:era.ethz.ch:34314 (METS target)'.fmt(this._currentBaseURL)
 
 });

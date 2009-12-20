@@ -33,9 +33,9 @@ MvoEdge.configurator = SC.Object.create(
   */
   logParameters: {
     "log": {
-      "ajax": "LOG_ERROR",
-      "console": "LOG_INFO",
-      "browserConsole": "LOG_INFO"
+      // "console":        "LOG_INFO"
+      // "browserConsole": "LOG_INFO",
+      // "ajax":           "LOG_ERROR",
     },
     "logFile": "/multivio/log" // to be used with the python server
       //"logFile": "/zircon/Client?cl=error.Logger&act=add" // to be used with the Java servlet
@@ -47,21 +47,21 @@ MvoEdge.configurator = SC.Object.create(
     This object contains all urls used by the application
   
   */
-  urlParameters: {
+  baseUrlParameters: {
     "get": "/multivio/document/get?url=", // to be used with the python server
     //"get": "/zircon/Client?cl=dfst.StructureParser&act=getDoc&recid=" // to be used with the Java servlet
     
     "thumbnail": "/multivio/document/thumbnail?size=100&url=",
     
     "image": {
-      "small": "/multivio/document/thumbnail?size=500&url=",
+      "small":  "/multivio/document/thumbnail?size=500&url=",
       "normal": "/multivio/document/thumbnail?size=1000&url=",
-      "bigg": "/multivio/document/thumbnail?size=1500&url="
+      "big":    "/multivio/document/thumbnail?size=1500&url="
     },
     
     "fixtures": {
       "VAA": "/static/mvo_edge/en/current/images/VAA",
-      "PDF": "/static/mvo_edge/en/current/PDFRenderer",
+      "PDF":  "/static/mvo_edge/en/current/PDFRenderer",
       "HTML": "/static/mvo_edge/en/current/PDFHTML"
     }
   },
@@ -86,9 +86,36 @@ MvoEdge.configurator = SC.Object.create(
       }
     }
     this.set('inputParameters', prop);
-    MvoEdge.logger.info('end readInputParameters');
+    MvoEdge.logger.debug('end of configurator.readInputParameters()');
   },
   
+  /**
+    @method
+
+    Return a configuration value given its path.
+
+    Example: if configPath = 'baseUrlParameters.image.small.' the function
+    returns the equivalent of this.get(baseUrlParameters').image.small
+
+    @param {String} configPath
+    @returns {String}
+  */
+  getPath: function (configPath) {
+    var result = undefined;
+    var pathComponents = configPath.split('.');
+    if (!SC.none(pathComponents) && pathComponents.length > 0) {
+      // extract the first path component, which corresponds to the target
+      // dictionary of MvoEdge.configurator
+      result = this[pathComponents[0]];
+      // dive deeper in the dictionary structure following the successive path
+      // components
+      for (var i = 1; i < pathComponents.length; i++) {
+        result = result[pathComponents[i]];
+      }
+    }
+    return result;
+  },
+
   /**
     @method
   
@@ -96,28 +123,18 @@ MvoEdge.configurator = SC.Object.create(
   
   */
   getImageUrl: function (url) {
-    var scenario = this.get('inputParameters').scenario;
+    var scenario = this.getPath('inputParameters.scenario');
     var modifiedUrl;
     switch (scenario) {
     
     case 'get':
-      modifiedUrl = this.get('urlParameters').image.small;
-      modifiedUrl += url;        
+      modifiedUrl = this.getPath('baseUrlParameters.image.small');
+      modifiedUrl += url;
       break;
     
     case 'fixtures':
-      var name = this.get('inputParameters').name;
-      switch (name) {
-      case 'VAA': 
-        modifiedUrl = this.get('urlParameters').fixtures.VAA;
-        break;
-      case 'HTML':
-        modifiedUrl = this.get('urlParameters').fixtures.HTML;
-        break;
-      case 'PDF':
-        modifiedUrl = this.get('urlParameters').fixtures.PDF;
-        break;
-      }
+      var name = this.getPath('inputParameters.name');
+      modifiedUrl = this.getPath('baseUrlParameters.fixtures.%@'.fmt(name));
       modifiedUrl += url.substring(url.lastIndexOf("/"));
       break;
     
@@ -141,7 +158,7 @@ MvoEdge.configurator = SC.Object.create(
     switch (scenario) {
     
     case 'get':
-      modifiedUrl = this.get('urlParameters').thumbnail;
+      modifiedUrl = this.get('baseUrlParameters').thumbnail;
       modifiedUrl += url;
       break;
     
@@ -150,13 +167,13 @@ MvoEdge.configurator = SC.Object.create(
     
       switch (name) {
       case 'VAA': 
-        modifiedUrl = this.get('urlParameters').fixtures.VAA;
+        modifiedUrl = this.get('baseUrlParameters').fixtures.VAA;
         break;
       case 'HTML':
-        modifiedUrl = this.get('urlParameters').fixtures.HTML;
+        modifiedUrl = this.get('baseUrlParameters').fixtures.HTML;
         break;
       case 'PDF':
-        modifiedUrl = this.get('urlParameters').fixtures.PDF;
+        modifiedUrl = this.get('baseUrlParameters').fixtures.PDF;
         break;
       }
       modifiedUrl += url.substring(url.lastIndexOf("/"));
