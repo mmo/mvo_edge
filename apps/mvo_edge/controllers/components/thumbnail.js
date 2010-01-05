@@ -59,7 +59,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         var label = node.get('label');
         // to create thumbnail url
         var defaultUrl = node.get('urlDefault');
-        thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(defaultUrl);
+        var thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(defaultUrl);
 
         var thumbnailHash = {
             guid: id,

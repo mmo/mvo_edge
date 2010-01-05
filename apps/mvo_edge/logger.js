@@ -7,10 +7,10 @@
 /**
 Define Log levels
 */
-MvoEdge.LOG_ERROR = 40;
-MvoEdge.LOG_WARN = 30;
-MvoEdge.LOG_INFO = 20;
-MvoEdge.LOG_DEBUG = 10;
+MvoEdge.LOG_ERROR = 40000;
+MvoEdge.LOG_WARN = 30000;
+MvoEdge.LOG_INFO = 20000;
+MvoEdge.LOG_DEBUG = 10000;
 
 
 /**
@@ -86,7 +86,7 @@ MvoEdge.logger = SC.Object.create(
         if (appenderObject) this._attachAppender(appenderObject, level);
       }
     }
-    this.info('end of logger.init()');
+    this.info('end of logger.init');
   },
   
   /**

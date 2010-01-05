@@ -25,7 +25,12 @@ MvoEdge.initializer = SC.Object.create(
   initialize: function () {
   },
 
-  // NOTE: what's the goal of this property?
+  /**
+    @property {Boolean}
+    
+    Is the first time the _inputParametersDidChange method is call
+    This method is call a first time to create the binding => do nothing
+  */
   isFirstTime: YES,
 
   /**
@@ -56,7 +61,7 @@ MvoEdge.initializer = SC.Object.create(
                 url);
             var serverAdress = MvoEdge.configurator.getPath('baseUrlParameters.get');            
             var request = SC.Request.getUrl(serverAdress + url).
-                json().notify(this, this._storeCDM);  // to be used with the python server (NOTE: why python?)
+                json().notify(this, this._storeCDM);
             request.set('isAsynchronous', NO);
             request.set('isJSON', YES);
             request.send();
@@ -68,6 +73,7 @@ MvoEdge.initializer = SC.Object.create(
             return NO;
           }
           break;
+          
         case 'fixtures':
           MvoEdge.logger.info('initializer: using fixtures');
           var name = this.get('inputParameters').name;
@@ -97,11 +103,13 @@ MvoEdge.initializer = SC.Object.create(
           alert(this._usageMessage);
           return NO;
         }
+        this._initializeComponents();
       }
       else {
         MvoEdge.logger.error('invalid request');
+        return NO;
       }
-      this._initializeComponents();
+      
     }
   }.observes('inputParameters'),
  

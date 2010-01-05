@@ -5,64 +5,56 @@
 /*globals MvoEdge */
 
 /**
-  @class
+  @mixin
 
-  Model of a tree component. 
-  To have more information see the documentation of the SC.TreeController
-  and the demo outline. 
+  Model of a tree component.
+  A treeController controls objects that implement 
+  the treeItemChildren property. This property returns the current array
+  of child tree items.
+   
+  To have more information see the documentation of the SC.TreeController, 
+  SC.TreeItemContent and the demo outline. 
 
   @author {CHE}      
   @extends {Object}   
   @since {0.1.0} 
 */
-MvoEdge.TreeContent = SC.Object.extend({
 
-  treeItemIsExpanded: YES,
-    
-  label: undefined,
-    
-  treeNodeId: undefined,
+MvoEdge.TreeContent = {
   
   /**
+  @property {Boolean}
+  
+  */
+  treeItemIsExpanded: undefined,
+
+  /**
     @method 
-    
-    Return the list of the children of this TreeItem
+     
+    Return the list of the children of this MvoEdge.Tree as TreeContent
   */
   treeItemChildren: function () {
     var ret = [];
-    var oneLabel = MvoEdge.store.find(MvoEdge.Tree, this.treeNodeId);
-    var oneLabelChildren = oneLabel.get('children');  
-    
-    if (oneLabelChildren.get('length') !== 0) {
-      // for each children create a new TreeContent     
-      for (var i = 0; i < oneLabelChildren.get('length'); i++) {
-        var oneChildLabel = MvoEdge.store.find(
-            MvoEdge.Tree, oneLabelChildren.objectAt(i).get('guid'));
-        var newTreeContent;
-        // child with children => continue to explore the Tree 
-        // => treeItemIsExpanded = YES 
-        if (oneChildLabel.get('children').get('length') !== 0) {
-          newTreeContent = MvoEdge.TreeContent.create({
-            label: oneChildLabel.get('label'),
-            treeNodeId: oneChildLabel.get('guid'),
-            treeItemIsExpanded: YES
-          }); 
-        }
-        // child with no children
-        else {
-          newTreeContent = MvoEdge.TreeContent.create({
-            label: oneChildLabel.get('label'), 
-            treeNodeId: oneChildLabel.get('guid'), 
-            treeItemIsExpanded: NO
-          });
-        }
-        MvoEdge.treeController._treeNodeById[newTreeContent.get('treeNodeId')] =
-            newTreeContent;
-        ret.push(newTreeContent);
-      }
+    var children = this.get('children');
+    if (children.get('length') > 0) {
+      this.treeItemIsExpanded = YES;
     }
+    else {
+      this.treeItemIsExpanded = NO;
+    } 
+    
+    for (var i = 0; i < children.get('length'); i++) {
+      var oneChild = MvoEdge.store.find(
+          MvoEdge.Tree, children.objectAt(i).get('guid'));
+      var newTreeContent = SC.mixin(oneChild, MvoEdge.TreeContent);
+      MvoEdge.treeController._treeNodeById[newTreeContent.get('guid')] = 
+          newTreeContent;
+          
+      ret.push(newTreeContent);
+    }
+    
     if (ret.length === 0) ret = null;
     return ret;
-  }.property().cacheable() // NOTE: this property has no dependencies? and why is it a property?
-  
-});
+  }.property().cacheable() 
+
+};

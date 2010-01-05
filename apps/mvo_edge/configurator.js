@@ -1,6 +1,6 @@
 // ==========================================================================
-// Project:   MvoEdge.server
-// Copyright: ©2009 My Company, Inc.
+// Project:   MvoEdge
+// Copyright: ©2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
 
@@ -33,9 +33,9 @@ MvoEdge.configurator = SC.Object.create(
   */
   logParameters: {
     "log": {
-      // "console":        "LOG_INFO"
-      // "browserConsole": "LOG_INFO",
-      // "ajax":           "LOG_ERROR",
+      "console":        "LOG_INFO",
+      "browserConsole": "LOG_INFO",
+      "ajax":           "LOG_ERROR"
     },
     "logFile": "/multivio/log" // to be used with the python server
       //"logFile": "/zircon/Client?cl=error.Logger&act=add" // to be used with the Java servlet
@@ -164,18 +164,7 @@ MvoEdge.configurator = SC.Object.create(
     
     case 'fixtures':
       var name = this.get('inputParameters').name;
-    
-      switch (name) {
-      case 'VAA': 
-        modifiedUrl = this.get('baseUrlParameters').fixtures.VAA;
-        break;
-      case 'HTML':
-        modifiedUrl = this.get('baseUrlParameters').fixtures.HTML;
-        break;
-      case 'PDF':
-        modifiedUrl = this.get('baseUrlParameters').fixtures.PDF;
-        break;
-      }
+      modifiedUrl = this.getPath('baseUrlParameters.fixtures.%@'.fmt(name));
       modifiedUrl += url.substring(url.lastIndexOf("/"));
       break;
     
