@@ -3,7 +3,6 @@
 // Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
-//require('views/tree');
 //require('views/content');
 //require('views/pdf_renderer');
 
@@ -28,8 +27,7 @@ MvoEdge.viewsPage = SC.Page.design({
     
     contentView: MvoEdge.ContentView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: 'MvoEdge.masterController.masterSelection',
-      contentValueKey: 'staticUrl'
+      useImageCache: NO
     })
   }),
   
@@ -42,7 +40,7 @@ MvoEdge.viewsPage = SC.Page.design({
     contentView: SC.WebView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
       contentBinding: 'MvoEdge.masterController.masterSelection',
-      contentValueKey: 'staticUrl'
+      contentValueKey: 'imageUrl'
     })
   }),
 
@@ -72,9 +70,10 @@ MvoEdge.viewsPage = SC.Page.design({
       rowHeight: 100,
       columnWidth: 60,
       exampleView: SC.ImageView,
+      useImageCache: NO,
       contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
       selectionBinding: 'MvoEdge.thumbnailController.selection',
-      contentValueKey: 'url'    
+      contentValueKey: 'url'
     })
   }),
   
@@ -105,8 +104,10 @@ MvoEdge.viewsPage = SC.Page.design({
   treeView: SC.ScrollView.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
 
-    contentView: MvoEdge.TreeView.design({
-      classNames: 'yui-skin-sam'
+    contentView: SC.ListView.design({
+      contentValueKey: 'label',
+      contentBinding: 'MvoEdge.treeController.arrangedObjects',
+      selectionBinding: 'MvoEdge.treeController.selection'
     })
   }),
   
