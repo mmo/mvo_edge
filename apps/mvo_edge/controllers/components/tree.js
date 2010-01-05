@@ -55,12 +55,12 @@ MvoEdge.treeController = SC.TreeController.create(
   */
   _createSubmodel: function (cdmNodes) {
     // create a fake node to be used as the root Node
-    var listOfChild = [];
-    listOfChild.push("t" + cdmNodes.firstObject().get('guid'));
+    var listOfChildren = [];
+    listOfChildren.push("t" + cdmNodes.firstObject().get('guid'));
     var rootNodeHash = {
         guid:         "tn00000",
         label:        "Root",
-        children:     listOfChild
+        children:     listOfChildren
       };
     var newTreeNode = MvoEdge.store.createRecord(
         MvoEdge.Tree, rootNodeHash, "tn00000");
