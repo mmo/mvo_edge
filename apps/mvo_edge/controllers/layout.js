@@ -58,17 +58,17 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
     this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
-    MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
+    MvoEdge.logger.info('layoutController workspace initialized');
   },
   
   
   /**
     Sets up the views for the HTML pages in the workspace.
-
+    
     This setup cannot be done in this object's init() function because when
     this object is created, the other views have not yet been initialized, so
     they cannot yet be referenced.
-
+    
     This function must therefore be explicitly called from the main() function
     during application setup.
     
@@ -83,7 +83,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
     this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
-    MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
+    MvoEdge.logger.info('layoutController HTMLworkspace initialized');
   },
 
   /**
@@ -107,7 +107,7 @@ MvoEdge.layoutController = SC.Object.create(
     this.layoutView(MvoEdge.LAYOUT_RIGHT, 'viewsPage.treeView');
     this.layoutView(MvoEdge.LAYOUT_FOOTER, 'viewsPage.navigationView');
     SC.RunLoop.end();
-    MvoEdge.getPath('viewsPage.treeView.contentView').buildTree();
+    MvoEdge.logger.info('layoutController PDFworkspace initialized');
   },
 
   /**

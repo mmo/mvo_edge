@@ -21,30 +21,23 @@ MvoEdge.masterController = SC.ArrayController.create(
   allowsMultipleSelection: NO,
   
   /**
-    @method
-
-    Initialize the master controller, its content and the initial selection
-
-    @param {SC.RecordArray} nodes records of the Core Document Model
-  */
-  initialize: function (nodes) {
-    this.set('content', nodes);
-    // initialize the selection with the first CDM leaf node
-    var sortedNodes = nodes.sortProperty('guid');
-    for (var i = 0; i < sortedNodes.length; i++) {
-      if (sortedNodes[i].get('isLeafNode')) {
-        this.set('masterSelection', sortedNodes[i]);
-        break;
-      }
-    }
-  },
-
-  /**
     The guid of the selected file/object that is currently being displayed by
     the application
     @property {MvoEdge.CoreDocumentNode} masterSelection the selected CDM node
   */
   masterSelection: undefined,
+  
+  /**
+    @method
+
+    Initialize the master controller, its content
+
+    @param {SC.RecordArray} nodes records of the Core Document Model
+  */
+  initialize: function (nodes) {
+    this.set('content', nodes);
+    MvoEdge.logger.info('masterController initialized');
+  },
 
   /**
     The the document's descriptive metadata contained in the root node of the
@@ -52,7 +45,7 @@ MvoEdge.masterController = SC.ArrayController.create(
     @property {Array} descriptiveMetadataDictionary
   */
   descriptiveMetadataDictionary: function () {
-    return this.arrangedObjects().firstObject().get('metadata');
-  }.property()
-
+    var metadata = this.get('content').firstObject().get('metadata');
+    return metadata;
+  }.property('content')
 });

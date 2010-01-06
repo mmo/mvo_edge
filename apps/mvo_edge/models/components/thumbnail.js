@@ -16,8 +16,11 @@ MvoEdge.Thumbnail = SC.Record.extend(
 	
   guid: SC.Record.attr(String),
   url: SC.Record.attr(String),
-  image_url: SC.Record.attr(String),
-  label: SC.Record.attr(String),
+  // TODO verify if these properties are really used
+  // Not used by fixtures VAA and get scenario
+  // used by PDFRendrer or HTML ?
+  //image_url: SC.Record.attr(String),
+  //label: SC.Record.attr(String),
   coreDocumentNode: SC.Record.toOne("MvoEdge.CoreDocumentNode")
  
 });
