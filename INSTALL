@@ -1,23 +1,22 @@
 ==============================================================================
   Project:    MvoEdge - https://www.multivio.org/
-  Copyright:  (c) 2009 RERO
+  Copyright:  (c) 2009-2010 RERO
   License:    See file license.js
 ==============================================================================
 
 
-MvoEdge release 0.0.1 2009MMDD
+MvoEdge release 0.0.1 2010MMDD
 =============================================================================
 
 
 REQUIREMENTS
 =============================================================================
 
-SproutCore:
-    Abbot:                  commit f757aef6f5be07fb
-    SproutCore framework:   commit dd5d7ff8d6669309
+SproutCore: 1.0.1037
 
-YUI: 2.6.0
-
+Log4js: 0.3.0 - The file log4js.js was modified at the line 2501 (last line):
+                -log4jsLogger.setLevel(Log4js.Level.ALL)
+                +log4jsLogger.setLevel(Log4js.Level.OFF);
 
 INSTALLATION PROCEDURE
 =============================================================================

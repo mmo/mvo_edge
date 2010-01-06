@@ -38,8 +38,9 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
   */
   initialize: function (nodes) {
     this._createSubmodel(nodes);
-    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    var thumbnails = MvoEdge.store.find(MvoEdge.Thumbnail);
     this.set('content', thumbnails);
+    MvoEdge.logger.info('thumbnailController initialized');
   },
   
   /**
@@ -56,18 +57,19 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         var cdmNodeId = node.get('guid');
         var id = 'f%@'.fmt(cdmNodeId);
         var label = node.get('label');
-        var staticUrl = node.get('staticUrl');
-        SC.imageCache.loadImage(staticUrl);
+        // to create thumbnail url
+        var defaultUrl = node.get('urlDefault');
+        var thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(defaultUrl);
+
         var thumbnailHash = {
             guid: id,
-            url: staticUrl,
+            url: thumbnailUrl,
             label: label,
             coreDocumentNode: cdmNodeId
           };
         // create a new thumbnail record
         var thumbnail = MvoEdge.store.createRecord(
-              MvoEdge.Thumbnail, thumbnailHash, id);
-        var res = MvoEdge.store.commitRecord(MvoEdge.Thumbnail, id);
+          MvoEdge.Thumbnail, thumbnailHash, id);
       }
     });
   },
@@ -78,7 +80,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
    */
   _contentDidChange: function () {
     var newTable = {};
-    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    var thumbnails = MvoEdge.store.find(MvoEdge.Thumbnail);
     if (thumbnails && thumbnails.isEnumerable) {
       for (var i = 0; i < thumbnails.length(); i++) {
         var thumbnail = thumbnails.objectAt(i);
@@ -108,7 +110,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         this.set('masterSelection', coreDocumentNode);
         SC.RunLoop.end();
 
-        console.info('MvoEdge.thumbnailController#_selectionDidChange: %@'.
+        MvoEdge.logger.debug('thumbnailController#_selectionDidChange: %@'.
             fmt(this.get('selection').firstObject()));
       }
     }
@@ -132,9 +134,10 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
       // make sure the selection has actually changed, (to avoid loopbacks)
       if (SC.none(currentThumbnailSelection) ||
           (newThumbnail && newThumbnail !== currentThumbnailSelection)) {
+        SC.RunLoop.begin();
         this.set('selection', SC.SelectionSet.create().addObject(newThumbnail));
-
-        console.info('MvoEdge.thumbnailController#_masterSelectionDidChange: %@'.
+        SC.RunLoop.end();
+        MvoEdge.logger.debug('thumbnailController#_masterSelectionDidChange: %@'.
             fmt(this.get('masterSelection').get('guid')));
       }
     }
