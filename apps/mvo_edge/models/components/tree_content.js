@@ -27,6 +27,14 @@ MvoEdge.TreeContent = {
   
   */
   treeItemIsExpanded: undefined,
+  
+  /**
+  @property {Number}
+  
+  The size of the label
+  
+  */
+  labelWidth: undefined,
 
   /**
     @method 
@@ -36,6 +44,7 @@ MvoEdge.TreeContent = {
   treeItemChildren: function () {
     var ret = [];
     var children = this.get('children');
+    this.labelWidth = this.get('label').length;
     if (children.get('length') > 0) {
       this.treeItemIsExpanded = YES;
     }
@@ -49,7 +58,6 @@ MvoEdge.TreeContent = {
       var newTreeContent = SC.mixin(oneChild, MvoEdge.TreeContent);
       MvoEdge.treeController._treeNodeById[newTreeContent.get('guid')] = 
           newTreeContent;
-          
       ret.push(newTreeContent);
     }
     

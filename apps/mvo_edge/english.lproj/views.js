@@ -5,6 +5,8 @@
 /*globals MvoEdge */
 //require('views/content');
 //require('views/pdf_renderer');
+//require('views/thumbnail');
+//require('views/tree');
 
 MvoEdge.viewsPage = SC.Page.design({
 
@@ -60,7 +62,7 @@ MvoEdge.viewsPage = SC.Page.design({
   /**
     Thumbnail view
   */
-  thumbnailView: SC.ScrollView.design({
+  thumbnailView: MvoEdge.ThumbnailView.design({
     hasHorizontalScroller: NO,
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
 
@@ -68,7 +70,6 @@ MvoEdge.viewsPage = SC.Page.design({
       layout: { top: 0, bottom: 0, left: 5, right: 5 },
       insertionOrientation: SC.VERTICAL_ORIENTATION,
       rowHeight: 100,
-      columnWidth: 60,
       exampleView: SC.ImageView,
       useImageCache: NO,
       contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
@@ -104,7 +105,8 @@ MvoEdge.viewsPage = SC.Page.design({
   treeView: SC.ScrollView.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
 
-    contentView: SC.ListView.design({
+    contentView: MvoEdge.TreeView.design({
+      rowHeight: 20,
       contentValueKey: 'label',
       contentBinding: 'MvoEdge.treeController.arrangedObjects',
       selectionBinding: 'MvoEdge.treeController.selection'
