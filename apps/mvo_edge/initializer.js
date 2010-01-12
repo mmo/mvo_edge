@@ -163,7 +163,8 @@ MvoEdge.initializer = SC.Object.create(
     MvoEdge.thumbnailController.initialize(nodes);
     MvoEdge.treeController.initialize(nodes);
     MvoEdge.masterController.initialize(nodes);
-    
+    MvoEdge.navigationController.initialize();
+     
     // Call the layout controller in order to setup the interface components
     var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
     switch (scenario) {

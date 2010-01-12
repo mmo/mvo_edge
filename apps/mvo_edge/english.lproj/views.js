@@ -121,16 +121,18 @@ MvoEdge.viewsPage = SC.Page.design({
     
     firstPageView: SC.ButtonView.design({
       layout: { centerX: -70, centerY: 0, width: 30, height: 25 },
-      titleMinWidth : 30,
-      title: "<<",
+      titleMinWidth : 0,
+      needsEllipsis: NO,
+      icon: static_url('icons/beginning.png'),
       target: "MvoEdge.navigationController", 
       action: "goToFirstPage" 
     }),    
     
     previousPageView: SC.ButtonView.design({
       layout: { centerX: -35, centerY: 0,  width: 30, height: 25 },
-      titleMinWidth : 30,
-      title: "<",
+      titleMinWidth : 0,
+      needsEllipsis: NO,
+      icon: static_url('icons/previous.png'),
       target: "MvoEdge.navigationController", 
       action: "goToPreviousPage"
     }),    
@@ -146,16 +148,18 @@ MvoEdge.viewsPage = SC.Page.design({
 
     nextPageView: SC.ButtonView.design({
       layout: { centerX: 35, centerY: 0, width: 30, height: 25 },
-      titleMinWidth : 30,
-      title: ">",      
+      titleMinWidth : 0,
+      needsEllipsis: NO,
+      icon: static_url('icons/next.png'),
       target: "MvoEdge.navigationController", 
       action: "goToNextPage"
     }),
 
     lastPageView: SC.ButtonView.design({
       layout: { centerX: 70, centerY: 0, width: 30, height: 25 },
-      titleMinWidth : 30,
-      title: ">>",
+      titleMinWidth : 0,
+      needsEllipsis: NO,
+      icon: static_url('icons/end.png'),
       target: "MvoEdge.navigationController", 
       action: "goToLastPage"
     }),    
@@ -169,8 +173,9 @@ MvoEdge.viewsPage = SC.Page.design({
       zoomInPageView: SC.ButtonView.design({
         layout: { centerX: -35, centerY: 0, width: 30, height: 25 },
         layerId: "zoomInPageId",
-        titleMinWidth : 30,
-        title: "-",
+        titleMinWidth : 0,
+        needsEllipsis: NO,
+        icon: static_url('icons/zoom-minus.png'),
         target: "MvoEdge.zoomController", 
         action: "doZoomIn"
       }),
@@ -178,8 +183,9 @@ MvoEdge.viewsPage = SC.Page.design({
       originalSizePageView: SC.ButtonView.design({
         layout: { centerX: 0, centerY: 0, width: 30, height: 25 },
         layerId: "originalSizePageId",
-        titleMinWidth : 30,
-        title: "o",
+        titleMinWidth : 0,
+        needsEllipsis: NO,
+        icon: static_url('icons/loupe.png'),
         target: "MvoEdge.zoomController", 
         action: "retrieveOriginalSize"
       }),      
@@ -187,8 +193,9 @@ MvoEdge.viewsPage = SC.Page.design({
       zoomOutPageView: SC.ButtonView.design({
         layout: { centerX: 35, centerY: 0, width: 30, height: 25 },
         layerId: "zoomOutPageId",
-        titleMinWidth : 30,
-        title: "+",
+        titleMinWidth : 0,
+        needsEllipsis: NO,
+        icon: static_url('icons/zoom-plus.png'),
         target: "MvoEdge.zoomController", 
         action: "doZoomOut"
       })

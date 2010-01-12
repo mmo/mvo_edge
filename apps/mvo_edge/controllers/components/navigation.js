@@ -22,11 +22,9 @@ MvoEdge.navigationController = SC.ObjectController.create(
     CurrentPage.
  
     @property {Integer}
-    @default undefined
+    @default null
   */
-  currentPage: undefined,
-  
-  oldPage: undefined,
+  currentPage: null,
   
   /** 
     Number of pages.
@@ -34,9 +32,9 @@ MvoEdge.navigationController = SC.ObjectController.create(
     @private
     
     @property {Integer}
-    @default undefined
+    @default null
   */
-  _numberOfPages: undefined,  
+  _numberOfPages: null,
   
   /**
     Binds to the master selection.
@@ -91,10 +89,10 @@ MvoEdge.navigationController = SC.ObjectController.create(
       var currentContent = this.get('content');
       if (SC.none(currentContent) ||
           this.get('currentPage') !== currentContent.get('sequenceNumber')) { 
-        var cdmStore = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
+        var cdmStore = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
         var q = SC.Query.create({ recordType: MvoEdge.CoreDocumentNode, 
             conditions: "sequenceNumber = %@".fmt(this.get('currentPage'))});
-        var imageObjects = cdmStore.findAll(q);
+        var imageObjects = cdmStore.find(q);
         var cdmObject = imageObjects.firstObject();
         if (!SC.none(cdmObject)) {
           SC.RunLoop.begin();
@@ -138,7 +136,6 @@ MvoEdge.navigationController = SC.ObjectController.create(
     
   */    
   goToFirstPage: function () {
-    var fp = 1;
     this.set('currentPage', 1);
   },
   
@@ -164,18 +161,19 @@ MvoEdge.navigationController = SC.ObjectController.create(
     @returns {Integer} Return the number of pages.
   */ 
   _retrieveNumberOfPages: function () {
-    var thumbnails = MvoEdge.store.findAll(MvoEdge.Thumbnail);
+    var thumbnails = MvoEdge.store.find(MvoEdge.Thumbnail);
     return thumbnails.get('length');
   }.property('_numberOfPages').cacheable(),
   
   /**
     @method
 
-    Initialize this controller, retrieve the number of pages
+    Initialize this controller, retrieve the number of pages.
 
   */
   initialize: function () {
     this._numberOfPages = this.get('_retrieveNumberOfPages');
+    MvoEdge.logger.info('navigationController initialized');
   }
   
 });

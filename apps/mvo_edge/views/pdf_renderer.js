@@ -103,7 +103,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
       var cdmStore = MvoEdge.store.findAll(MvoEdge.CoreDocumentNode);
       var q = SC.Query.create({ recordType: MvoEdge.CoreDocumentNode, 
           conditions: "urlDefault != undefined"});
-      var cdmObjects = cdmStore.findAll(q);
+      var cdmObjects = cdmStore.find(q);
 
       if (!cdmObjects.firstObject()) {
         // TODO : throw exception and log error
