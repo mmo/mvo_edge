@@ -9,7 +9,7 @@
 /**
   @mixin
 
-  Adds support for grid-based interface layout.
+  Adds support for a 3x3-cell grid-based interface layout.
 
   It can be applied to a view in order to manage the layout of child
   components on the view's canvas. The view is split into a grid of 3 rows
@@ -44,7 +44,7 @@ MvoEdge.GridLayout3x3 = {
     Grid cell occupancy matrix
     
     Each position of this 2D array, if not null, points to a component in the
-    componentsOnGrid table, and indicates that the cell is occupied by that
+    _componentsOnGrid table, and indicates that the cell is occupied by that
     component.
 
     @private
@@ -53,34 +53,19 @@ MvoEdge.GridLayout3x3 = {
   _gridCells: [],
 
   /**
-    @property {Hash}
+    @property {Object}
 
     Registered components
     
     Each entry is composed as follows
-      Key:  component {Object}
+      Key: componentName {String} the name of a component in MvoEdge.views
       Value: [coordinates {Array}, coveredCells {Array}]
         coordinates: [x, y, xlen, ylen]
         coveredCells: [[x, y], [x, y], [x, y] ... ]
 
-        { {Object}:
-          { 'coordinates': [x, y, w, h],
-            'coveredCells': [
-              [x, y],
-              [x, y],
-              ...
-            ]
-          }
-        }
-            
-
     @private
-    @default []
   */
   _componentsOnGrid: {},
-
-  // TODO document
-  _layoutSnapshots: {},
 
   /**
     Grid dimension properties
@@ -102,7 +87,7 @@ MvoEdge.GridLayout3x3 = {
 
     Initilize grid
 
-    @param {Hash} params layout parameters hash with the following content:
+    @param {Object} params layout parameters hash with the following content:
         {Integer} leftStripWidth
         {Integer} rightStripWidth
         {Integer} headerHeight
@@ -146,7 +131,7 @@ MvoEdge.GridLayout3x3 = {
 
     Lay out a component on this view's grid
 
-    @param {Hash} params layout parameters hash with the following content:
+    @param {Object} params layout parameters hash with the following content:
         {String}  name   component name
         {Integer} x      x coordinate on grid
         {Integer} y      y coordinate on grid
@@ -320,20 +305,5 @@ MvoEdge.GridLayout3x3 = {
         [null, null, null]
       ];
     
-  },
-  
-  saveLayout: function (name) {
-    this._layoutSnapshots[name] = SC.copy(this._componentsOnGrid);
-  },
-
-  applySavedLayout: function (name) {
-    if (!SC.none(this._layoutSnapshots[name])) {
-      for (var i = 0; i < this._layoutSnapshots.length; i++) {
-        var component = 1;
-        var c = [];
-        this.layOutComponent(component, c[0], c[1], c[2], c[3]);
-      }
-    }
   }
-
 };

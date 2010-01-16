@@ -9,9 +9,9 @@
 
   Object that get and store all config parameters.
 
-  @author {CHE}     
-  @extends {Object}  
-  @since {0.1.0}    
+  @author CHE
+  @extends {SC.Object}
+  @since 0.1.0
 */
 MvoEdge.configurator = SC.Object.create(
 /** @scope MvoEdge.configurator.prototype */ {
@@ -64,11 +64,16 @@ MvoEdge.configurator = SC.Object.create(
     }
   },
 
+  /**
+    @property {Object}
+
+    Definition of the different layouts that can be set on the main page 
+  */
   layouts: {
     'default': {
       layoutClass: 'GridLayout3x3',
       layoutParams: {
-        'leftStripWidth':  400,
+        'leftStripWidth':  200,
         'rightStripWidth': 120,
         'headerHeight':     80,
         'footerHeight':     80,
@@ -79,7 +84,14 @@ MvoEdge.configurator = SC.Object.create(
       }
     }
   },
-  
+
+  /**
+    @property {Object}
+
+    Definition of different possible component arrangements on the screen.
+    The 'baseLayout' key points to the one of the members of the property
+    'this.layouts'.
+  */
   componentLayouts: {
     'pageBased': {
       baseLayout: 'default',
@@ -128,7 +140,7 @@ MvoEdge.configurator = SC.Object.create(
     Return a configuration value given its path.
 
     Example: if configPath = 'baseUrlParameters.image.small.' the function
-    returns the equivalent of this.get(baseUrlParameters').image.small
+    returns the equivalent of this.get('baseUrlParameters').image.small
 
     @param {String} configPath
     @returns {String}
@@ -159,9 +171,8 @@ MvoEdge.configurator = SC.Object.create(
 
   /**
     @method
-  
+
     Return the adapted url for the main image
-  
   */
   getImageUrl: function (url) {
     var scenario = this.getPath('inputParameters.scenario');
@@ -188,9 +199,8 @@ MvoEdge.configurator = SC.Object.create(
   
   /**
     @method
-  
+
     Return the adapted url for the thumbnail image
-  
   */
   getThumbnailUrl: function (url) {
     var scenario = this.get('inputParameters').scenario;

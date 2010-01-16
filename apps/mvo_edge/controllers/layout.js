@@ -56,22 +56,3 @@ MvoEdge.layoutController = SC.Object.create(
     MvoEdge.logger.info('layoutController workspace initialized');
   }
 });
-
-
-/**
-  @class
-
-  Layout description
-  
-  (TODO Add the class description - see *Notes about the class template below)
-
-  @author mmo
-  @extends {Object}
-  @since 0.1.0
-*/
-
-MvoEdge.LayoutDefinition = SC.Object.extend({
-  baseLayoutName: '',
-  baseLayoutParams: {},
-  components: []
-});
