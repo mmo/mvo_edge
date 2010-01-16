@@ -3,6 +3,7 @@
 // Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
+//require('layout_definition');
 
 MvoEdge.LAYOUT_HEADER  = 'headerView';
 MvoEdge.LAYOUT_LEFT    = 'middleView.leftView';
@@ -61,6 +62,89 @@ MvoEdge.layoutController = SC.Object.create(
     MvoEdge.logger.info('layoutController workspace initialized');
   },
   
+
+
+  initializeWorkspaceWithGrid: function () {
+    //this.layoutView(MvoEdge.LAYOUT_HEADER, 'viewsPage.titleView');
+    SC.RunLoop.begin();
+    this.applyLayout(this.pageBasedLayout);
+    SC.RunLoop.end();
+    MvoEdge.logger.info('layoutController workspace initialized');
+    
+    /*
+    SC.RunLoop.begin();
+    mainPage.layOutComponent(
+        MvoEdge.getPath('viewsPage.mainContentView'), 0, 0, 3, 3);
+    SC.RunLoop.end();
+    */
+  },
+
+  applyLayout: function (layout) {
+    // apply the base layout to the main page
+    var mainPage = MvoEdge.getPath('mainPage.mainPane');
+    var layoutMixin = MvoEdge.getPath(layout.baseLayoutName);
+    if (SC.none(layoutMixin)) {
+      var errMess =
+        'Unable to find layout mixin %@'.fmt(layout.baseLayoutName);
+      throw errMess;
+    }
+    SC.mixin(mainPage, layoutMixin);
+    mainPage.layOutGrid(
+        layout.baseLayoutParams.leftStripWidth,
+        layout.baseLayoutParams.rightStripWidth,
+        layout.baseLayoutParams.headerHeight,
+        layout.baseLayoutParams.footerHeight,
+        layout.baseLayoutParams.marginTop,
+        layout.baseLayoutParams.marginRight,
+        layout.baseLayoutParams.marginBottom, 
+        layout.baseLayoutParams.marginLeft
+    );
+
+    // lay out the components
+    for (var i = 0; i < layout.components.length; i++) {
+      var c = layout.components[i];
+      mainPage.layOutComponent(MvoEdge.getPath(c[0]), c[1], c[2], c[3], c[4]);
+    }
+  },
+
+  pageBasedLayout: MvoEdge.LayoutDefinition.create({
+    baseLayoutName: 'GridLayout3x3',
+    baseLayoutParams: {
+      'leftStripWidth':  400,
+      'rightStripWidth': 120,
+      'headerHeight':     80,
+      'footerHeight':     80,
+      'marginTop':         5,
+      'marginRight':       5,
+      'marginBottom':      5,
+      'marginLeft':        5
+    },
+    components: [
+      ['views.metadataView',    0, 0, 3, 1],
+      ['views.treeView',        0, 1, 1, 1],
+      ['views.mainContentView', 1, 1, 1, 1],
+      ['views.thumbnailView',   2, 1, 1, 1],
+      ['views.navigationView',  0, 2, 3, 1]
+    ]
+  }),
+
+  contentFullScreenLayout: MvoEdge.LayoutDefinition.create({
+    baseLayoutName: 'GridLayout3x3',
+    baseLayoutParams: {
+      'leftStripWidth':  0,
+      'rightStripWidth': 0,
+      'headerHeight':    0,
+      'footerHeight':    0,
+      'marginTop':       5,
+      'marginRight':     5,
+      'marginBottom':    5,
+      'marginLeft':      5
+    },
+    components: [
+      ['views.mainContentView', 0, 0, 3, 3]
+    ]
+  }),
+
   
   /**
     Sets up the views for the HTML pages in the workspace.

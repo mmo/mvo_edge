@@ -13,7 +13,7 @@
 */
 MvoEdge.Thumbnail = SC.Record.extend(
 /** @scope MvoEdge.Thumbnail.prototype */ {
-	
+
   guid: SC.Record.attr(String),
   url: SC.Record.attr(String),
   // TODO verify if these properties are really used

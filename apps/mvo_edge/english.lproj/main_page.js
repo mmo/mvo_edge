@@ -29,53 +29,53 @@ MvoEdge.mainPage = SC.Page.design({
   // Add childViews to this pane for views to display immediately on page 
   // load.
   mainPane: SC.MainPane.design({
-    childViews: 'headerView middleView footerView'.w(),
+    //childViews: 'headerView middleView footerView'.w(),
 
     /**
       HEADER
     */
-    headerView: SC.View.design(SC.Border, {
-      layout: { top: 10, left: 20, right: 20, height: 60 },
-      borderStyle: SC.BORDER_GRAY
-    }),
+    // headerView: SC.View.design(SC.Border, {
+    //   layout: { top: 10, left: 20, right: 20, height: 60 },
+    //   borderStyle: SC.BORDER_GRAY
+    // }),
 
-    middleView: SC.View.design({
-      hasHorizontalScroller: NO,
-      layout: { top: 71, bottom: 61, left: 20, right: 20 },
-      childViews: 'leftView centralView rightView'.w(),
+    // middleView: SC.View.design({
+    //   hasHorizontalScroller: NO,
+    //   layout: { top: 71, bottom: 61, left: 20, right: 20 },
+    //   childViews: 'leftView centralView rightView'.w(),
   
       /**
         LEFT
       */
-      leftView: SC.View.design(SC.Border, {
-        layout: { top: 10, bottom: 10, left: 0, width: 100 },
-        borderStyle: SC.BORDER_GRAY
-      }),
+      // leftView: SC.View.design(SC.Border, {
+      //   layout: { top: 10, bottom: 10, left: 0, width: 100 },
+      //   borderStyle: SC.BORDER_GRAY
+      // }),
 
       /**
         CENTRAL
       */
-      centralView: SC.View.design(SC.Border, {
-        layout: { top: 10, bottom: 10, left: 110, right: 170 },
-        borderStyle: SC.BORDER_GRAY
-      }),
+      // centralView: SC.View.design(SC.Border, {
+      //   layout: { top: 10, bottom: 10, left: 110, right: 170 },
+      //   borderStyle: SC.BORDER_GRAY
+      // }),
 
       /**
         RIGHT
       */
-      rightView: SC.View.design(SC.Border, {
-        layout: { top: 10, bottom: 10, right: 0, width: 160 },
-        borderStyle: SC.BORDER_GRAY
-      })
-    }),
+      // rightView: SC.View.design(SC.Border, {
+      //   layout: { top: 10, bottom: 10, right: 0, width: 160 },
+      //   borderStyle: SC.BORDER_GRAY
+      // })
+    //}),
 
     /**
       FOOTER
     */
-    footerView: SC.View.design(SC.Border, {
-      layout: { bottom: 10, left: 20, right: 20, height: 50 },
-      borderStyle: SC.BORDER_GRAY
-    })
+    // footerView: SC.View.design(SC.Border, {
+    //   layout: { bottom: 10, left: 20, right: 20, height: 50 },
+    //   borderStyle: SC.BORDER_GRAY
+    // })
   }).classNames('workspace')
 
 });

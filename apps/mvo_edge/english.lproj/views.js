@@ -6,7 +6,7 @@
 //require('views/content');
 //require('views/pdf_renderer');
 
-MvoEdge.viewsPage = SC.Page.design({
+MvoEdge.views = SC.Page.design({
 
   /**
     Title view
@@ -49,9 +49,9 @@ MvoEdge.viewsPage = SC.Page.design({
   */
   pdfRendererMainContentView: SC.ScrollView.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
-				  
+
     contentView: MvoEdge.PDFRendererView.design({
-	  	layerId: 'PdfRendererId',
+      layerId: 'PdfRendererId',
       contentBinding: 'MvoEdge.masterController.masterSelection',
       contentValueKey: 'guid'
     })

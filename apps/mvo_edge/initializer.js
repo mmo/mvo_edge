@@ -165,29 +165,34 @@ MvoEdge.initializer = SC.Object.create(
     MvoEdge.masterController.initialize(nodes);
     
     // Call the layout controller in order to setup the interface components
-    var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
-    switch (scenario) {
-    case 'fixtures':
-      var name = MvoEdge.configurator.getPath('inputParameters.name');
-      switch (name) {
-      case 'VAA': 
-        MvoEdge.logger.info('initializer: using layout for VAA fixtures');
-        MvoEdge.layoutController.initializeWorkspace();
-        break;        
-      case 'HTML':
-        MvoEdge.logger.info('initializer: using layout for HTML fixtures');
-        MvoEdge.layoutController.initializeHTMLWorkspace();
+    try {
+      var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
+      switch (scenario) {
+      case 'fixtures':
+        var name = MvoEdge.configurator.getPath('inputParameters.name');
+        switch (name) {
+        case 'VAA': 
+          MvoEdge.logger.info('initializer: using layout for VAA fixtures');
+          MvoEdge.layoutController.initializeWorkspaceWithGrid();
+          break;        
+        case 'HTML':
+          MvoEdge.logger.info('initializer: using layout for HTML fixtures');
+          MvoEdge.layoutController.initializeHTMLWorkspace();
+          break;
+        case 'PDF':
+          MvoEdge.logger.info('initializer: using layout for PDF fixtures');
+          MvoEdge.layoutController.initializePDFRendererWorkspace();
+          break;
+        }
         break;
-      case 'PDF':
-        MvoEdge.logger.info('initializer: using layout for PDF fixtures');
-        MvoEdge.layoutController.initializePDFRendererWorkspace();
+      default:
+        MvoEdge.logger.info('initializer: using default layout');
+        MvoEdge.layoutController.initializeWorkspace();
         break;
       }
-      break;
-    default:
-      MvoEdge.logger.info('initializer: using default layout');
-      MvoEdge.layoutController.initializeWorkspace();
-      break;
+    }
+    catch (e) {
+      MvoEdge.logger.logException(e, 'Error initializing components');
     }
     
     // initialize the selection with the first CDM leaf node

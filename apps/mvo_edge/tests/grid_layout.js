@@ -9,7 +9,7 @@
 /*globals MvoEdge module test ok equals same stop start */
 sc_require('grid_layout');
 
-var pane, v1, v2, v3, v4, v5, v6;
+var pane, v1, v2, v3, v4, v5, v6, v7, v8;
 
 var testVisibility = function () {
   result = '';
@@ -24,7 +24,7 @@ var testVisibility = function () {
   return result;
 }
 
-module("MvoEdge.GridLayout", {
+module("MvoEdge.GridLayout3x3", {
   setup: function () {
 
     // create views for being laid out on the grid
@@ -55,15 +55,13 @@ module("MvoEdge.GridLayout", {
     });
     pane.append();
 
-    SC.mixin(pane, MvoEdge.GridLayout);
+    SC.mixin(pane, MvoEdge.GridLayout3x3);
     
-    pane.layoutGrid(
+    pane.layOutGrid(
         100, //leftStripWidth
         100, //rightStripWidth
          20, //headerHeight
-         20, //footerHeight
-         50, //xCenter
-         50  //yCenter
+         20  //footerHeight
        );
   },
   teardown: function () {
@@ -77,148 +75,141 @@ test("test component layout on the grid", function () {
 
   // test invalid parameters
   var numErrors = 0;
-  try { pane.layOutComponent(v1, -1,  1,  0,  1); } catch (e1) { if (e1.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  0,  1, -1,  1); } catch (e2) { if (e2.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1, -1,  0,  1,  1); } catch (e1) { if (e1.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  0, -1,  1,  1); } catch (e2) { if (e2.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
   try { pane.layOutComponent(v1,  0,  0,  0,  1); } catch (e3) { if (e3.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  0, -1,  0,  1); } catch (e4) { if (e4.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  0,  1,  0,  0); } catch (e5) { if (e5.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  0,  1,  0, -1); } catch (e6) { if (e6.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  4,  1,  0,  1); } catch (e7) { if (e7.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  0,  1,  4,  1); } catch (e8) { if (e8.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  2,  3,  0,  1); } catch (e9) { if (e9.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
-  try { pane.layOutComponent(v1,  0,  1,  2,  3); } catch (e10) { if (e10.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  0,  0, -1,  1); } catch (e4) { if (e4.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  0,  0,  1,  0); } catch (e5) { if (e5.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  0,  0,  1, -1); } catch (e6) { if (e6.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  4,  0,  1,  1); } catch (e7) { if (e7.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  0,  4,  1,  1); } catch (e8) { if (e8.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  2,  0,  3,  1); } catch (e9) { if (e9.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
+  try { pane.layOutComponent(v1,  0,  2,  1,  3); } catch (e10) { if (e10.indexOf('Coordinates are invalid:') >= 0) numErrors++; }
   equals(numErrors, '10', 'should detect 10 validation errors');
 
   // test laying out an already laid out component
   numErrors = 0;
   try {
-    pane.layOutComponent(v1, 0,  1,  0,  1);
-    pane.layOutComponent(v1, 0,  1,  0,  1);
+    pane.layOutComponent(v1, 0,  0,  1,  1);
+    pane.layOutComponent(v1, 0,  0,  1,  1);
   }
   catch (e) {
     if (e.indexOf('Cannot lay out an already laid out component:') >= 0) {
       numErrors++
     };
   }
-  pane.removeComponent(v1);
   ok(numErrors === 1, 'should forbid laying out an already laid out component');
+  pane.removeComponent(v1);
 
+
+  // test different component layouts;
+  // - no component is ever removed explicitly between consecutive view sets,
+  // but rather replaced by components in the following view set
+  
   // test 1st view set
-  // 1111
-  // 2345
-  // 2675
-  // 8888
-  pane.layOutComponent(v1, 0, 4, 0, 1);
+  // 1 1 1
+  // 2 3 4
+  // 5 5 5
+  pane.layOutComponent(v1, 0, 0, 3, 1);
   equals(testVisibility(), '10000000', '1st view set, add v1');
-  pane.layOutComponent(v2, 0, 1, 1, 2);
+  pane.layOutComponent(v2, 0, 1, 1, 1);
   equals(testVisibility(), '11000000', '1st view set, add v2');
   pane.layOutComponent(v3, 1, 1, 1, 1);
   equals(testVisibility(), '11100000', '1st view set, add v3');
   pane.layOutComponent(v4, 2, 1, 1, 1);
   equals(testVisibility(), '11110000', '1st view set, add v4');
-  pane.layOutComponent(v5, 3, 1, 1, 2);
+  pane.layOutComponent(v5, 0, 2, 3, 1);
   equals(testVisibility(), '11111000', '1st view set, add v5');
-  pane.layOutComponent(v6, 1, 1, 2, 1);
-  equals(testVisibility(), '11111100', '1st view set, add v6');
-  pane.layOutComponent(v7, 2, 1, 2, 1);
-  equals(testVisibility(), '11111110', '1st view set, add v7');
-  pane.layOutComponent(v8, 0, 4, 3, 1);
-  equals(testVisibility(), '11111111', '1st view set, add v8');
+
 
   // test 2nd view set
-  // 1122
-  // 1122
-  // 3344
-  // 3344
-  pane.removeComponent(v1);
-  pane.layOutComponent(v1, 0, 2, 0, 2);
-  equals(testVisibility(), '10011111', '2nd view set, add v1');
-  pane.layOutComponent(v2, 2, 2, 0, 2);
-  equals(testVisibility(), '11000111', '2nd view set, add v2');
-  pane.layOutComponent(v3, 0, 2, 2, 2);
-  equals(testVisibility(), '11100010', '2nd view set, add v3');
-  pane.layOutComponent(v4, 2, 2, 2, 2);
-  equals(testVisibility(), '11110000', '2nd view set, add v4');
+  // 6 6 7
+  // 6 6 7
+  // 8 8 1
+  pane.layOutComponent(v6, 0, 0, 2, 2);
+  equals(testVisibility(), '00011100', '2nd view set, add v6');
+  pane.layOutComponent(v7, 2, 0, 1, 2);
+  equals(testVisibility(), '00001110', '2nd view set, add v7');
+  pane.layOutComponent(v8, 0, 2, 2, 1);
+  equals(testVisibility(), '00000111', '2nd view set, add v8');
+  pane.layOutComponent(v1, 2, 2, 1, 1);
+  equals(testVisibility(), '10000111', '2nd view set, add v1');
 
   // test 3rd view set
-  // 1111
-  // 1111
-  // 1111
-  // 1111
-  pane.removeComponent(v1);
-  pane.layOutComponent(v1, 0, 4, 0, 4);
-  equals(testVisibility(), '10000000', '3rd view set, add v1');
+  // 2 2 2
+  // 2 2 2
+  // 2 2 2
+  pane.layOutComponent(v2, 0, 0, 3, 3);
+  equals(testVisibility(), '01000000', '3rd view set, add v2');
 
   // test 4th view set
-  // 2333
-  // 2445
-  // 2445
-  // 6665
-  pane.layOutComponent(v2, 0, 1, 0, 3);
-  equals(testVisibility(), '01000000', '4th view set, add v2');
-  pane.layOutComponent(v3, 1, 3, 0, 1);
-  equals(testVisibility(), '01100000', '4th view set, add v3');
-  pane.layOutComponent(v4, 1, 2, 1, 2);
-  equals(testVisibility(), '01110000', '4th view set, add v4');
-  pane.layOutComponent(v5, 3, 1, 1, 3);
-  equals(testVisibility(), '01111000', '4th view set, add v5');
-  pane.layOutComponent(v6, 0, 3, 3, 1);
-  equals(testVisibility(), '01111100', '4th view set, add v6');
+  // - 6 -
+  // 7 7 7
+  // - 8 -
+  pane.layOutComponent(v6, 1, 0, 1, 1);
+  equals(testVisibility(), '00000100', '4th view set, add v6');
+  pane.layOutComponent(v7, 0, 1, 3, 1);
+  equals(testVisibility(), '00000110', '4th view set, add v7');
+  pane.layOutComponent(v8, 1, 2, 1, 1);
+  equals(testVisibility(), '00000111', '4th view set, add v8');
 
   // test 5th view set
-  // 1778
-  // 2222
-  // 3333
-  // 4556
-  pane.layOutComponent(v1, 0, 1, 0, 1);
-  equals(testVisibility(), '10111100', '5th view set, add v1');
-  pane.layOutComponent(v7, 1, 2, 0, 1);
-  equals(testVisibility(), '10011110', '5th view set, add v7');
-  pane.layOutComponent(v8, 3, 1, 0, 1);
-  equals(testVisibility(), '10011111', '5th view set, add v8');
-  pane.layOutComponent(v2, 0, 4, 1, 1);
-  equals(testVisibility(), '11000111', '5th view set, add v2');
-  pane.layOutComponent(v3, 0, 4, 2, 1);
-  equals(testVisibility(), '11100111', '5th view set, add v3');
-  pane.layOutComponent(v4, 0, 1, 3, 1);
-  equals(testVisibility(), '11110011', '5th view set, add v4');
-  pane.layOutComponent(v5, 1, 2, 3, 1);
-  equals(testVisibility(), '11111011', '5th view set, add v5');
-  pane.layOutComponent(v6, 3, 1, 3, 1);
-  equals(testVisibility(), '11111111', '5th view set, add v6');
+  // 3 4 4
+  // 3 7 5
+  // 6 6 5
+  pane.layOutComponent(v3, 0, 0, 1, 2);
+  equals(testVisibility(), '00100101', '5th view set, add v3');
+  pane.layOutComponent(v4, 1, 0, 2, 1);
+  equals(testVisibility(), '00110001', '5th view set, add v4');
+  pane.layOutComponent(v5, 2, 1, 1, 2);
+  equals(testVisibility(), '00111001', '5th view set, add v5');
+  pane.layOutComponent(v6, 0, 2, 2, 1);
+  equals(testVisibility(), '00111100', '5th view set, add v6');
+  pane.layOutComponent(v7, 1, 1, 1, 1);
+  equals(testVisibility(), '00111110', '5th view set, add v7');
 
   // test 6th view set
-  // 1234
-  // 1234
-  // 1234
-  // 1234
-  pane.removeComponent(v1);
-  pane.layOutComponent(v1, 0, 1, 0, 4);
-  equals(testVisibility(), '10001111', '6th view set, add v1');
-  pane.layOutComponent(v2, 1, 1, 0, 4);
-  equals(testVisibility(), '11000101', '6th view set, add v2');
-  pane.layOutComponent(v3, 2, 1, 0, 4);
-  equals(testVisibility(), '11100101', '6th view set, add v3');
-  pane.layOutComponent(v4, 3, 1, 0, 4);
-  equals(testVisibility(), '11110000', '6th view set, add v4');
+  // 8 1 2
+  // 8 1 2
+  // 8 1 2
+  pane.layOutComponent(v8, 0, 0, 1, 3);
+  equals(testVisibility(), '00011011', '6th view set, add v8');
+  pane.layOutComponent(v1, 1, 0, 1, 3);
+  equals(testVisibility(), '10001001', '6th view set, add v1');
+  pane.layOutComponent(v2, 2, 0, 1, 3);
+  equals(testVisibility(), '11000001', '6th view set, add v2');
 
   // test 7th view set
-  // -56-
-  // 7788
-  // -12-
-  // -12-
-  pane.layOutComponent(v5, 1, 1, 0, 1);
-  equals(testVisibility(), '10111000', '7th view set, add v5');
-  pane.layOutComponent(v6, 2, 1, 0, 1);
-  equals(testVisibility(), '10011100', '7th view set, add v6');
-  pane.layOutComponent(v7, 0, 2, 1, 1);
+  // 3 3 3
+  // 4 4 4
+  // 5 5 5
+  pane.layOutComponent(v3, 0, 0, 3, 1);
+  equals(testVisibility(), '00100000', '7th view set, add v3');
+  pane.layOutComponent(v4, 0, 1, 3, 1);
+  equals(testVisibility(), '00110000', '7th view set, add v4');
+  pane.layOutComponent(v5, 0, 2, 3, 1);
+  equals(testVisibility(), '00111000', '7th view set, add v5');
+
+  // test 8th view set
+  // 6 7 8
+  // 1 2 3
+  // 4 5 5
+  pane.layOutComponent(v6, 0, 0, 1, 1);
+  equals(testVisibility(), '00011100', '7th view set, add v6');
+  pane.layOutComponent(v7, 1, 0, 1, 1);
   equals(testVisibility(), '00011110', '7th view set, add v7');
-  pane.layOutComponent(v8, 2, 2, 1, 1);
-  equals(testVisibility(), '00001111', '7th view set, add v8');
-  pane.layOutComponent(v1, 1, 1, 2, 2);
+  pane.layOutComponent(v8, 2, 0, 1, 1);
+  equals(testVisibility(), '00011111', '7th view set, add v8');
+  pane.layOutComponent(v1, 0, 1, 1, 1);
   equals(testVisibility(), '10001111', '7th view set, add v1');
-  pane.layOutComponent(v2, 2, 1, 2, 2);
+  pane.layOutComponent(v2, 1, 1, 1, 1);
   equals(testVisibility(), '11001111', '7th view set, add v2');
+  pane.layOutComponent(v3, 2, 1, 1, 1);
+  equals(testVisibility(), '11101111', '7th view set, add v3');
+  pane.layOutComponent(v4, 0, 2, 1, 1);
+  equals(testVisibility(), '11110111', '7th view set, add v4');
+  pane.layOutComponent(v5, 1, 2, 2, 1);
+  equals(testVisibility(), '11111111', '7th view set, add v5');
 
 
   /*
