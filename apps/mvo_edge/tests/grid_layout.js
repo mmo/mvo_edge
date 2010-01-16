@@ -99,7 +99,7 @@ test("test component layout on the grid", function () {
     };
   }
   ok(numErrors === 1, 'should forbid laying out an already laid out component');
-  pane.removeComponent(v1);
+  pane.removeComponent('testViews.v1');
 
 
   // test different component layouts;

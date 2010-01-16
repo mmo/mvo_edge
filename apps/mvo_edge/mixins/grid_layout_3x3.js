@@ -60,7 +60,7 @@ MvoEdge.GridLayout3x3 = {
     Each entry is composed as follows
       Key:  component {Object}
       Value: [coordinates {Array}, coveredCells {Array}]
-        coordinates: [xCoord, yCoord, xLen, yLen]
+        coordinates: [x, y, xlen, ylen]
         coveredCells: [[x, y], [x, y], [x, y] ... ]
 
         { {Object}:
@@ -102,26 +102,41 @@ MvoEdge.GridLayout3x3 = {
 
     Initilize grid
 
-    @param {Integer} leftStripWidth
-    @param {Integer} rightStripWidth
-    @param {Integer} headerHeight
-    @param {Integer} footerHeight
-    @param {Integer} marginTop
-    @param {Integer} marginRight
-    @param {Integer} marginBottom
-    @param {Integer} marginLeft
+    @param {Hash} params layout parameters hash with the following content:
+        {Integer} leftStripWidth
+        {Integer} rightStripWidth
+        {Integer} headerHeight
+        {Integer} footerHeight
+        {Integer} marginTop
+        {Integer} marginRight
+        {Integer} marginBottom
+        {Integer} marginLeft
   */
-  layOutGrid: function (
-      leftStripWidth, rightStripWidth, headerHeight, footerHeight,
-      marginTop, marginRight, marginBottom, marginLeft) {
-    this._leftStripWidth  = leftStripWidth;
-    this._rightStripWidth = rightStripWidth;
-    this._headerHeight    = headerHeight;
-    this._footerHeight    = footerHeight;
-    this._marginTop       = marginTop;
-    this._marginRight     = marginRight;
-    this._marginBottom    = marginBottom;
-    this._marginLeft      = marginLeft;
+  layOutGrid: function (params) {
+    // validate input parameters
+    var errMess = MvoEdge.checkParams(params, {
+        'leftStripWidth':  SC.T_NUMBER,
+        'rightStripWidth': SC.T_NUMBER,
+        'headerHeight':    SC.T_NUMBER,
+        'footerHeight':    SC.T_NUMBER,
+        'marginTop':       SC.T_NUMBER,
+        'marginRight':     SC.T_NUMBER,
+        'marginBottom':    SC.T_NUMBER,
+        'marginLeft':      SC.T_NUMBER
+      });
+
+    if (errMess.length > 0) {
+      throw 'Invalid parameters while laying out a GridLayout3x3: ' + errMess;
+    }
+
+    this._leftStripWidth  = params.leftStripWidth;
+    this._rightStripWidth = params.rightStripWidth;
+    this._headerHeight    = params.headerHeight;
+    this._footerHeight    = params.footerHeight;
+    this._marginTop       = params.marginTop;
+    this._marginRight     = params.marginRight;
+    this._marginBottom    = params.marginBottom;
+    this._marginLeft      = params.marginLeft;
 
     this._resetLayout();
   },
@@ -131,36 +146,51 @@ MvoEdge.GridLayout3x3 = {
 
     Lay out a component on this view's grid
 
-    @param {Object}  component
-    @param {Integer} xCoord x coordinate on grid
-    @param {Integer} yCoord y coordinate on grid
-    @param {Integer} xLen   x length on grid
-    @param {Integer} yLen   y length on grid
+    @param {Hash} params layout parameters hash with the following content:
+        {String}  name   component name
+        {Integer} x      x coordinate on grid
+        {Integer} y      y coordinate on grid
+        {Integer} xlen   x length on grid
+        {Integer} ylen   y length on grid
   */
-  layOutComponent: function (component, xCoord, yCoord, xLen, yLen) {
-    var errMess = "";
+  layOutComponent: function (params) {
+    // validate input parameters
+    var errMess = MvoEdge.checkParams(params, {
+        'name': SC.T_STRING,
+        'x':    SC.T_NUMBER,
+        'y':    SC.T_NUMBER,
+        'xlen': SC.T_NUMBER,
+        'ylen': SC.T_NUMBER
+      });
+
+    if (errMess.length > 0) {
+      var m =
+          'Invalid parameters while laying out a component ' +
+          ' on a GridLayout3x3:' + errMess;
+      throw m;
+    }
+
+    var componentName   = params.name;
+    var componentObject = MvoEdge.getPath(componentName);
+    var x =    params.x;
+    var y =    params.y;
+    var xlen = params.xlen;
+    var ylen = params.ylen;
+
+    errMess = '';
     // parameter checking
-    if (xCoord < 0 || xCoord > 2 || xLen <= 0 || xCoord + xLen > 3 ||
-        yCoord < 0 || yCoord > 2 || yLen <= 0 || yCoord + yLen > 3) {
-      errMess = "Coordinates are invalid: (%@, %@, %@, %@)".fmt(
-          xCoord, yCoord, xLen, yLen);
+    if (x < 0 || x > 2 || xlen <= 0 || x + xlen > 3 ||
+        y < 0 || y > 2 || ylen <= 0 || y + ylen > 3) {
+      errMess = 'Coordinates are invalid: (%@, %@, %@, %@)'.fmt(
+          x, y, xlen, ylen);
       console.error(errMess);
       throw errMess; 
     }
 
-    // check if component is already laid out
-    /*
-    if (this._componentsOnGrid[component]) {
-      errMess = "Cannot lay out an already laid out component: %@".fmt(
-          component);
-      console.error(errMess);
-      throw errMess; 
-    }
-    */
-    
     var newLayout = {};
-    // 
-    switch (xCoord) {
+
+    // define component dimensions
+    switch (x) {
     case 0:
       newLayout.left = this._marginLeft;
       break;
@@ -172,7 +202,7 @@ MvoEdge.GridLayout3x3 = {
           this._rightStripWidth - this._marginLeft - this._marginRight;
       break;
     }
-    switch (xCoord + xLen) {
+    switch (x + xlen) {
     case 1:
       newLayout.width =
           this._leftStripWidth - this._marginLeft - this._marginRight;
@@ -184,7 +214,7 @@ MvoEdge.GridLayout3x3 = {
       newLayout.right = this._marginRight;
       break;
     }
-    switch (yCoord) {
+    switch (y) {
     case 0:
       newLayout.top = this._marginTop;
       break;
@@ -196,7 +226,7 @@ MvoEdge.GridLayout3x3 = {
           this._footerHeight - this._marginTop - this._marginBottom;
       break;
     }
-    switch (yCoord + yLen) {
+    switch (y + ylen) {
     case 1:
       newLayout.height =
           this._headerHeight - this._marginTop - this._marginBottom;
@@ -210,31 +240,31 @@ MvoEdge.GridLayout3x3 = {
     }
 
     // update cell occupancy registries
-    for (var x = xCoord; x < xCoord + xLen; x++) {
-      for (var y = yCoord; y < yCoord + yLen; y++) {
+    for (var i = x; i < x + xlen; i++) {
+      for (var j = y; j < y + ylen; j++) {
         // if cell was previously occupied by another component...
-        var componentInCell = this._gridCells[x][y];        
+        var componentInCell = this._gridCells[i][j];        
         if (componentInCell !== null) {
           // ... remove it from this view
           this.removeComponent(componentInCell);
         }
         // occupy this cell with this component
-        this._gridCells[x][y] = component;
+        this._gridCells[i][j] = componentName;
         // update component's registry
-        if (SC.none(this._componentsOnGrid[component])) {
-          this._componentsOnGrid[component] = {
-            'coordinates': [xCoord, yCoord, xLen, yLen],
+        if (SC.none(this._componentsOnGrid[componentName])) {
+          this._componentsOnGrid[componentName] = {
+            'coordinates': [x, y, xlen, ylen],
             'coveredCells': []
           };
         }
-        this._componentsOnGrid[component].coveredCells.push([x, y]);
+        this._componentsOnGrid[componentName].coveredCells.push([x, y]);
       }
     }
     
     // append the component to this view with the defined layout
-    component.set('layout', newLayout);
-    this.appendChild(component);
-    component.set('isVisibleInWindow', YES);
+    componentObject.set('layout', newLayout);
+    this.appendChild(componentObject);
+    componentObject.set('isVisibleInWindow', YES);
   },
 
   /**
@@ -242,41 +272,45 @@ MvoEdge.GridLayout3x3 = {
 
     Remove a component from the view
 
-    @param {Object} component
+    @param {String} componentName
   */
-  removeComponent: function (component) {
+  removeComponent: function (componentName) {
     // remove its reference from the cell occupancy matrix
-    var componentCells = this._componentsOnGrid[component] || [];
+    var componentCells = this._componentsOnGrid[componentName] || [];
     for (var c = 0; c < componentCells.length; c++) {
       if (SC.typeOf(componentCells[c]) === SC.T_ARRAY &&
           componentCells[c].length === 2) {
         var x = componentCells[c][0],
             y = componentCells[c][1];
-        if (this._gridCells[x][y] === component) this._gridCells[x][y] = null;
+        if (this._gridCells[x][y] === componentCells) {
+          this._gridCells[x][y] = null;
+        }
       }
     }
     // delete its reference from the registered components list
-    if (!SC.empty(this._componentsOnGrid[component])) {
+    if (!SC.empty(this._componentsOnGrid[componentName])) {
       // delete it from the component registry
-      delete this._componentsOnGrid[component];
+      delete this._componentsOnGrid[componentName];
       // make the component invisible
-      if (component.get('isVisibleInWindow')) {
-        component.set('isVisibleInWindow', NO);
+      var componentObject = MvoEdge.getPath(componentName);
+      if (componentObject.get('isVisibleInWindow')) {
+        componentObject.set('isVisibleInWindow', NO);
       }
       // remove it from this view
-      this.removeChild(component);
+      this.removeChild(componentObject);
     }
   },
   
   _resetLayout: function () {
     // remove all current components from the view
-    for (var component in this._componentsOnGrid) {
-      if (this._componentsOnGrid.hasOwnProperty(component)) {
-        if (component.get('isVisibleInWindow')) {
-          component.set('isVisibleInWindow', NO);
+    for (var componentName in this._componentsOnGrid) {
+      if (this._componentsOnGrid.hasOwnProperty(componentName)) {
+        var componentObject = MvoEdge.getPath(componentName);
+        if (componentObject.get('isVisibleInWindow')) {
+          componentObject.set('isVisibleInWindow', NO);
         }
         // remove it from this view
-        this.removeChild(component);
+        this.removeChild(componentObject);
       }
     }
     // reset the cell occupancy matrix

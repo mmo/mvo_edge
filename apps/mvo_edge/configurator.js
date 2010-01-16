@@ -32,13 +32,12 @@ MvoEdge.configurator = SC.Object.create(
   
   */
   logParameters: {
-    "log": {
-      "console":        "LOG_INFO",
-      "browserConsole": "LOG_INFO",
-      "ajax":           "LOG_ERROR"
+    log: {
+      console:        "LOG_INFO",
+      browserConsole: "LOG_INFO",
+      ajax:           "LOG_ERROR"
     },
-    "logFile": "/multivio/log" // to be used with the python server
-      //"logFile": "/zircon/Client?cl=error.Logger&act=add" // to be used with the Java servlet
+    logFile: "/multivio/log"
   },
   
   /**
@@ -48,22 +47,56 @@ MvoEdge.configurator = SC.Object.create(
   
   */
   baseUrlParameters: {
-    "get": "/multivio/document/get?url=", // to be used with the python server
-    //"get": "/zircon/Client?cl=dfst.StructureParser&act=getDoc&recid=" // to be used with the Java servlet
+    get: "/multivio/document/get?url=",
     
-    "thumbnail": "/multivio/document/thumbnail?size=100&url=",
+    thumbnail: "/multivio/document/thumbnail?size=100&url=",
     
-    "image": {
-      "small":  "/multivio/document/thumbnail?size=500&url=",
-      "normal": "/multivio/document/thumbnail?size=1000&url=",
-      "big":    "/multivio/document/thumbnail?size=1500&url="
+    image: {
+      small:  "/multivio/document/thumbnail?size=500&url=",
+      normal: "/multivio/document/thumbnail?size=1000&url=",
+      big:    "/multivio/document/thumbnail?size=1500&url="
     },
     
-    "fixtures": {
-      "VAA": "/static/mvo_edge/en/current/images/VAA",
-      "PDF":  "/static/mvo_edge/en/current/PDFRenderer",
-      "HTML": "/static/mvo_edge/en/current/PDFHTML"
+    fixtures: {
+      VAA: "/static/mvo_edge/en/current/images/VAA",
+      PDF:  "/static/mvo_edge/en/current/PDFRenderer",
+      HTML: "/static/mvo_edge/en/current/PDFHTML"
     }
+  },
+
+  layouts: {
+    'default': {
+      layoutClass: 'GridLayout3x3',
+      layoutParams: {
+        'leftStripWidth':  400,
+        'rightStripWidth': 120,
+        'headerHeight':     80,
+        'footerHeight':     80,
+        'marginTop':         5,
+        'marginRight':       5,
+        'marginBottom':      5,
+        'marginLeft':        5
+      }
+    }
+  },
+  
+  componentLayouts: {
+    'pageBased': {
+      baseLayout: 'default',
+      components: [
+        {name: 'views.metadataView',    x: 0, y: 0, xlen: 3, ylen: 1},
+        {name: 'views.treeView',        x: 0, y: 1, xlen: 1, ylen: 1},
+        {name: 'views.mainContentView', x: 1, y: 1, xlen: 1, ylen: 1},
+        {name: 'views.thumbnailView',   x: 2, y: 1, xlen: 1, ylen: 1},
+        {name: 'views.navigationView',  x: 0, y: 2, xlen: 3, ylen: 1}
+      ]
+    },
+    'contentFullScreen': {
+      baseLayout: 'default',
+      components: [
+        {name: 'views.mainContentView', x: 0, y: 0, xlen: 3, ylen: 3}
+      ]
+    }    
   },
 
   /**
@@ -101,12 +134,20 @@ MvoEdge.configurator = SC.Object.create(
     @returns {String}
   */
   getPath: function (configPath) {
+    if (SC.typeOf(configPath) !== SC.T_STRING) {
+      throw 'Configuration path type "%@" is invalid'.fmt(
+          SC.typeOf(configPath));
+    }
     var result = undefined;
     var pathComponents = configPath.split('.');
     if (!SC.none(pathComponents) && pathComponents.length > 0) {
       // extract the first path component, which corresponds to the target
       // dictionary of MvoEdge.configurator
       result = this[pathComponents[0]];
+      // raise an exception if path component is invalid
+      if (SC.none(result)) {
+        throw 'Configuration path "%@" is invalid'.fmt(configPath);
+      }
       // dive deeper in the dictionary structure following the successive path
       // components
       for (var i = 1; i < pathComponents.length; i++) {
@@ -124,7 +165,7 @@ MvoEdge.configurator = SC.Object.create(
   */
   getImageUrl: function (url) {
     var scenario = this.getPath('inputParameters.scenario');
-    var modifiedUrl;
+    var modifiedUrl = '';
     switch (scenario) {
     
     case 'get':

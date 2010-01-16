@@ -173,21 +173,21 @@ MvoEdge.initializer = SC.Object.create(
         switch (name) {
         case 'VAA': 
           MvoEdge.logger.info('initializer: using layout for VAA fixtures');
-          MvoEdge.layoutController.initializeWorkspaceWithGrid();
+          MvoEdge.layoutController.configureWorkspace('pageBased');
           break;        
         case 'HTML':
           MvoEdge.logger.info('initializer: using layout for HTML fixtures');
-          MvoEdge.layoutController.initializeHTMLWorkspace();
+          MvoEdge.layoutController.configureWorkspace('pageBased');
           break;
         case 'PDF':
           MvoEdge.logger.info('initializer: using layout for PDF fixtures');
-          MvoEdge.layoutController.initializePDFRendererWorkspace();
+          MvoEdge.layoutController.configureWorkspace('pageBased');
           break;
         }
         break;
       default:
         MvoEdge.logger.info('initializer: using default layout');
-        MvoEdge.layoutController.initializeWorkspace();
+        MvoEdge.layoutController.configureWorkspace('pageBased');
         break;
       }
     }
