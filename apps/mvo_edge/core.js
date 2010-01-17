@@ -23,6 +23,7 @@ MvoEdge = SC.Object.create(
   store: SC.Store.create()
 
   // TODO: Add global constants or singleton objects needed by your app here.
+
 });
 
 /**

@@ -5,7 +5,7 @@
   License:    See file license.js
 ==============================================================================
 */
-require('models/core_document_node');
+// require('models/core_document_node');
 
 /**
   @class
@@ -109,7 +109,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
         // TODO : throw exception and log error
         var errMess = "Unable to retrieve the 'urlDefault' !!";
         console.error(errMess);
-        throw errMess;   
+        throw {message: errMess};   
       }
 
       var url = cdmObjects.firstObject().get('staticUrl');//get('urlDefault'); 
@@ -175,7 +175,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
         // TODO : throw exception and log error
         var errMess = "Unable to retrieve the Applet with the 'appletId' id in the document!!";
         console.error(errMess);
-        throw errMess;
+        throw {message: errMess};
       }
     }
     return appId;
@@ -229,7 +229,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
         // TODO : throw exception and log error
         var errMess = "Unable to go to the page '%@' :\n, %@".fmt(newPage, e);
         console.error(errMess);
-        throw errMess;
+        throw {message: errMess};
       }        
     } else {
       // TODO : log warning
@@ -256,7 +256,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
         // TODO : throw exception and log error
         var errMess = "Unable to zoom with the value %@ :\n%@".fmt(zoomVal, e);
         console.error(errMess);
-        throw errMess;
+        throw {message: errMess};
       }        
     }
   }.observes('zoomValue')

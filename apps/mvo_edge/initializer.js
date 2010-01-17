@@ -99,7 +99,7 @@ MvoEdge.initializer = SC.Object.create(
           break;
         default:
           // stop the application now
-          MvoEdge.logger.error('the "name" parameter is missing');
+          MvoEdge.logger.error('initializer: the "name" parameter is missing');
           alert(this._usageMessage);
           return NO;
         }
@@ -146,11 +146,13 @@ MvoEdge.initializer = SC.Object.create(
     @private  
   */
   _initializeComponents: function () { 
+
+    SC.RunLoop.begin();
+
     // Step 1: Instantiate Your Views
     // The default code here will make the mainPane for your application visible
     // on screen.  If you app gets any level of complexity, you will probably 
     // create multiple pages and panes.
-    SC.RunLoop.begin();
     MvoEdge.getPath('mainPage.mainPane').append();
 
     // Step 2. Set the content property on your primary controller.
@@ -165,29 +167,34 @@ MvoEdge.initializer = SC.Object.create(
     MvoEdge.masterController.initialize(nodes);
     
     // Call the layout controller in order to setup the interface components
-    var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
-    switch (scenario) {
-    case 'fixtures':
-      var name = MvoEdge.configurator.getPath('inputParameters.name');
-      switch (name) {
-      case 'VAA': 
-        MvoEdge.logger.info('initializer: using layout for VAA fixtures');
-        MvoEdge.layoutController.initializeWorkspace();
-        break;        
-      case 'HTML':
-        MvoEdge.logger.info('initializer: using layout for HTML fixtures');
-        MvoEdge.layoutController.initializeHTMLWorkspace();
+    try {
+      var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
+      switch (scenario) {
+      case 'fixtures':
+        var name = MvoEdge.configurator.getPath('inputParameters.name');
+        switch (name) {
+        case 'VAA': 
+          MvoEdge.logger.info('initializer: using layout for VAA fixtures');
+          MvoEdge.layoutController.configureWorkspace('pageBased');
+          break;        
+        case 'HTML':
+          MvoEdge.logger.info('initializer: using layout for HTML fixtures');
+          MvoEdge.layoutController.configureWorkspace('pageBased');
+          break;
+        case 'PDF':
+          MvoEdge.logger.info('initializer: using layout for PDF fixtures');
+          MvoEdge.layoutController.configureWorkspace('pageBased');
+          break;
+        }
         break;
-      case 'PDF':
-        MvoEdge.logger.info('initializer: using layout for PDF fixtures');
-        MvoEdge.layoutController.initializePDFRendererWorkspace();
+      default:
+        MvoEdge.logger.info('initializer: using default layout');
+        MvoEdge.layoutController.configureWorkspace('pageBased');
         break;
       }
-      break;
-    default:
-      MvoEdge.logger.info('initializer: using default layout');
-      MvoEdge.layoutController.initializeWorkspace();
-      break;
+    }
+    catch (e) {
+      MvoEdge.logger.logException(e, 'Error initializing components');
     }
     
     // initialize the selection with the first CDM leaf node

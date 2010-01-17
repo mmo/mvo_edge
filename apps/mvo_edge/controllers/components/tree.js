@@ -137,7 +137,7 @@ MvoEdge.treeController = SC.TreeController.create(
 
     // integrity check: cdmNode should be either a leaf node or an inner node
     if (!cdmNode.get('isLeafNode') && !cdmNode.get('isInnerNode')) {
-      throw "cdmNode does not qualify either as leaf or as inner node";
+      throw {message: "cdmNode does not qualify either as leaf or as inner node"};
     }
 
     // if CDM node is a leaf:
