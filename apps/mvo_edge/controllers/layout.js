@@ -39,7 +39,7 @@ MvoEdge.layoutController = SC.Object.create(
     var layoutMixin = MvoEdge.getPath(baseLayoutConfig.layoutClass);
     if (SC.none(layoutMixin)) {
       var errMess = 'Unable to find layout mixin %@'.fmt(baseLayoutName);
-      throw errMess;
+      throw {message: errMess};
     }
     SC.mixin(mainPage, layoutMixin);
     mainPage.layOutGrid(baseLayoutConfig.layoutParams);

@@ -147,8 +147,8 @@ MvoEdge.configurator = SC.Object.create(
   */
   getPath: function (configPath) {
     if (SC.typeOf(configPath) !== SC.T_STRING) {
-      throw 'Configuration path type "%@" is invalid'.fmt(
-          SC.typeOf(configPath));
+      throw {message: 'Configuration path type "%@" is invalid'.fmt(
+          SC.typeOf(configPath))};
     }
     var result = undefined;
     var pathComponents = configPath.split('.');
@@ -158,7 +158,7 @@ MvoEdge.configurator = SC.Object.create(
       result = this[pathComponents[0]];
       // raise an exception if path component is invalid
       if (SC.none(result)) {
-        throw 'Configuration path "%@" is invalid'.fmt(configPath);
+        throw {message: 'Configuration path "%@" is invalid'.fmt(configPath)};
       }
       // dive deeper in the dictionary structure following the successive path
       // components

@@ -43,9 +43,9 @@ MvoEdge.GridLayout3x3 = {
 
     Grid cell occupancy matrix
     
-    Each position of this 2D array, if not null, points to a component in the
-    _componentsOnGrid table, and indicates that the cell is occupied by that
-    component.
+    Each position of this 3x3 array, if not null, contains the name of a
+    component in the _componentsOnGrid table, and indicates that the
+    corresponding grid cell is occupied by that component.
 
     @private
     @default []
@@ -111,7 +111,7 @@ MvoEdge.GridLayout3x3 = {
       });
 
     if (errMess.length > 0) {
-      throw 'Invalid parameters while laying out a GridLayout3x3: ' + errMess;
+      throw {message: 'Invalid parameters while laying out a GridLayout3x3: ' + errMess};
     }
 
     this._leftStripWidth  = params.leftStripWidth;
@@ -152,7 +152,7 @@ MvoEdge.GridLayout3x3 = {
       var m =
           'Invalid parameters while laying out a component ' +
           ' on a GridLayout3x3:' + errMess;
-      throw m;
+      throw {message: m};
     }
 
     var componentName   = params.name;
@@ -169,7 +169,7 @@ MvoEdge.GridLayout3x3 = {
       errMess = 'Coordinates are invalid: (%@, %@, %@, %@)'.fmt(
           x, y, xlen, ylen);
       console.error(errMess);
-      throw errMess; 
+      throw {message: errMess}; 
     }
 
     var newLayout = {};
@@ -228,8 +228,8 @@ MvoEdge.GridLayout3x3 = {
     for (var i = x; i < x + xlen; i++) {
       for (var j = y; j < y + ylen; j++) {
         // if cell was previously occupied by another component...
-        var componentInCell = this._gridCells[i][j];        
-        if (componentInCell !== null) {
+        var componentInCell = this._gridCells[i][j];
+        if (!SC.none(componentInCell) && componentInCell !== componentName) {
           // ... remove it from this view
           this.removeComponent(componentInCell);
         }
@@ -242,7 +242,7 @@ MvoEdge.GridLayout3x3 = {
             'coveredCells': []
           };
         }
-        this._componentsOnGrid[componentName].coveredCells.push([x, y]);
+        this._componentsOnGrid[componentName].coveredCells.push([i, j]);
       }
     }
     
@@ -260,20 +260,21 @@ MvoEdge.GridLayout3x3 = {
     @param {String} componentName
   */
   removeComponent: function (componentName) {
+    var componentInfo = this._componentsOnGrid[componentName] || {};
     // remove its reference from the cell occupancy matrix
-    var componentCells = this._componentsOnGrid[componentName] || [];
+    var componentCells = componentInfo.coveredCells || [];
     for (var c = 0; c < componentCells.length; c++) {
       if (SC.typeOf(componentCells[c]) === SC.T_ARRAY &&
           componentCells[c].length === 2) {
         var x = componentCells[c][0],
             y = componentCells[c][1];
-        if (this._gridCells[x][y] === componentCells) {
+        if (this._gridCells[x][y] === componentName) {
           this._gridCells[x][y] = null;
         }
       }
     }
     // delete its reference from the registered components list
-    if (!SC.empty(this._componentsOnGrid[componentName])) {
+    if (!SC.empty(componentInfo)) {
       // delete it from the component registry
       delete this._componentsOnGrid[componentName];
       // make the component invisible

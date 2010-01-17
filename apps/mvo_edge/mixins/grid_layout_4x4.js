@@ -112,7 +112,7 @@ MvoEdge.GridLayout4x4 = {
       errMess = "Coordinates are invalid: (%@, %@, %@, %@)".fmt(
           xCoord, xLen, yCoord, yLen);
       console.error(errMess);
-      throw errMess; 
+      throw {message: errMess};
     }
 
     // check if component is already laid out
@@ -120,7 +120,7 @@ MvoEdge.GridLayout4x4 = {
       errMess = "Cannot lay out an already laid out component: %@".fmt(
           component);
       console.error(errMess);
-      throw errMess; 
+      throw {message: errMess};
     }
     
     var newLayout = {};

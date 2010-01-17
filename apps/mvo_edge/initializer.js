@@ -99,7 +99,7 @@ MvoEdge.initializer = SC.Object.create(
           break;
         default:
           // stop the application now
-          MvoEdge.logger.error('the "name" parameter is missing');
+          MvoEdge.logger.error('initializer: the "name" parameter is missing');
           alert(this._usageMessage);
           return NO;
         }
