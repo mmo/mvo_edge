@@ -18,32 +18,30 @@ MvoEdge.ContentView = SC.ImageView.extend(
     @property {MvoEdge.CoreDocumentNode}
    */
   masterSelectionBinding: "MvoEdge.masterController.masterSelection",
-
-  // TODO: is this view method the best way to add scroll  
+  
   /**
-    If the master selection changes, readjust the size of the view
+    @method 
+    
+    Adapt View size depending on the size of the image
 
     @private
-    @observes masterSelection
+    @callback SC.imageCache.load
   */
- /* _contentDidChange: function () {
-    var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
-    var tempIm = new Image();
-    if (!SC.none(this.get('content'))) {
-      tempIm.src = this.get('content').get('staticUrl');
-      if (tempIm.complete) {
-        div.adjust('width', tempIm.width + 20);
-        div.adjust('height', tempIm.height + 20);
-      }
-      console.info('contentController#_contentDidChange: %@'.
-          fmt(this.get('content').get('guid')));
-    }
-  }.observes('content')*/
+
+  _adjustSize: function (url, image) {
+    SC.RunLoop.begin();
+    this.set('value', url);
+    this.adjust('width', image.width);
+    this.adjust('height', image.height);
+    SC.RunLoop.end();
+      
+    MvoEdge.logger.debug('ContentView#_adjustSize');
+  },
   
   /**
      @method
 
-     Updates value by observing changes in master controller's master
+     Load image in cache in observing changes in master controller's master
      selection
 
      @observes masterSelection
@@ -54,11 +52,11 @@ MvoEdge.ContentView = SC.ImageView.extend(
       var defaultUrl = currentMasterSelection.get('urlDefault');
       var imageUrl = MvoEdge.configurator.getImageUrl(defaultUrl);
       SC.RunLoop.begin();
-      this.set('value', imageUrl);
-      SC.RunLoop.end();      
+      SC.imageCache.loadImage(imageUrl, this, this._adjustSize);
+      SC.RunLoop.end();
     }
     
-    MvoEdge.logger.debug('ContentView#_masterSelectionDidChange: %@'.
+    MvoEdge.logger.info('ContentView#_masterSelectionDidChange: %@'.
         fmt(this.get('masterSelection').get('guid')));
         
   }.observes('masterSelection')

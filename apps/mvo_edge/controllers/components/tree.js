@@ -30,7 +30,7 @@ MvoEdge.treeController = SC.TreeController.create(
   /**
   An Array that contains all nodes of the tree with there id.   
   */
-  _treeNodeById: [],
+  _treeNodeById: {},
   
   /**
     @method
