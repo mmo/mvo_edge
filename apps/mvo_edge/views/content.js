@@ -8,9 +8,9 @@
 
   (Document Your View Here)
 
-  @extends SC.ImageView
+  @extends SC.ScrollView
 */
-MvoEdge.ContentView = SC.ImageView.extend(
+MvoEdge.ContentView = SC.ScrollView.extend(
 /** @scope MvoEdge.Content.prototype */ {
   
   /**
@@ -30,9 +30,10 @@ MvoEdge.ContentView = SC.ImageView.extend(
 
   _adjustSize: function (url, image) {
     SC.RunLoop.begin();
-    this.set('value', url);
-    this.adjust('width', image.width);
-    this.adjust('height', image.height);
+    var content =  this.get('contentView');
+    content.set('value', url);
+    content.adjust('width', image.width);
+    content.adjust('height', image.height);
     SC.RunLoop.end();
       
     MvoEdge.logger.debug('ContentView#_adjustSize');
@@ -50,7 +51,9 @@ MvoEdge.ContentView = SC.ImageView.extend(
     var currentMasterSelection = this.get('masterSelection');
     if (!SC.none(currentMasterSelection)) {
       var defaultUrl = currentMasterSelection.get('urlDefault');
-      var imageUrl = MvoEdge.configurator.getImageUrl(defaultUrl);
+      var pageNumber = !SC.none(currentMasterSelection.get('localSequenceNumber')) ?
+          currentMasterSelection.get('localSequenceNumber') : 0;
+      var imageUrl = MvoEdge.configurator.getImageUrl(defaultUrl, pageNumber);
       SC.RunLoop.begin();
       SC.imageCache.loadImage(imageUrl, this, this._adjustSize);
       SC.RunLoop.end();
@@ -59,5 +62,16 @@ MvoEdge.ContentView = SC.ImageView.extend(
     MvoEdge.logger.info('ContentView#_masterSelectionDidChange: %@'.
         fmt(this.get('masterSelection').get('guid')));
         
-  }.observes('masterSelection')
+  }.observes('masterSelection'),
+  
+  /**
+    @method
+    
+    @private
+    @observes frame
+  */
+  _frameDidChange: function () {
+    this.contentViewFrameDidChange();
+  }.observes('frame')
+
 });

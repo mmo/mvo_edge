@@ -47,14 +47,14 @@ MvoEdge.configurator = SC.Object.create(
   
   */
   baseUrlParameters: {
-    get: "/multivio/document/get?url=",
+    get: "/multivio/cdm/get?url=",
     
-    thumbnail: "/multivio/document/thumbnail?size=100&url=",
+    thumbnail: "/multivio/document/get?width=100&url=",
     
     image: {
-      small:  "/multivio/document/thumbnail?size=500&url=",
-      normal: "/multivio/document/thumbnail?size=1000&url=",
-      big:    "/multivio/document/thumbnail?size=1500&url="
+      small:  "/multivio/document/get?width=500&url=",
+      normal: "/multivio/document/get?width=1000&url=",
+      big:    "/multivio/document/get?width=1500&url="
     },
     
     fixtures: {
@@ -172,16 +172,21 @@ MvoEdge.configurator = SC.Object.create(
   /**
     @method
 
-    Return the adapted url for the main image
+    Return the adapted url for a file
+
+    @param {String} url the url of the file
+    @param {Number} the page number is optional
+    @return {String} the new encoded url
   */
-  getImageUrl: function (url) {
+  getImageUrl: function (url, pageNumber) {
     var scenario = this.getPath('inputParameters.scenario');
     var modifiedUrl = '';
     switch (scenario) {
     
     case 'get':
-      modifiedUrl = this.getPath('baseUrlParameters.image.small');
+      modifiedUrl = this.getPath('baseUrlParameters.image.normal');
       modifiedUrl += url;
+      modifiedUrl += "&pagenr=" + pageNumber;      
       break;
     
     case 'fixtures':
@@ -199,10 +204,14 @@ MvoEdge.configurator = SC.Object.create(
   
   /**
     @method
-
+    
     Return the adapted url for the thumbnail image
+
+    @param {String} url the default url of the pdf
+    @param {Number} the page number is optional
+    @return {String} the new encoded url
   */
-  getThumbnailUrl: function (url) {
+  getThumbnailUrl: function (url, pageNumber) {
     var scenario = this.get('inputParameters').scenario;
     var modifiedUrl;
     
@@ -211,6 +220,7 @@ MvoEdge.configurator = SC.Object.create(
     case 'get':
       modifiedUrl = this.get('baseUrlParameters').thumbnail;
       modifiedUrl += url;
+      modifiedUrl += "&pagenr=" + pageNumber;
       break;
     
     case 'fixtures':
@@ -225,5 +235,5 @@ MvoEdge.configurator = SC.Object.create(
     }
     return modifiedUrl;
   }
-
+  
 });

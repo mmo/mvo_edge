@@ -43,7 +43,8 @@ MvoEdge.ThumbnailView = SC.ScrollView.extend(
       //if needed scroll to the new position
       if (needToScroll) {
         var selectionIndex = MvoEdge.thumbnailController.indexOf(selection);
-        this.scrollTo(null, selectionIndex * 100);
+        this.scrollTo(null, selectionIndex *
+            this.get('contentView').get('rowHeight'));
         MvoEdge.logger.debug('update thumbnail scroll'); 
       }
     }

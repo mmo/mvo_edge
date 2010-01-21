@@ -26,6 +26,7 @@ MvoEdge.TreeView = SC.ListView.extend(
   */
   _layerDidChange: function () {
     var childViews = this.get('childViews');
+    //console.info(this.get('contentView').get('frame').width);
     if (childViews.get('length') > 0) {
       var maxWidth = 0;
       for (var i = 0; i < childViews.get('length'); i++) {

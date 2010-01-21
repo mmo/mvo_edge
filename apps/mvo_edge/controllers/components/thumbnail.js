@@ -59,7 +59,10 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         var label = node.get('label');
         // to create thumbnail url
         var defaultUrl = node.get('urlDefault');
-        var thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(defaultUrl);
+        var pageNumber = !SC.none(node.get('localSequenceNumber')) ?
+            node.get('localSequenceNumber') : 0;
+        var thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(
+            defaultUrl, pageNumber);
 
         var thumbnailHash = {
             guid: id,

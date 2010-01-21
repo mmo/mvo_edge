@@ -54,9 +54,11 @@ MvoEdge.initializer = SC.Object.create(
         switch (scenario) {
         case 'get':
           MvoEdge.logger.info('initializer: using remote access with URL: %@');
-          var url = !SC.none(this.get('inputParameters')) ?
-              this.get('inputParameters').url : undefined;
+          //use location.hash to prevent splitting the url
+          var url = !SC.none(location.hash) ?
+              location.hash : undefined;
           if (url !== undefined) {
+            url = url.replace('#get&url=', '');
             MvoEdge.logger.debug('initializer: sending url to the server: ' +
                 url);
             var serverAdress = MvoEdge.configurator.getPath('baseUrlParameters.get');            

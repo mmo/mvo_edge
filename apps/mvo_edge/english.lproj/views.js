@@ -24,10 +24,10 @@ MvoEdge.views = SC.Page.design({
   /**
     Main content view
   */
-  mainContentView: SC.ScrollView.design({
+  mainContentView: MvoEdge.ContentView.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
     
-    contentView: MvoEdge.ContentView.design({
+    contentView: SC.ImageView.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
       useImageCache: NO
     })
