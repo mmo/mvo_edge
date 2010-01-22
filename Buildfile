@@ -4,5 +4,5 @@
 # ===========================================================================
 
 # Add initial buildfile information here
-config :all, :url_prefix => '/' :required => [:sproutcore, :LOG]
-proxy '/multivio', :to => 'doc.test.rero.ch' 
+config :all, :required => [:sproutcore, :LOG]
+proxy '/multivio', :to => 'demo.multivio.org' 

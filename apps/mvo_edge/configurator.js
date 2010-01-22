@@ -37,7 +37,7 @@ MvoEdge.configurator = SC.Object.create(
       browserConsole: "LOG_INFO",
       ajax:           "LOG_ERROR"
     },
-    logFile: "/multivio/log"
+    logFile: "/multivio/log/post"
   },
   
   /**
@@ -59,7 +59,6 @@ MvoEdge.configurator = SC.Object.create(
     
     fixtures: {
       VAA: "/static/mvo_edge/en/current/images/VAA",
-      PDF:  "/static/mvo_edge/en/current/PDFRenderer",
       HTML: "/static/mvo_edge/en/current/PDFHTML"
     }
   },
@@ -207,7 +206,7 @@ MvoEdge.configurator = SC.Object.create(
     
     Return the adapted url for the thumbnail image
 
-    @param {String} url the default url of the pdf
+    @param {String} url the default url of the file
     @param {Number} the page number is optional
     @return {String} the new encoded url
   */

@@ -4,7 +4,6 @@
 // ==========================================================================
 /*globals MvoEdge */
 //require('views/content');
-//require('views/pdf_renderer');
 //require('views/thumbnail');
 //require('views/tree');
 
@@ -43,19 +42,6 @@ MvoEdge.views = SC.Page.design({
       layout: { top: 0, bottom: 0, left: 0, right: 0 },
       contentBinding: 'MvoEdge.masterController.masterSelection',
       contentValueKey: 'imageUrl'
-    })
-  }),
-
-  /**
-    PDFRenderer Main content view
-  */
-  pdfRendererMainContentView: SC.ScrollView.design({
-    layout: { top: 0, bottom: 0, left: 0, right: 0 },
-
-    contentView: MvoEdge.PDFRendererView.design({
-      layerId: 'PdfRendererId',
-      contentBinding: 'MvoEdge.masterController.masterSelection',
-      contentValueKey: 'guid'
     })
   }),
   

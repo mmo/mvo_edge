@@ -73,8 +73,8 @@ MvoEdge.logger = SC.Object.create(
         case 'ajax':
           appenderObject = new Log4js.AjaxAppender(
               MvoEdge.configurator.getPath('logParameters.logFile'));
-          //appenderObject.setLayout(new Log4js.BasicLayout());
-          appenderObject.setLayout(new Log4js.JSONLayout());
+          appenderObject.setLayout(new Log4js.BasicLayout());
+          //appenderObject.setLayout(new Log4js.JSONLayout());
           break;
         case 'console' :
           appenderObject = new Log4js.ConsoleAppender(false);
