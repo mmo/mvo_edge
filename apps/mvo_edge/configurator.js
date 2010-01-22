@@ -37,7 +37,7 @@ MvoEdge.configurator = SC.Object.create(
       browserConsole: "LOG_INFO",
       ajax:           "LOG_ERROR"
     },
-    logFile: "/multivio/log/post"
+    logFile: "/server/log/post"
   },
   
   /**
@@ -47,14 +47,14 @@ MvoEdge.configurator = SC.Object.create(
   
   */
   baseUrlParameters: {
-    get: "/multivio/cdm/get?url=",
+    get: "/server/cdm/get?url=",
     
-    thumbnail: "/multivio/document/get?width=100&url=",
+    thumbnail: "/server/document/get?width=100&url=",
     
     image: {
-      small:  "/multivio/document/get?width=500&url=",
-      normal: "/multivio/document/get?width=1000&url=",
-      big:    "/multivio/document/get?width=1500&url="
+      small:  "/server/document/get?width=500&url=",
+      normal: "/server/document/get?width=1000&url=",
+      big:    "/server/document/get?width=1500&url="
     },
     
     fixtures: {
