@@ -80,7 +80,7 @@ MvoEdge.logger = SC.Object.create(
           appenderObject = new Log4js.ConsoleAppender(false);
           break;
         case 'browserConsole':
-          appenderObject = new Log4js.BrowserConsoleAppender(false);
+          appenderObject = new Log4js.BrowserConsoleAppender(true);
           break;
         }
         if (appenderObject) this._attachAppender(appenderObject, level);
