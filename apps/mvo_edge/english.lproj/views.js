@@ -25,13 +25,13 @@ MvoEdge.views = SC.Page.design({
   */
   mainContentView: MvoEdge.ContentView.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
-    
+
     contentView: SC.ImageView.design({
-      layout: { top: 0, bottom: 0, left: 0, right: 0 },
+      layout: { top: 0, bottom: 0, centerX: 0, minWidth: 1 },
       useImageCache: NO
     })
   }),
-  
+
   /**
     HTML main content view
   */
@@ -209,9 +209,18 @@ MvoEdge.views = SC.Page.design({
     ]
   }).classNames('workspace'.w()),
 
-  box1View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY}),
-  box2View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY}),
-  box3View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY}),
-  box4View: SC.View.design(SC.Border, {borderStyle: SC.BORDER_GRAY})
+  usageView: SC.View.design({
+    layout: { top: 0, bottom: 0, left: 0, right: 0 },
+
+    childViews: [
+      SC.LabelView.design({
+        layout: { centerX: 0, centerY: 0, width: 700, height: 400 },
+        classNames: 'mvo_info_full',
+        contentBinding: 'MvoEdge.configurator',
+        contentValueKey: 'usageText',
+        escapeHTML: NO
+      })
+    ]
+  }).classNames('mvo_info_full'.w())
 
 });

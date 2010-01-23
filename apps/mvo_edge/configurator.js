@@ -107,7 +107,25 @@ MvoEdge.configurator = SC.Object.create(
       components: [
         {name: 'views.mainContentView', x: 0, y: 0, xlen: 3, ylen: 3}
       ]
-    }    
+    },
+    'usage': {
+      baseLayout: 'default',
+      components: [
+        {name: 'views.usageView', x: 0, y: 0, xlen: 3, ylen: 3}
+      ]
+    }
+  },
+
+  fixtureSets: {
+    'VAA': {
+      componentLayout: 'pageBased'
+    },
+    'HTML': {
+      componentLayout: 'pageBased'
+    },
+    'PDF': {
+      componentLayout: 'pageBased'
+    }
   },
 
   /**
@@ -233,6 +251,26 @@ MvoEdge.configurator = SC.Object.create(
       break;
     }
     return modifiedUrl;
-  }
+  },
+
+  usageText: '' +
+    '<img src="%@" class="sc-icon-info-48">'.fmt(SC.BLANK_IMAGE_URL) +
+    '<div class="mvo_info_full_message">' +
+    '<h3>' + '_How to launch Multivio'.loc() + '</h3>' +
+    '<p>' +
+    '_The calling syntax is'.loc() + ':' +
+    '<ul><li>http://demo.multivio.org/client/#get&url={TARGET}</li></ul>' +
+    '_The {TARGET} URL can link to'.loc() + ':' +
+    '<ul>' +
+    '  <li>' + '_A Dublin Core record'.loc() + '</li>' +
+    '  <li>' + '_A METS record (supported profiles only)'.loc() + '</li>' +
+    '</ul>' +
+    '_Examples'.loc() + ':' +
+    '<ul>' +
+    '  <li>http://demo.multivio.org/client/#get&url=http://doc.rero.ch/record/9495/export/xd</li>' +
+    '  <li>http://demo.multivio.org/client/#get&url=http://era.ethz.ch/oai?verb=GetRecord&metadataPrefix=mets&identifier=oai:era.ethz.ch:34314</li>' +
+    '</ul>' +
+    '</p>' +
+    '</div>'
   
 });

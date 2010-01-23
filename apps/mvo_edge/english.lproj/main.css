@@ -6,6 +6,7 @@
 
 body.sc-theme {
  background-color: #fff;
+ color: #000;
  font: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
 
@@ -42,7 +43,11 @@ body.sc-theme {
 
 /* Multivio information full page */
 
-.mvo_info_full#outer {
+.mvo_info_full {
+  color: #000;
+}
+
+.mvo_info_full_outer {
   height: 100%;
   overflow: hidden;
   width: 1%;
@@ -51,14 +56,14 @@ body.sc-theme {
   margin: 0 auto;
 }
 
-.mvo_info_full#middle {
+.mvo_info_full_middle {
   display: table-cell;
   vertical-align: middle;
   width: 1%;
   text-align: center;
 }
 
-.mvo_info_full#inner {
+.mvo_info_full_inner {
   width: 100%;
   text-align: left;
 }
@@ -80,7 +85,13 @@ body.sc-theme {
   color: #808080;
 }
 
-.mvo_info_full#progress {
+.mvo_info_full_progress {
   text-align: center;
   margin-top: 60px;
+}
+
+.mvo_info_full_message {
+  position: absolute;
+  top: 10px;
+  left: 70px;
 }

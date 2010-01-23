@@ -40,81 +40,139 @@ MvoEdge.initializer = SC.Object.create(
   inputParametersBinding: "MvoEdge.configurator.inputParameters",
 
   /**
+    @property {String}
+    
+    The name of the fixture set used
+  */
+  fixtureSet: '',
+
+  /**
     @method
 
-    Retrieve CDM.
-    @observes {properties}     
+    Read input parameters in order to decide how to fetch application data
+    @observes {inputParameters}
   */
   _inputParametersDidChange: function () {
     if (this.isFirstTime) {
       this.isFirstTime = NO;
-    } else {
+    }
+    else {
+      // Attach the main page to the browser window in order to initiate the
+      // interface of the application
+      MvoEdge.getPath('mainPage.mainPane').append();
+
       var scenario = this.get('inputParameters').scenario;
       if (!SC.none(scenario)) {
+        var success = NO;
         switch (scenario) {
         case 'get':
-          MvoEdge.logger.info('initializer: using remote access with URL: %@');
-          //use location.hash to prevent splitting the url
-          var url = !SC.none(location.hash) ?
-              location.hash : undefined;
-          if (url !== undefined) {
-            url = url.replace('#get&url=', '');
-            MvoEdge.logger.debug('initializer: sending url to the server: ' +
-                url);
-            var serverAdress = MvoEdge.configurator.getPath('baseUrlParameters.get');            
-            var request = SC.Request.getUrl(serverAdress + url).
-                json().notify(this, this._storeCDM);
-            request.set('isAsynchronous', NO);
-            request.set('isJSON', YES);
-            request.send();
-          }
-          else {
-            // stop the application now
-            MvoEdge.logger.error('no URL parameter has been provided');
-            alert(this._usageMessage);
-            return NO;
-          }
+          success = this._fetchCDMFromServer();
           break;
-          
         case 'fixtures':
-          MvoEdge.logger.info('initializer: using fixtures');
-          var name = this.get('inputParameters').name;
-          switch (name) {
-          case 'VAA': 
-            MvoEdge.logger.info('initializer: using VAA fixtures');
-            break;
-          case 'HTML':
-            MvoEdge.logger.info('initializer: using HTML fixtures');
-            MvoEdge.CoreDocumentNode.FIXTURES = 
-                MvoEdge.CoreDocumentNode.FIXTURES_HTML;
-            break;
-          case 'PDF':
-            MvoEdge.logger.info('initializer: using PDF fixtures');
-            MvoEdge.CoreDocumentNode.FIXTURES = 
-                MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
-            break;
-          default:
-            MvoEdge.logger.error('"%@" is an invalid parameter'.fmt(name));
-            break;
-          }
-          MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
-          break;
-        default:
-          // stop the application now
-          MvoEdge.logger.error('initializer: the "name" parameter is missing');
-          alert(this._usageMessage);
-          return NO;
+          success = this._fetchCDMFromFixtures();
         }
-        this._initializeComponents();
+        if (success) {
+          this._initializeComponents();
+          this._layOutComponentsOnWindow();
+        }
+        else {
+          this._showUsage();
+        }
       }
       else {
-        MvoEdge.logger.error('invalid request');
-        return NO;
+        MvoEdge.logger.error('initializer: invalid application parameters');
+        this._showUsage();
+        return;
       }
-      
     }
   }.observes('inputParameters'),
- 
+
+  /**
+    @method
+
+    Fetch CoreDocumentModel from the server.
+  */
+  _fetchCDMFromServer: function () {
+    // use location.hash to prevent splitting the url
+    var url = !SC.none(location.hash) ?
+        location.hash : undefined;
+    if (url !== undefined) {
+      url = url.replace('#get&url=', '');
+      MvoEdge.logger.debug('initializer: sending url to the server: ' +
+          url);
+      var serverAdress = MvoEdge.configurator.getPath('baseUrlParameters.get');
+      var request = SC.Request.getUrl(serverAdress + url).
+          json().notify(this, this._storeCDM);
+      request.set('isAsynchronous', NO);
+      request.set('isJSON', YES);
+      request.send();
+      return YES;
+    }
+    else {
+      // stop the application now
+      MvoEdge.logger.error('initializer: no URL parameter has been provided');
+      return NO;
+    }
+  },
+
+  /**
+    @method
+
+    Fetch CoreDocumentModel from fixture data.
+  */
+  _fetchCDMFromFixtures: function () {
+    var name = this.get('inputParameters').name;
+    if (SC.typeOf(name) !== SC.T_STRING || name.length === 0) {
+      MvoEdge.logger.error('initializer: the "name" parameter is missing');
+      // TODO show usage page here!!!
+      return NO;
+    }
+    // check if requested fixture set exists in the application
+    var fixtureSets = MvoEdge.configurator.getPath('fixtureSets');
+    var fixtureData = null;
+    var found = NO;
+    for (var f in fixtureSets) {
+      if (fixtureSets.hasOwnProperty(f)) {
+        if (f === name) {
+          fixtureData = f.fixtureData;
+          found = YES;
+          break;
+        }
+      }
+    }
+    if (found === YES) {
+      switch (name) {
+      case 'VAA':
+        break;
+      case 'HTML':
+        MvoEdge.CoreDocumentNode.FIXTURES =
+            MvoEdge.CoreDocumentNode.FIXTURES_HTML;
+        break;
+      case 'PDF':
+        MvoEdge.CoreDocumentNode.FIXTURES =
+            MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
+        break;
+      default:
+        MvoEdge.logger.error('initializer: the value "%@" '.fmt(name) + 
+            'for the "name" parameter is configured in the application ' +
+            'but seems invalid at this point');
+        return NO;
+      }
+      this.set('fixtureSet', name);
+
+      // create the store with the appropriate fixture data
+      MvoEdge.logger.info('initializer: using "%@" fixtures'.fmt(name));
+      MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
+
+      return YES;
+    }
+    else {
+      MvoEdge.logger.error('initializer: the value "%@" '.fmt(name) +
+          'for the "name" parameter is invalid');
+      return NO;
+    }
+  },
+
   /**
     @method
 
@@ -137,91 +195,98 @@ MvoEdge.initializer = SC.Object.create(
     }
     //MvoEdge.store.flush();
     MvoEdge.logger.info('initializer: number of CDM nodes: ' + 
-      MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
+        MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
   },
       
   /**
     @method
 
-    Initialize controllers, views and layout
+    Initialize components with data
 
     @private  
   */
   _initializeComponents: function () { 
 
     SC.RunLoop.begin();
-
-    // Step 1: Instantiate Your Views
-    // The default code here will make the mainPane for your application visible
-    // on screen.  If you app gets any level of complexity, you will probably 
-    // create multiple pages and panes.
-    MvoEdge.getPath('mainPage.mainPane').append();
-
-    // Step 2. Set the content property on your primary controller.
-    // This will make your app come alive!
-    // Set the content property on your primary controller
-    // ex: .contactsController.set('content',.contacts);
-    var nodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
-    MvoEdge.logger.info("initializer: number of CDM nodes: " +
-        nodes.get('length'));
-    MvoEdge.thumbnailController.initialize(nodes);
-    MvoEdge.treeController.initialize(nodes);
-    MvoEdge.masterController.initialize(nodes);
     
-    // Call the layout controller in order to setup the interface components
     try {
-      var scenario = MvoEdge.configurator.getPath('inputParameters.scenario');
-      switch (scenario) {
-      case 'fixtures':
-        var name = MvoEdge.configurator.getPath('inputParameters.name');
-        switch (name) {
-        case 'VAA': 
-          MvoEdge.logger.info('initializer: using layout for VAA fixtures');
-          MvoEdge.layoutController.configureWorkspace('pageBased');
-          break;        
-        case 'HTML':
-          MvoEdge.logger.info('initializer: using layout for HTML fixtures');
-          MvoEdge.layoutController.configureWorkspace('pageBased');
-          break;
-        case 'PDF':
-          MvoEdge.logger.info('initializer: using layout for PDF fixtures');
-          MvoEdge.layoutController.configureWorkspace('pageBased');
+      // Step 2. Set the content property on your primary controller.
+      // This will make your app come alive!
+      // Set the content property on your primary controller
+      // ex: .contactsController.set('content',.contacts);
+      var nodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
+      MvoEdge.logger.info("initializer: number of CDM nodes: " +
+          nodes.get('length'));
+      MvoEdge.thumbnailController.initialize(nodes);
+      MvoEdge.treeController.initialize(nodes);
+      MvoEdge.masterController.initialize(nodes);
+
+
+      // initialize the selection with the first CDM leaf node
+      var sortedNodes = nodes.sortProperty('guid');
+      for (var i = 0; i < sortedNodes.length; i++) {
+        if (sortedNodes[i].get('isLeafNode')) {
+          MvoEdge.masterController.set('masterSelection', sortedNodes[i]);
           break;
         }
-        break;
-      default:
-        MvoEdge.logger.info('initializer: using default layout');
-        MvoEdge.layoutController.configureWorkspace('pageBased');
-        break;
       }
     }
     catch (e) {
-      MvoEdge.logger.logException(e, 'Error initializing components');
+      MvoEdge.logger.logException(e, 'Error initializing components with data');
     }
-    
-    // initialize the selection with the first CDM leaf node
-    var sortedNodes = nodes.sortProperty('guid');
-    for (var i = 0; i < sortedNodes.length; i++) {
-      if (sortedNodes[i].get('isLeafNode')) {
-        MvoEdge.masterController.set('masterSelection', sortedNodes[i]);
-        break;
-      }
+    finally {
+      SC.RunLoop.end();
     }
-    SC.RunLoop.end();
-    MvoEdge.logger.info('end of initializer._initializeComponents()');
   },
 
-  // TODO this message should be shown as HTML, replacing the usual application
-  // layout, and not as a JS alert popup; the provided links should be clickable
-  _currentBaseURL: '' + document.location.host + document.location.pathname,
-  _usageMessage: 'The syntax for calling Multivio is:\n\n' +
-      '%@#fixtures&name=<FIXTURE_SET>\n\n'.fmt(this._currentBaseURL) +
-      'or\n\n' +
-      '#get&url=<TARGET>\n\n' +
-      'where <FIXTURE_SET> can be: "VAA", "HTML" or "PDF"\n' +
-      'and <TARGET> is the URL of the content to be presented by Multivio\n\n' +
-      'Examples:\n\n' +
-      '%@#get&url=http://doc.rero.ch/record/9495/export/xd (Dublin Core target)\n\n'.fmt(this._currentBaseURL) +
-      '%@#get&url=http://era.ethz.ch/oai?verb=GetRecord&metadataPrefix=mets&identifier=oai:era.ethz.ch:34314 (METS target)'.fmt(this._currentBaseURL)
+  /**
+    @method
+
+    Lay out components on window according to application scenario
+
+    @private  
+  */
+  _layOutComponentsOnWindow: function () {
+    SC.RunLoop.begin();
+    // Call the layout controller in order to setup the interface components
+    try {
+      if (SC.typeOf(this.get('fixtureSet')) === SC.T_STRING &&
+          this.get('fixtureSet').length > 0) {
+        var componentLayout = MvoEdge.configurator.getPath(
+            'fixtureSets.' + this.get('fixtureSet') + '.componentLayout');
+        MvoEdge.layoutController.configureWorkspace(componentLayout);
+      }
+      else {
+        MvoEdge.layoutController.configureWorkspace('pageBased');
+      }
+    }
+    catch (e) {
+      MvoEdge.logger.logException(e, 'Error laying out components on window');
+    }
+    finally {
+      SC.RunLoop.end();
+    }
+  },
+
+  /**
+    @method
+
+    Show usage page
+
+    @private  
+  */
+  _showUsage: function () {
+    SC.RunLoop.begin();
+    // Call the layout controller in order to setup the interface components
+    try {
+      MvoEdge.layoutController.configureWorkspace('usage');
+    }
+    catch (e) {
+      MvoEdge.logger.logException(e, 'Error showing usage page');
+    }
+    finally {
+      SC.RunLoop.end();
+    }
+  }
 
 });

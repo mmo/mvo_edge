@@ -3,6 +3,8 @@
 // Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
+//require('configurator');
+//require('models/core_document_node');
  
 /**
 Define Log levels
