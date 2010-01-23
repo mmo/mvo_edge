@@ -5,6 +5,16 @@
    # content for a brief moment on their first app load, if at all.
 %>
 
-  <p class="loading">Loading application Mvo Edge...<p>
+  <div id="outer" class="mvo_info_full">
+    <div id="middle" class="mvo_info_full">
+      <div id="inner" class="mvo_info_full">
+        <h1>Multivio</h1>
+        <h3>loading...</h3>
+        <div id="progress" class="mvo_info_full">
+          <img src="<%= static_url('icons/progress_wheel_medium.gif') %>">
+        </div>
+      </div>
+    </div>
+  </div>
 
 <% end %>

@@ -39,3 +39,48 @@ body.sc-theme {
 .workspace .toolbox_icon {
   padding: 5px;
 }
+
+/* Multivio information full page */
+
+.mvo_info_full#outer {
+  height: 100%;
+  overflow: hidden;
+  width: 1%;
+  display: table;
+  position: static;
+  margin: 0 auto;
+}
+
+.mvo_info_full#middle {
+  display: table-cell;
+  vertical-align: middle;
+  width: 1%;
+  text-align: center;
+}
+
+.mvo_info_full#inner {
+  width: 100%;
+  text-align: left;
+}
+
+.mvo_info_full h1 {
+  border: none;
+  padding: 0;
+  margin: 0;
+  letter-spacing: -3px;
+  font: normal 6.4em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  color: #000;
+}
+
+.mvo_info_full h3 {
+  padding: 0;
+  letter-spacing: 2px;
+  margin: -5px 6px;
+  font: 2.2em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  color: #808080;
+}
+
+.mvo_info_full#progress {
+  text-align: center;
+  margin-top: 60px;
+}
