@@ -17,7 +17,7 @@ SC.stringsFor('English', {
   '_The calling syntax is': 'The calling syntax is',
   '_The {TARGET} URL can link to': 'The {TARGET} URL can link to',
   '_A Dublin Core record': 'A Dublin Core record',
-  '_A METS record (thesupported profiles only)': 'A METS record (supported profiles only)',
+  '_A METS record (supported profiles only)': 'A METS record (supported profiles only)',
   '_Examples': 'Examples'
 
 });

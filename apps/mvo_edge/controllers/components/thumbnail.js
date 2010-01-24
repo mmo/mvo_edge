@@ -68,6 +68,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
             guid: id,
             url: thumbnailUrl,
             label: label,
+            pageNumber: pageNumber,
             coreDocumentNode: cdmNodeId
           };
         // create a new thumbnail record

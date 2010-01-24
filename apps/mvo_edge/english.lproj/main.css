@@ -5,12 +5,48 @@
 */
 
 body.sc-theme {
- background-color: #fff;
- color: #000;
+ background-color: #444;
+ color: #fff;
  font: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
 
-.workspace h1 {
+.shadow_light {
+   box-shadow:inset 0 0 10px #000000;
+   -moz-box-shadow:inset 0 0 10px #000000;
+   -webkit-box-shadow:inset 0 0 10px #000000;
+}
+
+.shadow_dark {
+   box-shadow:inset 0 0 10px #000000;
+   -moz-box-shadow:inset 0 0 10px #000000;
+   -webkit-box-shadow:inset 0 0 10px #000000;
+}
+
+.inner_content_view {
+  background-color: #666;
+  border: 1px solid #888888;
+}
+
+.inner_view {
+  background-color: #aaa;
+  border: 1px solid #888888;
+}
+
+
+
+
+.sc-theme .sc-list-view {
+  background-color: #aaa;
+}
+
+.sc-theme #loading {
+  background-color: #fff;
+}
+
+
+
+
+.workspace_white h1 {
  border: none ;
  padding: 0px;
  margin: 0px;
@@ -18,28 +54,67 @@ body.sc-theme {
  font: normal 3.4em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
 
-.workspace h3 {
+.workspace_white h3 {
  margin: 8px 0px;
  padding: 0px;
  font: 1.5em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
  color: #808080;
 }
 
-.workspace .metadata_primary {
+.workspace_white .metadata_primary {
  font: 1.3em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
  font-weight: bold;
  color: #333;
 }
 
-.workspace .metadata_secondary {
+.workspace_white .metadata_secondary {
  font: 1.1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
  font-weight: bold;
  color: #777;
 }
 
-.workspace .toolbox_icon {
+.workspace_white .toolbox_icon {
   padding: 5px;
 }
+
+
+
+
+.workspace_black h1 {
+ border: none ;
+ padding: 0px;
+ margin: 0px;
+ letter-spacing: -1px;
+ font: normal 3.4em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+.workspace_black h3 {
+ margin: 8px 0px;
+ padding: 0px;
+ font: 1.5em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+ color: #808080;
+}
+
+.workspace_black .metadata_primary {
+ font: 1.3em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+ font-weight: bold;
+ color: #fff;
+}
+
+.workspace_black .metadata_secondary {
+ font: 1.1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+ font-weight: bold;
+ color: #aaa;
+}
+
+.workspace_black .toolbox_icon {
+  padding: 5px;
+}
+
+
+
+
+
 
 /* Multivio information full page */
 

@@ -73,13 +73,13 @@ MvoEdge.configurator = SC.Object.create(
       layoutClass: 'GridLayout3x3',
       layoutParams: {
         'leftStripWidth':  200,
-        'rightStripWidth': 120,
+        'rightStripWidth': 200,
         'headerHeight':     80,
-        'footerHeight':     80,
-        'marginTop':         5,
-        'marginRight':       5,
-        'marginBottom':      5,
-        'marginLeft':        5
+        'footerHeight':     60,
+        'marginTop':        10,
+        'marginRight':      10,
+        'marginBottom':     10,
+        'marginLeft':       10
       }
     }
   },

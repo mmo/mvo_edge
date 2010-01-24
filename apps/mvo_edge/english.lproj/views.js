@@ -23,14 +23,20 @@ MvoEdge.views = SC.Page.design({
   /**
     Main content view
   */
-  mainContentView: MvoEdge.ContentView.design({
+  mainContentView: SC.View.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
+    
+    childViews: 'innerMainContent'.w(),
+    innerMainContent: MvoEdge.ContentView.design({
+      layout: { top: 10, bottom: 10, left: 10, right: 10 },
+      borderStyle: SC.BORDER_NONE,
 
-    contentView: SC.ImageView.design({
-      layout: { top: 0, bottom: 0, centerX: 0, minWidth: 1 },
-      useImageCache: NO
+      contentView: SC.ImageView.design({
+        layout: { top: 0, bottom: 0, centerX: 0, minWidth: 1 },
+        useImageCache: NO
+      })
     })
-  }),
+  }).classNames('shadow_dark inner_content_view'.w()),
 
   /**
     HTML main content view
@@ -48,21 +54,40 @@ MvoEdge.views = SC.Page.design({
   /**
     Thumbnail view
   */
-  thumbnailView: MvoEdge.ThumbnailView.design({
-    hasHorizontalScroller: NO,
+  thumbnailView: SC.View.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
+    
+    childViews: 'innerThumbnail'.w(),
+    innerThumbnail: MvoEdge.ThumbnailView.design({
+      layout: { top: 10, bottom: 10, left: 10, right: 10 },
+      hasHorizontalScroller: NO,
+      borderStyle: SC.BORDER_NONE,
 
-    contentView: SC.ListView.design({
-      layout: { top: 0, bottom: 0, left: 5, right: 5 },
-      insertionOrientation: SC.VERTICAL_ORIENTATION,
-      rowHeight: 100,
-      exampleView: SC.ImageView,
-      useImageCache: NO,
-      contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
-      selectionBinding: 'MvoEdge.thumbnailController.selection',
-      contentValueKey: 'url'
+      contentView: SC.ListView.design({
+        layout: { top: 0, bottom: 0, left: 0, right: 0 },
+        insertionOrientation: SC.VERTICAL_ORIENTATION,
+        rowHeight: 120,
+        exampleView: SC.View.design({
+          childViews: 'thumbnail label'.w(),
+          thumbnail: SC.ImageView.design({
+            layout:  { top: 4, height: 92, centerX: 0, width: 80 },
+            useImageCache: NO,
+            contentBinding: '.parentView.content',
+            contentValueKey: 'url'
+          }),
+          label: SC.LabelView.design({
+            layout:  { bottom: 4, height: 20, left: 4, right: 4 },
+            textAlign: SC.ALIGN_CENTER,
+            contentBinding: '.parentView.content',
+            contentValueKey: 'guid'
+          })
+        }),
+        //useImageCache: NO,
+        contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
+        selectionBinding: 'MvoEdge.thumbnailController.selection'
+      })
     })
-  }),
+  }).classNames('shadow_light inner_view'.w()),
   
   /**
     HTML thumbnail view
@@ -88,17 +113,25 @@ MvoEdge.views = SC.Page.design({
   /**
     Tree view
   */
-  treeView: SC.ScrollView.design({
+  treeView: SC.View.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
 
-    contentView: MvoEdge.TreeView.design({
-      rowHeight: 20,
-      contentValueKey: 'label',
-      contentBinding: 'MvoEdge.treeController.arrangedObjects',
-      selectionBinding: 'MvoEdge.treeController.selection'
+    childViews: 'innerTree'.w(),
+    innerTree: SC.ScrollView.design({
+      layout: { top: 10, bottom: 10, left: 10, right: 10 },
+      borderStyle: SC.BORDER_NONE,
+
+      contentView: MvoEdge.TreeView.design({
+        layout: { top: 0, bottom: 0, left: 0, right: 0 },
+        rowHeight: 18,
+        borderStyle: SC.BORDER_NONE,
+        contentValueKey: 'label',
+        contentBinding: 'MvoEdge.treeController.arrangedObjects',
+        selectionBinding: 'MvoEdge.treeController.selection'
+      })
     })
-  }),
-  
+  }).classNames('shadow_light inner_view'.w()),
+
   /**
     Navigation view
   */
@@ -195,19 +228,19 @@ MvoEdge.views = SC.Page.design({
       SC.LabelView.design({
         layout: { top: 10, height: 20, left: 10, right: 10 },
         tagName: 'span',
-        classNames: 'workspace metadata_primary',
+        classNames: 'metadata_primary',
         contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
         contentValueKey: 'title'
       }),
       SC.LabelView.design({
         layout: { top: 31, height: 20, left: 10, right: 10 },
         tagName: 'span',
-        classNames: 'workspace metadata_secondary',
+        classNames: 'metadata_secondary',
         contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
         contentValueKey: 'creator'
       })
     ]
-  }).classNames('workspace'.w()),
+  }).classNames(''.w()),
 
   usageView: SC.View.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
@@ -221,6 +254,6 @@ MvoEdge.views = SC.Page.design({
         escapeHTML: NO
       })
     ]
-  }).classNames('mvo_info_full'.w())
+  }).classNames('mvo_info_full shadow'.w())
 
 });
