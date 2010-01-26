@@ -7,7 +7,7 @@
 */
 
 /*globals MvoEdge module test ok equals same stop start */
-sc_require('grid_layout');
+sc_require('grid_layout_4x4');
 
 var pane, v1, v2, v3, v4, v5, v6;
 
@@ -24,7 +24,7 @@ var testVisibility = function () {
   return result;
 }
 
-module("MvoEdge.GridLayout", {
+module("MvoEdge.GridLayout4x4", {
   setup: function () {
 
     // create views for being laid out on the grid
@@ -55,9 +55,9 @@ module("MvoEdge.GridLayout", {
     });
     pane.append();
 
-    SC.mixin(pane, MvoEdge.GridLayout);
+    SC.mixin(pane, MvoEdge.GridLayout4x4);
     
-    pane.layoutGrid(
+    pane.layOutGrid(
         100, //leftStripWidth
         100, //rightStripWidth
          20, //headerHeight

@@ -14,9 +14,9 @@ MvoEdge.MIN_ZOOM_SIZE = 100;
 
   (Document Your View Here)
 
-  @extends SC.ImageView
+  @extends SC.ScrollView
 */
-MvoEdge.ContentView = SC.ImageView.extend(
+MvoEdge.ContentView = SC.ScrollView.extend(
 /** @scope MvoEdge.Content.prototype */ {
 
   /**
@@ -108,16 +108,18 @@ MvoEdge.ContentView = SC.ImageView.extend(
         var hg2 = hg * zoomVal;
         div.adjust('width', wd2);
         div.adjust('height', hg2);
-			} 
+      } 
     }
   }.observes('zoomValue', 'isZooming'),
 
   // TODO: is this view method the best way to add scroll  
   /**
-    If the master selection changes, readjust the size of the view
+    @method 
+    
+    Adapt View size depending on the size of the image
 
     @private
-    @observes masterSelection
+    @callback SC.imageCache.load
   */
  /* _contentDidChange: function () {
     var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
@@ -145,7 +147,9 @@ MvoEdge.ContentView = SC.ImageView.extend(
     var currentMasterSelection = this.get('masterSelection');
     if (!SC.none(currentMasterSelection)) {
       var defaultUrl = currentMasterSelection.get('urlDefault');
-      var imageUrl = MvoEdge.configurator.getImageUrl(defaultUrl);
+      var pageNumber = !SC.none(currentMasterSelection.get('localSequenceNumber')) ?
+          currentMasterSelection.get('localSequenceNumber') : 0;
+      var imageUrl = MvoEdge.configurator.getImageUrl(defaultUrl, pageNumber);
       SC.RunLoop.begin();
       this.set('value', imageUrl);
       SC.RunLoop.end();

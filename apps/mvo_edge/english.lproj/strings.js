@@ -11,5 +11,13 @@
 // localized string added to this file!
 //
 SC.stringsFor('English', {
-  // "_String Key": "Localized String"
+
+  // Strings for "application usage" text
+  '_How to launch Multivio': 'How to launch Multivio',
+  '_The calling syntax is': 'The calling syntax is',
+  '_The {TARGET} URL can link to': 'The {TARGET} URL can link to',
+  '_A Dublin Core record': 'A Dublin Core record',
+  '_A METS record (supported profiles only)': 'A METS record (supported profiles only)',
+  '_Examples': 'Examples'
+
 });

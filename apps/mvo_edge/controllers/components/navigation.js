@@ -68,8 +68,8 @@ MvoEdge.navigationController = SC.ObjectController.create(
     } else {
       // TODO : throw exception and log error
       var errMess = "Unable to retrieve the masterSelection !!";
-     MvoEdge.logger.error(errMess);
-      throw errMess; 
+      MvoEdge.logger.error(errMess);
+      throw {message: errMess};
     }
     
   }.observes('content'),

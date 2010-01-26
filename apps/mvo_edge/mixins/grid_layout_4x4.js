@@ -20,7 +20,7 @@
   @extends SC.Object
   @since 0.0.1
 */
-MvoEdge.GridLayout = {
+MvoEdge.GridLayout4x4 = {
 
   /**
     @property {Array}
@@ -75,7 +75,7 @@ MvoEdge.GridLayout = {
     @param {Integer} xCenter
     @param {Integer} yCenter
   */
-  layoutGrid: function (
+  layOutGrid: function (
       leftStripWidth, rightStripWidth, headerHeight, footerHeight,
       xCenter, yCenter) {
     this._leftStripWidth  = leftStripWidth;
@@ -112,7 +112,7 @@ MvoEdge.GridLayout = {
       errMess = "Coordinates are invalid: (%@, %@, %@, %@)".fmt(
           xCoord, xLen, yCoord, yLen);
       MvoEdge.logger.error(errMess);
-      throw errMess; 
+      throw {message: errMess};
     }
 
     // check if component is already laid out
@@ -120,7 +120,7 @@ MvoEdge.GridLayout = {
       errMess = "Cannot lay out an already laid out component: %@".fmt(
           component);
       MvoEdge.logger.error(errMess);
-      throw errMess; 
+      throw {message: errMess};
     }
     
     var newLayout = {};

@@ -3,6 +3,8 @@
 // Copyright: (c) 2009 RERO
 // ==========================================================================
 /*globals MvoEdge */
+//require('configurator');
+//require('models/core_document_node');
  
 /**
 Define Log levels
@@ -73,14 +75,14 @@ MvoEdge.logger = SC.Object.create(
         case 'ajax':
           appenderObject = new Log4js.AjaxAppender(
               MvoEdge.configurator.getPath('logParameters.logFile'));
-          //appenderObject.setLayout(new Log4js.BasicLayout());
-          appenderObject.setLayout(new Log4js.JSONLayout());
+          appenderObject.setLayout(new Log4js.BasicLayout());
+          //appenderObject.setLayout(new Log4js.JSONLayout());
           break;
         case 'console' :
           appenderObject = new Log4js.ConsoleAppender(false);
           break;
         case 'browserConsole':
-          appenderObject = new Log4js.BrowserConsoleAppender(false);
+          appenderObject = new Log4js.BrowserConsoleAppender(true);
           break;
         }
         if (appenderObject) this._attachAppender(appenderObject, level);
