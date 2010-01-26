@@ -30,35 +30,36 @@ test("_changeZoom method", function () {
 
 test("doZoomIn method", function () {
   myZoomController.doZoomIn();
-  equals(myZoomController.get('factor'), MvoEdge.ZOOM_IN, "should find the zoomIn factor with the input zoom value 'null'");
+  equals(myZoomController.get('factor'), MvoEdge.ZOOM_IN_FACTOR, "should find the zoomIn factor with the input zoom value 'null'");
   
   myZoomController.doZoomIn();
-  console.info('FACTOR IN : ' + myZoomController.get('factor'));
   equals(myZoomController.get('isZooming'), YES, "should change the zoom status");  
     
   myZoomController.set('factor', 2);
   myZoomController.doZoomIn();
-  equals(myZoomController.get('factor'), MvoEdge.ZOOM_IN, "should find the zoomIn factor with the input zoom value '2'");
+  equals(myZoomController.get('factor'), MvoEdge.ZOOM_IN_FACTOR, "should find the zoomIn factor with the input zoom value '2'");
 });
 
 test("doZoomOut method", function () {
   myZoomController.doZoomOut();
-  equals(myZoomController.get('factor'), MvoEdge.ZOOM_OUT, "should find the zoomOut factor with the input zoom value 'null'");
+  equals(myZoomController.get('factor'), MvoEdge.ZOOM_OUT_FACTOR, "should find the zoomOut factor with the input zoom value 'null'");
   
   myZoomController.doZoomOut();
-  console.info('FACTOR OUT : ' + myZoomController.get('factor'));
   equals(myZoomController.get('isZooming'), YES, "should change the zoom status");   
   
   myZoomController.set('factor', 2);
   myZoomController.doZoomOut();
-  equals(myZoomController.get('factor'), MvoEdge.ZOOM_OUT, "should find the zoomOut factor with the input zoom value '2'");  
+  equals(myZoomController.get('factor'), MvoEdge.ZOOM_OUT_FACTOR, "should find the zoomOut factor with the input zoom value '2'");  
 });
 
-test("retrieveOriginalSize method", function () {
-  myZoomController.retrieveOriginalSize();
-  ok(myZoomController.get('factor') !== MvoEdge.ORIGINAL_SIZE, "shouldn't find the zoom factor");
+test("doZoomOriginal method", function () {
+  myZoomController.doZoomOriginal();
+  equals(myZoomController.get('factor'), MvoEdge.ZOOM_ORIGINAL_FACTOR, "should find the zoomOriginal factor with the input zoom value 'null'");
+  
+  myZoomController.doZoomOriginal();
+  equals(myZoomController.get('isZooming'), YES, "should change the zoom status");   
   
   myZoomController.set('factor', 2);
-  myZoomController.retrieveOriginalSize();
-  equals(myZoomController.get('factor'), MvoEdge.ORIGINAL_SIZE, "should find the zoom factor with the input zoom value '2'");  
+  myZoomController.doZoomOriginal();
+  equals(myZoomController.get('factor'), MvoEdge.ZOOM_ORIGINAL_FACTOR, "should find the zoom factor with the input zoom value '2'");  
 });

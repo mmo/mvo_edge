@@ -334,7 +334,7 @@ MvoEdge.treeController = SC.TreeController.create(
   /**
     @method
     
-    Write on the fireburg console the tree sub-model
+    Write on the logger console the tree sub-model
     
     @private
     */
@@ -350,7 +350,7 @@ MvoEdge.treeController = SC.TreeController.create(
     }
     treeNodes.reset();
     var treeNodesJSON = JSON.stringify(treeNodesArray);
-    console.log(treeNodesJSON);
+    MvoEdge.logger.info(treeNodesJSON);
   }
 
 });

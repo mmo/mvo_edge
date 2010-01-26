@@ -111,7 +111,7 @@ MvoEdge.GridLayout = {
         yCoord < 0 || yCoord > 3 || yLen <= 0 || yCoord + yLen > 4) {
       errMess = "Coordinates are invalid: (%@, %@, %@, %@)".fmt(
           xCoord, xLen, yCoord, yLen);
-      console.error(errMess);
+      MvoEdge.logger.error(errMess);
       throw errMess; 
     }
 
@@ -119,7 +119,7 @@ MvoEdge.GridLayout = {
     if (this._componentsOnGrid[component]) {
       errMess = "Cannot lay out an already laid out component: %@".fmt(
           component);
-      console.error(errMess);
+      MvoEdge.logger.error(errMess);
       throw errMess; 
     }
     

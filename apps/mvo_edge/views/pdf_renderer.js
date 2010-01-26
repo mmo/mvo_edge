@@ -108,7 +108,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
       if (!cdmObjects.firstObject()) {
         // TODO : throw exception and log error
         var errMess = "Unable to retrieve the 'urlDefault' !!";
-        console.error(errMess);
+        MvoEdge.logger.error(errMess);
         throw errMess;   
       }
 
@@ -174,7 +174,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
       } else {
         // TODO : throw exception and log error
         var errMess = "Unable to retrieve the Applet with the 'appletId' id in the document!!";
-        console.error(errMess);
+        MvoEdge.logger.error(errMess);
         throw errMess;
       }
     }
@@ -201,12 +201,12 @@ MvoEdge.PDFRendererView = SC.View.extend(
         } else {
           // TODO : log warn
           var errMess1 = "'nbPages' expects a non-null value.";
-          console.warn(errMess1);
+          MvoEdge.logger.error(errMess1);
         }
       } catch (e) {
         // TODO : log error
         var errMess2 = "Unable to retrieve the number of pages :\n%@".fmt(e);
-        console.error(errMess2);
+        MvoEdge.logger.error(errMess2);
       }
     }
     return nbPages;
@@ -228,7 +228,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
       } catch (e) {
         // TODO : throw exception and log error
         var errMess = "Unable to go to the page '%@' :\n, %@".fmt(newPage, e);
-        console.error(errMess);
+        MvoEdge.logger.error(errMess);
         throw errMess;
       }        
     } else {
@@ -255,7 +255,7 @@ MvoEdge.PDFRendererView = SC.View.extend(
       } catch (e) {
         // TODO : throw exception and log error
         var errMess = "Unable to zoom with the value %@ :\n%@".fmt(zoomVal, e);
-        console.error(errMess);
+        MvoEdge.logger.error(errMess);
         throw errMess;
       }        
     }

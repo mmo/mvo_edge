@@ -39,3 +39,12 @@ body.sc-theme {
 .workspace .toolbox_icon {
   padding: 5px;
 }
+
+.sc-theme .sc-button-view.icon img.icon {
+  position: relative;
+  vertical-align: middle;
+  margin: 0px auto;
+  top: auto;
+  height: auto;
+  width: auto;
+}

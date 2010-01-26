@@ -125,8 +125,8 @@ MvoEdge.viewsPage = SC.Page.design({
       needsEllipsis: NO,
       icon: static_url('icons/beginning.png'),
       target: "MvoEdge.navigationController", 
-      action: "goToFirstPage" 
-    }),    
+      action: "goToFirstPage"
+    }),
     
     previousPageView: SC.ButtonView.design({
       layout: { centerX: -35, centerY: 0,  width: 30, height: 25 },
@@ -138,9 +138,8 @@ MvoEdge.viewsPage = SC.Page.design({
     }),    
     
     textPageView: SC.TextFieldView.design({ 
-      layout: { centerX: 0, centerY: 0, width: 30, height: 20 },
-      isEditing: YES,
-      textAlign: SC.ALIGN_CENTER,
+      layout: { centerX: 0, centerY: -1, width: 30, height: 20 },
+      textAlign: "right",
       hint: 'Page',
       valueBinding: 'MvoEdge.navigationController.currentPage',
       validator: 'Number'
@@ -164,11 +163,11 @@ MvoEdge.viewsPage = SC.Page.design({
       action: "goToLastPage"
     }),    
     
-    zoomPageView: SC.ToolbarView.design({
-      layout: { centerX: 140, centerY: 0, width: 105, height: 25 },
+    zoomPageView: SC.View.design({
+      layout: { top: 0, bottom: 0, left: 280, right: 0 },
       layerId: "zoomPageId",
       
-      childViews: 'zoomInPageView originalSizePageView zoomOutPageView'.w(),
+      childViews: 'zoomInPageView zoomOriginalPageView zoomOutPageView'.w(),
       
       zoomInPageView: SC.ButtonView.design({
         layout: { centerX: -35, centerY: 0, width: 30, height: 25 },
@@ -180,14 +179,14 @@ MvoEdge.viewsPage = SC.Page.design({
         action: "doZoomIn"
       }),
       
-      originalSizePageView: SC.ButtonView.design({
+      zoomOriginalPageView: SC.ButtonView.design({
         layout: { centerX: 0, centerY: 0, width: 30, height: 25 },
         layerId: "originalSizePageId",
         titleMinWidth : 0,
         needsEllipsis: NO,
         icon: static_url('icons/loupe.png'),
         target: "MvoEdge.zoomController", 
-        action: "retrieveOriginalSize"
+        action: "doZoomOriginal"
       }),      
       
       zoomOutPageView: SC.ButtonView.design({

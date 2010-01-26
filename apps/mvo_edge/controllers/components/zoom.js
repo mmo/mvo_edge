@@ -10,9 +10,9 @@
 /**
   Define the different zoom factors.
 */
-MvoEdge.ZOOM_IN = 0.7;
-MvoEdge.ZOOM_OUT = 1.3;
-MvoEdge.ORIGINAL_SIZE = 1;
+MvoEdge.ZOOM_IN_FACTOR = 0.7;
+MvoEdge.ZOOM_OUT_FACTOR = 1.3;
+MvoEdge.ZOOM_ORIGINAL_FACTOR = 1;
 
 /**
   @class
@@ -35,7 +35,8 @@ MvoEdge.zoomController = SC.ObjectController.create(
   factor: null,
     
   /**
-    Zooming or not.
+    If the factor doesnt change (call 2 times or more the same factor), 
+    you use this variable to show the zoom.
   
     @property {Boolean}
     @default NO
@@ -63,10 +64,10 @@ MvoEdge.zoomController = SC.ObjectController.create(
   */  
   doZoomIn: function () {
     var f = this.get('factor');
-    if (!SC.none(f) && f === MvoEdge.ZOOM_IN) {
+    if (!SC.none(f) && f === MvoEdge.ZOOM_IN_FACTOR) {
       this._changeZoom();
     } else {
-      this.set('factor', MvoEdge.ZOOM_IN);
+      this.set('factor', MvoEdge.ZOOM_IN_FACTOR);
     }
   },
 
@@ -78,23 +79,25 @@ MvoEdge.zoomController = SC.ObjectController.create(
   */   
   doZoomOut: function () {
     var f = this.get('factor');
-    if (!SC.none(f) && f === MvoEdge.ZOOM_OUT) {
+    if (!SC.none(f) && f === MvoEdge.ZOOM_OUT_FACTOR) {
       this._changeZoom();
     } else {
-      this.set('factor', MvoEdge.ZOOM_OUT);
+      this.set('factor', MvoEdge.ZOOM_OUT_FACTOR);
     }    
   },
   
   /**
     @method
     
-    Original size.
+    Zoom original.
     
   */  
-  retrieveOriginalSize: function () {
+  doZoomOriginal: function () {
     var f = this.get('factor');
-    if (!SC.none(f) && f !== MvoEdge.ORIGINAL_SIZE) {    
-      this.set('factor', MvoEdge.ORIGINAL_SIZE);
-    }
+    if (!SC.none(f) && f === MvoEdge.ZOOM_ORIGINAL_FACTOR) {    
+      this._changeZoom();
+    } else {
+      this.set('factor', MvoEdge.ZOOM_ORIGINAL_FACTOR);
+    }        
   }
 });
