@@ -164,7 +164,7 @@ MvoEdge.viewsPage = SC.Page.design({
     }),    
     
     zoomPageView: SC.View.design({
-      layout: { top: 0, bottom: 0, left: 280, right: 0 },
+      layout: { centerX: 140, centerY: 0, width: 105, height: 25 },
       layerId: "zoomPageId",
       
       childViews: 'zoomInPageView zoomOriginalPageView zoomOutPageView'.w(),
