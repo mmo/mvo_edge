@@ -79,7 +79,7 @@ MvoEdge.views = SC.Page.design({
             layout:  { bottom: 4, height: 20, left: 4, right: 4 },
             textAlign: SC.ALIGN_CENTER,
             contentBinding: '.parentView.content',
-            contentValueKey: 'guid'
+            contentValueKey: 'pageNumber'
           })
         }),
         //useImageCache: NO,

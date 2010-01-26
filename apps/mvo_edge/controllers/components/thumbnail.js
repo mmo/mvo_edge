@@ -56,9 +56,9 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
       if (node.get('isLeafNode')) {
         var cdmNodeId = node.get('guid');
         var id = 'f%@'.fmt(cdmNodeId);
-        var label = node.get('label');
         // to create thumbnail url
         var defaultUrl = node.get('urlDefault');
+        var sequenceNumber = node.get('sequenceNumber');
         var pageNumber = !SC.none(node.get('localSequenceNumber')) ?
             node.get('localSequenceNumber') : 0;
         var thumbnailUrl = MvoEdge.configurator.getThumbnailUrl(
@@ -67,8 +67,7 @@ MvoEdge.thumbnailController = SC.ArrayController.create(
         var thumbnailHash = {
             guid: id,
             url: thumbnailUrl,
-            label: label,
-            pageNumber: pageNumber,
+            pageNumber: sequenceNumber,
             coreDocumentNode: cdmNodeId
           };
         // create a new thumbnail record
