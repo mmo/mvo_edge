@@ -139,7 +139,7 @@ MvoEdge.viewsPage = SC.Page.design({
     
     textPageView: SC.TextFieldView.design({ 
       layout: { centerX: 0, centerY: -1, width: 30, height: 20 },
-      textAlign: "right",
+      textAlign: SC.ALIGN_CENTER,
       hint: 'Page',
       valueBinding: 'MvoEdge.navigationController.currentPage',
       validator: 'Number'
