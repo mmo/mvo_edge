@@ -34,7 +34,7 @@ MvoEdge.configurator = SC.Object.create(
   logParameters: {
     log: {
       //console:        "LOG_INFO",
-      browserConsole: "LOG_INFO",
+      //browserConsole: "LOG_INFO",
       ajax:           "LOG_ERROR"
     },
     logFile: "/server/log/post"
@@ -112,6 +112,12 @@ MvoEdge.configurator = SC.Object.create(
       baseLayout: 'default',
       components: [
         {name: 'views.usageView', x: 0, y: 0, xlen: 3, ylen: 3}
+      ]
+    },
+    'waiting': {
+      baseLayout: 'default',
+      components: [
+        {name: 'views.waitingView', x: 0, y: 0, xlen: 3, ylen: 3}
       ]
     }
   },

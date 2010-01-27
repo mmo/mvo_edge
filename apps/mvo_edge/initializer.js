@@ -61,27 +61,44 @@ MvoEdge.initializer = SC.Object.create(
       // interface of the application
       MvoEdge.getPath('mainPage.mainPane').append();
 
+      this._showWaitingPage();
+      
       var scenario = this.get('inputParameters').scenario;
+      var success = NO;
+
       if (!SC.none(scenario)) {
-        var success = NO;
         switch (scenario) {
         case 'get':
           success = this._fetchCDMFromServer();
-          // TO DO Replace with waiting page
-          this._showUsage();
+          if (!success) {
+            MvoEdge.logger.error(
+                'initializer: error fetching CDM from server');
+          }
           break;
         case 'fixtures':
           success = this._fetchCDMFromFixtures();
+          if (!success) {
+            MvoEdge.logger.error(
+                'initializer: error fetching CDM from fixtures');
+          }
           break;
-        }
-        if (!success) {
-          this._showUsage();
+        default:
+          MvoEdge.logger.error(
+              'initializer: requested scenario "%@" unknown'.fmt(scenario));
+          success = NO;
+          break;
         }
       }
       else {
-        MvoEdge.logger.error('initializer: invalid application parameters');
-        this._showUsage();
+        MvoEdge.logger.error(
+            'initializer: scenario missing in call'.fmt(scenario));
+        success = NO;
         return;
+      }
+
+      if (!success) {
+        this._hideWaitingPage();
+        this._showUsagePage();
       }
     }
   }.observes('inputParameters'),
@@ -107,7 +124,6 @@ MvoEdge.initializer = SC.Object.create(
       return YES;
     }
     else {
-      // stop the application now
       MvoEdge.logger.error('initializer: no URL parameter has been provided');
       return NO;
     }
@@ -162,7 +178,7 @@ MvoEdge.initializer = SC.Object.create(
       MvoEdge.logger.info('initializer: using "%@" fixtures'.fmt(name));
       MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
 
-      this._initializeComponents();
+      this._initializeControllers();
 
       return YES;
     }
@@ -197,19 +213,18 @@ MvoEdge.initializer = SC.Object.create(
     //MvoEdge.store.flush();
     MvoEdge.logger.info('initializer: number of CDM nodes: ' + 
         MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
-        
-    this._initializeComponents();
-
+    
+    this._initializeControllers();
   },
-      
+
   /**
     @method
 
-    Initialize components with data
+    Initialize controllers with document data
 
     @private  
   */
-  _initializeComponents: function () { 
+  _initializeControllers: function () { 
 
     SC.RunLoop.begin();
     
@@ -241,6 +256,7 @@ MvoEdge.initializer = SC.Object.create(
     }
     finally {
       SC.RunLoop.end();
+      this._hideWaitingPage();
       this._layOutComponentsOnWindow();
     }
   },
@@ -253,6 +269,7 @@ MvoEdge.initializer = SC.Object.create(
     @private  
   */
   _layOutComponentsOnWindow: function () {
+    
     SC.RunLoop.begin();
     // Call the layout controller in order to setup the interface components
     try {
@@ -281,7 +298,7 @@ MvoEdge.initializer = SC.Object.create(
 
     @private  
   */
-  _showUsage: function () {
+  _showUsagePage: function () {
     SC.RunLoop.begin();
     // Call the layout controller in order to setup the interface components
     try {
@@ -293,6 +310,27 @@ MvoEdge.initializer = SC.Object.create(
     finally {
       SC.RunLoop.end();
     }
+  },
+
+  /**
+    @method
+
+    Show waiting page
+
+    @private  
+  */
+  _showWaitingPage: function () {
+    // show waiting pane
+    SC.RunLoop.begin();
+    MvoEdge.waitingPane.append();
+    SC.RunLoop.end();
+  },
+
+  _hideWaitingPage: function () {
+    // remove waiting pane
+    SC.RunLoop.begin();
+    MvoEdge.waitingPane.remove();
+    SC.RunLoop.end();
   }
 
 });

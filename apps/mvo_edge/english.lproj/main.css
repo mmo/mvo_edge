@@ -43,40 +43,19 @@ body.sc-theme {
   background-color: #fff;
 }
 
-
-
-
-.workspace_white h1 {
- border: none ;
- padding: 0px;
- margin: 0px;
- letter-spacing: -1px;
- font: normal 3.4em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+.blank-bg {
+  background-color: #fff;
 }
 
-.workspace_white h3 {
- margin: 8px 0px;
- padding: 0px;
- font: 1.5em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
- color: #808080;
+
+.mvo_transparent {
+  background: 'transparent';
+  background-color: 'none';
 }
 
-.workspace_white .metadata_primary {
- font: 1.3em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
- font-weight: bold;
- color: #333;
+.centered-image {
+  margin: auto auto;
 }
-
-.workspace_white .metadata_secondary {
- font: 1.1em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
- font-weight: bold;
- color: #777;
-}
-
-.workspace_white .toolbox_icon {
-  padding: 5px;
-}
-
 
 .sc-theme .sc-button-view.icon img.icon {
   position: relative;

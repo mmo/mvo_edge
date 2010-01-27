@@ -69,11 +69,18 @@ MvoEdge.views = SC.Page.design({
         rowHeight: 120,
         exampleView: SC.View.design({
           childViews: 'thumbnail label'.w(),
-          thumbnail: SC.ImageView.design({
-            layout:  { top: 4, height: 92, centerX: 0, width: 80 },
-            useImageCache: NO,
-            contentBinding: '.parentView.content',
-            contentValueKey: 'url'
+          thumbnail: SC.View.design({
+            layout:  { top: 4, height: 90, centerX: 0, width: 90 },
+            
+            classNames: 'mvo_transparent'.w(),
+            childViews: [
+              SC.ImageView.design({
+                useImageCache: NO,
+                classNames: 'centered-image',
+                contentBinding: '.parentView.parentView.content',
+                contentValueKey: 'url'
+              })
+            ]
           }),
           label: SC.LabelView.design({
             layout:  { bottom: 4, height: 20, left: 4, right: 4 },
@@ -260,6 +267,54 @@ MvoEdge.views = SC.Page.design({
         escapeHTML: NO
       })
     ]
-  }).classNames('mvo_info_full shadow'.w())
+  }).classNames('mvo_info_full shadow'.w()),
 
+  waitingView: SC.View.design({
+    childViews: [
+      SC.View.design({
+        layout: { centerX: 0, centerY: 0, width: 500, height: 300 },
+        //layout: { top: 200, bottom: 200, left: 200, right: 200 },
+        classNames: 'mvo_info_full loading'.w(),
+        childViews: [
+          SC.LabelView.design({
+            layout: { centerX: 0, centerY: -33, width: 230, height: 33 },
+            tagName: 'div',
+            value: '<h3>Fetching data...</h3>',
+            escapeHTML: NO
+          }),
+          SC.ImageView.design({
+            layout: { centerX: 0, centerY: 50, width: 36, height: 36 },
+            value: static_url('icons/progress_wheel_medium.gif'),
+            classNames: ['mvo_info_full_progress']
+          })
+        ]
+      })
+    ]
+  }),
+
+  blankPane: SC.View.design({
+    layout: { top: 0, bottom: 0, left: 0, right: 0 },
+    classNames: 'blank-bg'.w()
+  })
+
+});
+
+MvoEdge.waitingPane = SC.PanelPane.create({
+  layout: { width: 500, height: 250, centerX: 0, centerY: 0 },
+
+  contentView: SC.View.extend({
+    childViews: [
+      SC.LabelView.design({
+        layout: { centerX: 0, centerY: -33, width: 230, height: 33 },
+        tagName: 'h3',
+        classNames: 'mvo_info_full'.w(),
+        value: 'Fetching data...'
+      }),
+      SC.ImageView.design({
+        layout: { centerX: 0, centerY: 50, width: 36, height: 36 },
+        value: static_url('icons/progress_wheel_medium.gif'),
+        classNames: 'mvo_info_full_progress'.w()
+      })
+    ]
+  }).classNames('mvo_info_full'.w())
 });
