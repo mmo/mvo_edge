@@ -10,9 +10,11 @@
 /**
   Define the different zoom factors.
 */
-MvoEdge.ZOOM_IN_FACTOR = 0.7;
-MvoEdge.ZOOM_OUT_FACTOR = 1.3;
+MvoEdge.ZOOM_FACTOR = 1.3;
 MvoEdge.ZOOM_ORIGINAL_FACTOR = 1;
+
+MvoEdge.ZOOM_MAX_STEP = 3;
+MvoEdge.ZOOM_MIN_STEP = -3;
 
 /**
   @class
@@ -32,7 +34,10 @@ MvoEdge.zoomController = SC.ObjectController.create(
     @property {Integer}
     @default null
   */
-  factor: null,
+  factor: 1,
+  
+  step: 0,
+
     
   /**
     If the factor doesnt change (call 2 times or more the same factor), 
@@ -63,11 +68,9 @@ MvoEdge.zoomController = SC.ObjectController.create(
     
   */  
   doZoomIn: function () {
-    var f = this.get('factor');
-    if (!SC.none(f) && f === MvoEdge.ZOOM_IN_FACTOR) {
-      this._changeZoom();
-    } else {
-      this.set('factor', MvoEdge.ZOOM_IN_FACTOR);
+    if (this.step < MvoEdge.ZOOM_MAX_STEP) {
+      this.set('step', this.step + 1);
+      this.set('factor', Math.pow(MvoEdge.ZOOM_FACTOR, this.step));
     }
   },
 
@@ -78,11 +81,9 @@ MvoEdge.zoomController = SC.ObjectController.create(
     
   */   
   doZoomOut: function () {
-    var f = this.get('factor');
-    if (!SC.none(f) && f === MvoEdge.ZOOM_OUT_FACTOR) {
-      this._changeZoom();
-    } else {
-      this.set('factor', MvoEdge.ZOOM_OUT_FACTOR);
+    if (this.step > MvoEdge.ZOOM_MIN_STEP) {
+      this.set('step', this.step - 1);
+      this.set('factor', Math.pow(MvoEdge.ZOOM_FACTOR, this.step));
     }    
   },
   
@@ -93,11 +94,7 @@ MvoEdge.zoomController = SC.ObjectController.create(
     
   */  
   doZoomOriginal: function () {
-    var f = this.get('factor');
-    if (!SC.none(f) && f === MvoEdge.ZOOM_ORIGINAL_FACTOR) {    
-      this._changeZoom();
-    } else {
-      this.set('factor', MvoEdge.ZOOM_ORIGINAL_FACTOR);
-    }        
+    this.set('step', 0);
+    this.set('factor', MvoEdge.ZOOM_ORIGINAL_FACTOR);
   }
 });

@@ -71,23 +71,16 @@ MvoEdge.ContentView = SC.ScrollView.extend(
   doZoom: function () {
     var zoomVal = this.get('zoomValue');
     if (!SC.none(zoomVal)) {
-      var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
-      var wd = div.get('layer').width;
-      var hg = div.get('layer').height;
-      var tempIm = new Image();
-      tempIm.src = this.get('value');
-      if (tempIm.complete) {
-        this._originalWidth = tempIm.width;
-        this._originalHeight = tempIm.height;
-      }
+      var div = this.get('contentView');
       if (zoomVal === 1) {
         div.adjust('width', this.get('_originalWidth'));
         div.adjust('height', this.get('_originalHeight'));  
-      } else {
-        var wd2 = wd * zoomVal;
-        var max = Math.max(wd, MvoEdge.MAX_ZOOM_SIZE);
-        if (wd2 > max) {
-          MvoEdge.logger.info("%@ > maxWidth [%@]".fmt(wd2, max));
+      }
+      else {
+        var newWidth = this._originalWidth * zoomVal;
+        var max = Math.max(newWidth, MvoEdge.MAX_ZOOM_SIZE);
+        if (newWidth > max) {
+          MvoEdge.logger.info("%@ > maxWidth [%@]".fmt(newWidth, max));
           // Keep the good rate for the picture
           if (this.get('_originalWidth') > max) {
             div.adjust('width', this.get('_originalWidth'));
@@ -95,9 +88,9 @@ MvoEdge.ContentView = SC.ScrollView.extend(
           }
           return;
         }
-        var min = Math.min(wd, MvoEdge.MIN_ZOOM_SIZE);
-        if (wd2 < min) {
-          MvoEdge.logger.info("%@ < minWidth [%@]".fmt(wd2, min));
+        var min = Math.min(newWidth, MvoEdge.MIN_ZOOM_SIZE);
+        if (newWidth < min) {
+          MvoEdge.logger.info("%@ < minWidth [%@]".fmt(newWidth, min));
           // Keep the good rate for the picture
           if (this.get('_originalWidth') < min) {
             div.adjust('width', this.get('_originalWidth'));
@@ -105,36 +98,36 @@ MvoEdge.ContentView = SC.ScrollView.extend(
           }          
           return;
         }             
-        var hg2 = hg * zoomVal;
-        div.adjust('width', wd2);
-        div.adjust('height', hg2);
+        var newHeight = this._originalHeight * zoomVal;
+        div.adjust('width', newWidth);
+        div.adjust('height', newHeight);
       } 
     }
   }.observes('zoomValue', 'isZooming'),
 
-  // TODO: is this view method the best way to add scroll  
   /**
     @method 
     
-    Adapt View size depending on the size of the image
+    Callback applied after image has loaded.
+    
+    It puts the image in the container and applies the current zoom factor.
 
     @private
     @callback SC.imageCache.load
   */
- /* _contentDidChange: function () {
-    var div = MvoEdge.getPath('viewsPage.mainContentView.contentView');
-    var tempIm = new Image();
-    if (!SC.none(this.get('content'))) {
-      tempIm.src = this.get('content').get('staticUrl');
-      if (tempIm.complete) {
-        div.adjust('width', tempIm.width + 20);
-        div.adjust('height', tempIm.height + 20);
-      }
-      MvoEdge.logger.info('contentController#_contentDidChange: %@'.
-          fmt(this.get('content').get('guid')));
-    }
-  }.observes('content')*/
+  _adjustSize: function (url, image) {
+    SC.RunLoop.begin();
+    var content =  this.get('contentView');
+    content.set('value', url);
+    this.set('_originalWidth', image.width);
+    this.set('_originalHeight', image.height);
+    this.doZoom();
+    SC.RunLoop.end();
+      
+    MvoEdge.logger.debug('ContentView#_adjustSize');
+  },
   
+
   /**
     @method
     
@@ -151,9 +144,8 @@ MvoEdge.ContentView = SC.ScrollView.extend(
           currentMasterSelection.get('localSequenceNumber') : 0;
       var imageUrl = MvoEdge.configurator.getImageUrl(defaultUrl, pageNumber);
       SC.RunLoop.begin();
-      this.set('value', imageUrl);
+      SC.imageCache.loadImage(imageUrl, this, this._adjustSize);
       SC.RunLoop.end();
-      this.doZoom();
     }
     MvoEdge.logger.debug('ContentView#_masterSelectionDidChange: %@'.
         fmt(this.get('masterSelection').get('guid')));

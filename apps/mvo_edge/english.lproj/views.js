@@ -197,7 +197,7 @@ MvoEdge.views = SC.Page.design({
         needsEllipsis: NO,
         icon: static_url('icons/zoom-minus.png'),
         target: "MvoEdge.zoomController", 
-        action: "doZoomIn"
+        action: "doZoomOut"
       }),
       
       zoomOriginalPageView: SC.ButtonView.design({
@@ -217,7 +217,7 @@ MvoEdge.views = SC.Page.design({
         needsEllipsis: NO,
         icon: static_url('icons/zoom-plus.png'),
         target: "MvoEdge.zoomController", 
-        action: "doZoomOut"
+        action: "doZoomIn"
       })
       
     })    

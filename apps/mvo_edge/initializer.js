@@ -221,6 +221,7 @@ MvoEdge.initializer = SC.Object.create(
       MvoEdge.treeController.initialize(nodes);
       MvoEdge.masterController.initialize(nodes);
 
+      MvoEdge.navigationController.initialize();
 
       // initialize the selection with the first CDM leaf node
       var sortedNodes = nodes.sortProperty('guid');
