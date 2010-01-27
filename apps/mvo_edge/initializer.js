@@ -67,15 +67,14 @@ MvoEdge.initializer = SC.Object.create(
         switch (scenario) {
         case 'get':
           success = this._fetchCDMFromServer();
+          // TO DO Replace with waiting page
+          this._showUsage();
           break;
         case 'fixtures':
           success = this._fetchCDMFromFixtures();
+          break;
         }
-        if (success) {
-          this._initializeComponents();
-          this._layOutComponentsOnWindow();
-        }
-        else {
+        if (!success) {
           this._showUsage();
         }
       }
@@ -103,7 +102,6 @@ MvoEdge.initializer = SC.Object.create(
       var serverAdress = MvoEdge.configurator.getPath('baseUrlParameters.get');
       var request = SC.Request.getUrl(serverAdress + url).
           json().notify(this, this._storeCDM);
-      request.set('isAsynchronous', NO);
       request.set('isJSON', YES);
       request.send();
       return YES;
@@ -164,6 +162,8 @@ MvoEdge.initializer = SC.Object.create(
       MvoEdge.logger.info('initializer: using "%@" fixtures'.fmt(name));
       MvoEdge.store = SC.Store.create().from(SC.Record.fixtures);
 
+      this._initializeComponents();
+
       return YES;
     }
     else {
@@ -185,6 +185,7 @@ MvoEdge.initializer = SC.Object.create(
     MvoEdge.logger.debug('initializer: response received from the server: %@'.
         fmt(response.get("body")));
     var jsonRes = response.get("body");
+    //TO DO VERIFY IF ID = -1 to call ErrorPage
     MvoEdge.store = SC.Store.create();
     for (var key in jsonRes) {
       if (jsonRes.hasOwnProperty(key)) {
@@ -196,6 +197,9 @@ MvoEdge.initializer = SC.Object.create(
     //MvoEdge.store.flush();
     MvoEdge.logger.info('initializer: number of CDM nodes: ' + 
         MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
+        
+    this._initializeComponents();
+
   },
       
   /**
@@ -237,6 +241,7 @@ MvoEdge.initializer = SC.Object.create(
     }
     finally {
       SC.RunLoop.end();
+      this._layOutComponentsOnWindow();
     }
   },
 

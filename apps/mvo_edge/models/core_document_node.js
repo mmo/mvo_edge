@@ -19,10 +19,10 @@ MvoEdge.CoreDocumentNode = SC.Record.extend(
   nextId: SC.Record.attr(String),
   previousId: SC.Record.attr(String),
   sequenceNumber: SC.Record.attr(Number),
+  localSequenceNumber: SC.Record.attr(Number),
   label: SC.Record.attr(String),
   metadata: SC.Record.attr(Object),
   urlDefault: SC.Record.attr(String),
-  imageUrl: SC.Record.attr(String),
   children: SC.Record.toMany("MvoEdge.CoreDocumentNode"),
 
   
