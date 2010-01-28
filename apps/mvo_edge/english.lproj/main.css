@@ -158,13 +158,14 @@ body.sc-theme {
   left: 70px;
 }
 
-/* ThumbnailContentView */
-.custom-thumbnail-item-view.selected {
+/* LabelView */
+
+.sc-label-view.selected {
   background-color:#DDDDDD;
   color:#333333;
 }
 
-.sc-theme.focus .sc-collection-view.focus .custom-thumbnail-item-view.selected  {
+.sc-theme.focus .sc-collection-view.focus .sc-label-view.selected {
 background-color:#2370D8;
 color:white;
 }

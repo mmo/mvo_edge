@@ -32,13 +32,15 @@ MvoEdge.ThumbnailContentView = SC.View.extend(SC.ContentDisplay, {
   */  
   render: function (context, firstTime) {
     var isSelected = this.get('isSelected');
-
-    var standard = !isSelected;
-    var selected = isSelected;
-    var classes = { 'standard': standard, 'selected': selected };
-
-    context.setClass(classes); 
-
+    var labelView = this.get('childViews')[1];
+    
+    if (isSelected) {
+      labelView.set('isSelected', YES);
+    }
+    else {
+     labelView.set('isSelected', NO); 
+    }
+    
     sc_super();
   },
 
@@ -69,7 +71,7 @@ MvoEdge.ThumbnailContentView = SC.View.extend(SC.ContentDisplay, {
     childViews.push(view);
     //Add LabelView
     view = this.createChildView(
-    SC.LabelView.design({
+    MvoEdge.LabelView.design({
       layout:  { bottom: 4, height: 20, left: 4, right: 4 },
       textAlign: SC.ALIGN_CENTER,
       contentBinding: '.parentView.content',
@@ -82,4 +84,34 @@ MvoEdge.ThumbnailContentView = SC.View.extend(SC.ContentDisplay, {
     this.set('childViews', childViews); 
   }
 
+});
+/**
+  @class
+
+  Custom label view
+  
+  this class contains only the render method
+
+  @author {CHE}     
+  @extends {LabelView}  
+  @since {0.1.0}    
+*/
+MvoEdge.LabelView = SC.LabelView.extend({
+  
+  /**
+    @method
+    
+    Override render method to add 'isSelected' property 
+  */
+  render: function (context, firstTime) {
+    var isSelected = this.get('isSelected');
+    var standard = !isSelected;
+    var selected = isSelected;
+    var classes = { 'standard': standard, 'selected': selected };
+
+    context.setClass(classes); 
+
+    sc_super();
+  }
+  
 });
