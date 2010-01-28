@@ -38,7 +38,7 @@ MvoEdge.ThumbnailContentView = SC.View.extend(SC.ContentDisplay, {
       labelView.set('isSelected', YES);
     }
     else {
-     labelView.set('isSelected', NO); 
+      labelView.set('isSelected', NO); 
     }
     
     sc_super();
@@ -71,12 +71,12 @@ MvoEdge.ThumbnailContentView = SC.View.extend(SC.ContentDisplay, {
     childViews.push(view);
     //Add LabelView
     view = this.createChildView(
-    MvoEdge.LabelView.design({
-      layout:  { bottom: 4, height: 20, left: 4, right: 4 },
-      textAlign: SC.ALIGN_CENTER,
-      contentBinding: '.parentView.content',
-      contentValueKey: 'pageNumber'
-    }),
+      MvoEdge.LabelView.design({
+        layout:  { bottom: 4, height: 18, centerX: 0, width: 46 },
+        textAlign: SC.ALIGN_CENTER,
+        contentBinding: '.parentView.content',
+        contentValueKey: 'pageNumber'
+      }),
       { rootElementPath: [1] }
     );
     childViews.push(view);
