@@ -5,6 +5,7 @@
 /*globals MvoEdge */
 //require('views/content');
 //require('views/thumbnail');
+//require('views/thumbnailContent');
 //require('views/tree');
 
 MvoEdge.views = SC.Page.design({
@@ -67,28 +68,7 @@ MvoEdge.views = SC.Page.design({
         layout: { top: 0, bottom: 0, left: 0, right: 0 },
         insertionOrientation: SC.VERTICAL_ORIENTATION,
         rowHeight: 120,
-        exampleView: SC.View.design({
-          childViews: 'thumbnail label'.w(),
-          thumbnail: SC.View.design({
-            layout:  { top: 4, height: 90, centerX: 0, width: 90 },
-            
-            classNames: 'mvo_transparent'.w(),
-            childViews: [
-              SC.ImageView.design({
-                useImageCache: NO,
-                classNames: 'centered-image',
-                contentBinding: '.parentView.parentView.content',
-                contentValueKey: 'url'
-              })
-            ]
-          }),
-          label: SC.LabelView.design({
-            layout:  { bottom: 4, height: 20, left: 4, right: 4 },
-            textAlign: SC.ALIGN_CENTER,
-            contentBinding: '.parentView.content',
-            contentValueKey: 'pageNumber'
-          })
-        }),
+        exampleView: MvoEdge.ThumbnailContentView,
         //useImageCache: NO,
         contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
         selectionBinding: 'MvoEdge.thumbnailController.selection'
