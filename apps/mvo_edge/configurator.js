@@ -49,7 +49,7 @@ MvoEdge.configurator = SC.Object.create(
   baseUrlParameters: {
     get: "/server/cdm/get?url=",
     
-    thumbnail: "/server/document/get?width=100&url=",
+    thumbnail: "/server/document/get?width=90&url=",
     
     image: {
       small:  "/server/document/get?width=500&url=",
