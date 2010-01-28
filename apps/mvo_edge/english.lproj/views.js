@@ -5,6 +5,7 @@
 /*globals MvoEdge */
 //require('views/content');
 //require('views/thumbnail');
+//require('views/thumbnailContent');
 //require('views/tree');
 
 MvoEdge.views = SC.Page.design({
@@ -67,28 +68,7 @@ MvoEdge.views = SC.Page.design({
         layout: { top: 0, bottom: 0, left: 0, right: 0 },
         insertionOrientation: SC.VERTICAL_ORIENTATION,
         rowHeight: 120,
-        exampleView: SC.View.design({
-          childViews: 'thumbnail label'.w(),
-          thumbnail: SC.View.design({
-            layout:  { top: 4, height: 90, centerX: 0, width: 90 },
-            
-            classNames: 'mvo_transparent'.w(),
-            childViews: [
-              SC.ImageView.design({
-                useImageCache: NO,
-                classNames: 'centered-image',
-                contentBinding: '.parentView.parentView.content',
-                contentValueKey: 'url'
-              })
-            ]
-          }),
-          label: SC.LabelView.design({
-            layout:  { bottom: 4, height: 20, left: 4, right: 4 },
-            textAlign: SC.ALIGN_CENTER,
-            contentBinding: '.parentView.content',
-            contentValueKey: 'pageNumber'
-          })
-        }),
+        exampleView: MvoEdge.ThumbnailContentView,
         //useImageCache: NO,
         contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
         selectionBinding: 'MvoEdge.thumbnailController.selection'
@@ -148,7 +128,7 @@ MvoEdge.views = SC.Page.design({
     childViews: 'firstPageView previousPageView textPageView nextPageView lastPageView zoomPageView'.w(),
     
     firstPageView: SC.ButtonView.design({
-      layout: { centerX: -70, centerY: 0, width: 30, height: 25 },
+      layout: { centerX: -75, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
       icon: static_url('icons/beginning.png'),
@@ -157,7 +137,7 @@ MvoEdge.views = SC.Page.design({
     }),
     
     previousPageView: SC.ButtonView.design({
-      layout: { centerX: -35, centerY: 0,  width: 30, height: 25 },
+      layout: { centerX: -40, centerY: 0,  width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
       icon: static_url('icons/previous.png'),
@@ -166,7 +146,7 @@ MvoEdge.views = SC.Page.design({
     }),    
     
     textPageView: SC.TextFieldView.design({ 
-      layout: { centerX: 0, centerY: -1, width: 30, height: 20 },
+      layout: { centerX: 0, centerY: -1, width: 40, height: 20 },
       textAlign: SC.ALIGN_CENTER,
       hint: 'Page',
       valueBinding: 'MvoEdge.navigationController.currentPage',
@@ -174,7 +154,7 @@ MvoEdge.views = SC.Page.design({
     }),
 
     nextPageView: SC.ButtonView.design({
-      layout: { centerX: 35, centerY: 0, width: 30, height: 25 },
+      layout: { centerX: 40, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
       icon: static_url('icons/next.png'),
@@ -183,7 +163,7 @@ MvoEdge.views = SC.Page.design({
     }),
 
     lastPageView: SC.ButtonView.design({
-      layout: { centerX: 70, centerY: 0, width: 30, height: 25 },
+      layout: { centerX: 75, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
       icon: static_url('icons/end.png'),
@@ -192,7 +172,7 @@ MvoEdge.views = SC.Page.design({
     }),    
     
     zoomPageView: SC.View.design({
-      layout: { centerX: 140, centerY: 0, width: 105, height: 25 },
+      layout: { centerX: 150, centerY: 0, width: 105, height: 25 },
       layerId: "zoomPageId",
       
       childViews: 'zoomInPageView zoomOriginalPageView zoomOutPageView'.w(),

@@ -157,3 +157,16 @@ body.sc-theme {
   top: 10px;
   left: 70px;
 }
+
+/* LabelView */
+
+.sc-label-view.selected {
+  background-color:#DDDDDD;
+  color:#333333;
+}
+
+.sc-theme.focus .sc-collection-view.focus .sc-label-view.selected {
+background-color:#2370D8;
+color:white;
+}
+
