@@ -55,7 +55,7 @@ MvoEdge.ThumbnailContentView = SC.View.extend(SC.ContentDisplay, {
     //Add ImageView
     view = this.createChildView(
       SC.View.design({
-        layout:  { top: 4, height: 90, centerX: 0, width: 90 },
+        layout:  { top: 4, height: 100, centerX: 0, width: 100 },
         classNames: 'mvo_transparent'.w(),
         childViews: [
           SC.ImageView.design({

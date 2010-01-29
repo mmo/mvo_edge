@@ -67,7 +67,7 @@ MvoEdge.views = SC.Page.design({
       contentView: SC.ListView.design({
         layout: { top: 0, bottom: 0, left: 0, right: 0 },
         insertionOrientation: SC.VERTICAL_ORIENTATION,
-        rowHeight: 120,
+        rowHeight: 130,
         exampleView: MvoEdge.ThumbnailContentView,
         //useImageCache: NO,
         contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
