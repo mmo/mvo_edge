@@ -34,7 +34,7 @@ MvoEdge.configurator = SC.Object.create(
   logParameters: {
     log: {
       //console:        "LOG_INFO",
-      //browserConsole: "LOG_INFO",
+      browserConsole: "LOG_INFO",
       ajax:           "LOG_ERROR"
     },
     logFile: "/server/log/post"

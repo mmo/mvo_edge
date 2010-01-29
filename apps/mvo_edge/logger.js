@@ -46,7 +46,13 @@ MvoEdge.logger = SC.Object.create(
     to receive different log levels.
   */
   init: function () {
-    
+
+    // force deactivation of console logging associated with Ajax loggging,
+    // as done by Log4js (this overrides the last lines of code in log4js.js)
+    var log4jsLogger = Log4js.getLogger("Log4js");
+    log4jsLogger.setLevel(Log4js.Level.OFF);
+
+    // initialize loggers by level
     this.errorLogger = Log4js.getLogger("error");
     this.errorLogger.setLevel(Log4js.Level.ERROR);
     this.loggers.push(this.errorLogger);
