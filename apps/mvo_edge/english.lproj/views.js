@@ -36,8 +36,18 @@ MvoEdge.views = SC.Page.design({
         layout: { top: 0, bottom: 0, centerX: 0, minWidth: 1 },
         useImageCache: NO
       })
-    })
-  }).classNames('shadow_dark inner_content_view'.w()),
+    }),
+    render: function (context, firstTime) {
+      if (context.needsContent) {
+        this.renderChildViews(context, firstTime);
+        context.push(
+          "<div class='top-edge'></div>",
+          "<div class='right-edge'></div>",
+          "<div class='bottom-edge'></div>",
+          "<div class='left-edge'></div>");
+      }
+    }
+  }).classNames('inner_content_view'.w()),
 
   /**
     HTML main content view
@@ -73,7 +83,17 @@ MvoEdge.views = SC.Page.design({
         contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
         selectionBinding: 'MvoEdge.thumbnailController.selection'
       })
-    })
+    }),
+    render: function (context, firstTime) {
+      if (context.needsContent) {
+        this.renderChildViews(context, firstTime);
+        context.push(
+          "<div class='top-edge'></div>",
+          "<div class='right-edge'></div>",
+          "<div class='bottom-edge'></div>",
+          "<div class='left-edge'></div>");
+      }
+    }
   }).classNames('shadow_light inner_view'.w()),
   
   /**
@@ -116,7 +136,17 @@ MvoEdge.views = SC.Page.design({
         contentBinding: 'MvoEdge.treeController.arrangedObjects',
         selectionBinding: 'MvoEdge.treeController.selection'
       })
-    })
+    }),
+    render: function (context, firstTime) {
+      if (context.needsContent) {
+        this.renderChildViews(context, firstTime);
+        context.push(
+          "<div class='top-edge'></div>",
+          "<div class='right-edge'></div>",
+          "<div class='bottom-edge'></div>",
+          "<div class='left-edge'></div>");
+      }
+    }
   }).classNames('shadow_light inner_view'.w()),
 
   /**

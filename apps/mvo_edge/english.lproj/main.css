@@ -1,14 +1,108 @@
-/* ==========================================================================
-// Project:   MvoEdge - mainPage
-// Copyright: (c) 2009 RERO
-// ==========================================================================
+/*
+==============================================================================
+  Project:    MvoEdge - https://www.multivio.org/
+  Copyright:  (c) 2009-2010 RERO
+  License:    See file license.js
+==============================================================================
+*/
+
+
+
+/*
+==========================================================================
+  Overridden base SproutCore theme style rules
+    => keep original declarations, for reference, but commented out
+==========================================================================
 */
 
 body.sc-theme {
- background-color: #444;
- color: #fff;
- font: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  /*
+  font: 12px/18px "Lucida Grande", "Lucida Sans", Verdana, Arial, sans-serif;
+  background-color: #57647f ;
+  padding: 0px;
+  */
+  background-color: #444;
+  color: #fff;
+  font: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 }
+
+.sc-theme .sc-list-view {
+  /*
+  background-color: white ;
+  */
+  background-color: #aaa;
+}
+
+.sc-theme #loading {
+  /*
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(#57647f), to(#848ea2));
+  color: white;
+  */
+  background: #fff;
+}
+
+.sc-theme .sc-pane.sc-main {
+  /*
+  background: -webkit-gradient(linear, left top, left bottom, from(#57647f), to(#848ea2));
+  color: white;
+  */
+  background: #444;
+}
+
+.sc-theme #loading {
+  /*
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(#57647f), to(#848ea2));
+  color: white;
+  */
+}
+
+/* for button icon positioning */
+
+.sc-theme .sc-button-view.icon img.icon {
+  /*
+  position: relative;
+  vertical-align: middle;
+  top: -2px;
+  margin-right: 2px;
+  height: 16px;
+  width: 16px;
+  */
+  position: relative;
+  vertical-align: middle;
+  margin: 0px auto;
+  top: auto;
+  height: auto;
+  width: auto;
+}
+
+/* for LabelView */
+
+.sc-label-view.selected {
+  background-color:#DDDDDD;
+  color:#333333;
+}
+
+.sc-theme.focus .sc-collection-view.focus .sc-label-view.selected {
+  background-color:#2370D8;
+  color:white;
+}
+
+/*
+==========================================================================
+ Rules for the general Multivio layout
+==========================================================================
+*/
+
 
 .shadow_light {
    box-shadow:inset 0 0 10px #000000;
@@ -34,15 +128,6 @@ body.sc-theme {
 
 
 
-
-.sc-theme .sc-list-view {
-  background-color: #aaa;
-}
-
-.sc-theme #loading {
-  background-color: #fff;
-}
-
 .blank-bg {
   background-color: #fff;
 }
@@ -55,15 +140,6 @@ body.sc-theme {
 
 .centered-image {
   margin: auto auto;
-}
-
-.sc-theme .sc-button-view.icon img.icon {
-  position: relative;
-  vertical-align: middle;
-  margin: 0px auto;
-  top: auto;
-  height: auto;
-  width: auto;
 }
 
 
@@ -102,8 +178,11 @@ body.sc-theme {
 
 
 
-
-/* Multivio information full page */
+/*
+==========================================================================
+ Rules for Multivio's usage page
+==========================================================================
+*/
 
 .mvo_info_full {
   color: #000;
@@ -158,15 +237,43 @@ body.sc-theme {
   left: 70px;
 }
 
-/* LabelView */
 
-.sc-label-view.selected {
-  background-color:#DDDDDD;
-  color:#333333;
+.top-edge {
+  background: static_url('images/mvo-sprite-x.png') repeat-x 0px -10px;
+  position: absolute;
+  height: 10px;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  z-index: 2;
 }
 
-.sc-theme.focus .sc-collection-view.focus .sc-label-view.selected {
-background-color:#2370D8;
-color:white;
+.bottom-edge {
+  background: static_url('images/mvo-sprite-x.png') repeat-x 0px 0px;
+  position: absolute;
+  height: 10px;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  z-index: 2;
 }
 
+.left-edge {
+  background: static_url('images/mvo-sprite-y.png') repeat-y -10px 0px;
+  position: absolute;
+  width: 10px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 2;
+}
+
+.right-edge {
+  background: static_url('images/mvo-sprite-y.png') repeat-y 0px 0px;
+  position: absolute;
+  width: 10px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 2;
+}
