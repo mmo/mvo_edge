@@ -6,61 +6,52 @@
 ==============================================================================
 */
 
-
-/**
-  Define the different zoom factors.
-*/
-MvoEdge.ZOOM_FACTOR = 1.3;
-MvoEdge.ZOOM_ORIGINAL_FACTOR = 1;
-
-MvoEdge.ZOOM_MAX_STEP = 3;
-MvoEdge.ZOOM_MIN_STEP = -3;
-
 /**
   @class
 
   This controller is used to zoom in the document.
 
-  @author fma
+  @author fma, che, mmo
   @extends SC.ObjectController
-  @since 0.0.1
+  @since 0.1.0
 */
 MvoEdge.zoomController = SC.ObjectController.create(
 /** @scope MvoEdge.zoomController.prototype */ {
 
-  /** 
-    Factor.
- 
-    @property {Integer}
-    @default null
-  */
-  factor: 1,
-  
-  step: 0,
+  /** Zoom parameter @property */
+  ZOOM_FACTOR: 1.3,
+  /** Zoom parameter @property */
+  ZOOM_ORIGINAL_FACTOR: 1,
+  /** Zoom parameter @property */
+  ZOOM_MAX_STEP: 3,
+  /** Zoom parameter @property */
+  ZOOM_MIN_STEP: -5,
+  /** Zoom parameter @property */
+  ZOOM_MAX_SIZE: 2000,
+  /** Zoom parameter @property */
+  ZOOM_MIN_SIZE: 100,
 
-    
-  /**
-    If the factor doesnt change (call 2 times or more the same factor), 
-    you use this variable to show the zoom.
-  
-    @property {Boolean}
-    @default NO
+  /** 
+    Current zoom factor: multiplicative value applied to the original image
+    size; it is exponentially proportional to the current zoom step:
+
+      current_zoom_factor = ZOOM_FACTOR ^ _current_zoom_step 
+
+    @property {Integer}
+    @default 1
   */
-  isZooming: NO,  
-    
+  current_zoom_factor: 1,
+
   /**
-    @method
-    
-    Change Zoom.
-    
-    @private    
-  */    
-  _changeZoom: function () {
-    var val = this.get('isZooming');        
-    var newVal = (val) ? NO : YES;
-    this.set('isZooming', newVal);    
-  },
-  
+    Current zoom step: its value always equals one of the possible discrete
+    values within the zoom range [ZOOM_MIN_STEP, ZOOM_MAX_STEP]
+
+    @property {Integer}
+    @private
+    @default 0
+  */
+  _current_zoom_step: 0,
+
   /**
     @method
     
@@ -68,9 +59,9 @@ MvoEdge.zoomController = SC.ObjectController.create(
     
   */  
   doZoomIn: function () {
-    if (this.step < MvoEdge.ZOOM_MAX_STEP) {
-      this.set('step', this.step + 1);
-      this.set('factor', Math.pow(MvoEdge.ZOOM_FACTOR, this.step));
+    if (this._current_zoom_step < this.ZOOM_MAX_STEP) {
+      this.set('_current_zoom_step', this._current_zoom_step + 1);
+      this.set('current_zoom_factor', Math.pow(this.ZOOM_FACTOR, this._current_zoom_step));
     }
   },
 
@@ -81,9 +72,9 @@ MvoEdge.zoomController = SC.ObjectController.create(
     
   */   
   doZoomOut: function () {
-    if (this.step > MvoEdge.ZOOM_MIN_STEP) {
-      this.set('step', this.step - 1);
-      this.set('factor', Math.pow(MvoEdge.ZOOM_FACTOR, this.step));
+    if (this._current_zoom_step > this.ZOOM_MIN_STEP) {
+      this.set('_current_zoom_step', this._current_zoom_step - 1);
+      this.set('current_zoom_factor', Math.pow(this.ZOOM_FACTOR, this._current_zoom_step));
     }    
   },
   
@@ -94,7 +85,7 @@ MvoEdge.zoomController = SC.ObjectController.create(
     
   */  
   doZoomOriginal: function () {
-    this.set('step', 0);
-    this.set('factor', MvoEdge.ZOOM_ORIGINAL_FACTOR);
+    this.set('_current_zoom_step', 0);
+    this.set('current_zoom_factor', this.ZOOM_ORIGINAL_FACTOR);
   }
 });

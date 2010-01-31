@@ -4,12 +4,6 @@
 // ==========================================================================
 /*globals MvoEdge */
 
-/**
-  Define the maximum and the minimum size of the picture.
-*/
-MvoEdge.MAX_ZOOM_SIZE = 2000;
-MvoEdge.MIN_ZOOM_SIZE = 100;
-
 /** @class
 
   (Document Your View Here)
@@ -23,17 +17,10 @@ MvoEdge.ContentView = SC.ScrollView.extend(
     Binds to the zoomValue in the zoom controller.
 
     @property {Integer}
-    @binding "MvoEdge.zoomController.factor"
+    @binding "MvoEdge.zoomController.current_zoom_factor"
    */
-  zoomValueBinding: SC.Binding.oneWay('MvoEdge.zoomController.factor'), 
-  
-  /**
-    Binds to the isZooming in the zoom controller.
-  
-    @property {Boolean}
-    @binding "MvoEdge.zoomController.isZooming"
-  */
-  isZoomingBinding: SC.Binding.oneWay('MvoEdge.zoomController.isZooming'),
+  zoomValueBinding:
+      SC.Binding.oneWay('MvoEdge.zoomController.current_zoom_factor'), 
   
   /**
     Binds to the master selection
@@ -78,7 +65,7 @@ MvoEdge.ContentView = SC.ScrollView.extend(
       }
       else {
         var newWidth = this._originalWidth * zoomVal;
-        var max = Math.max(newWidth, MvoEdge.MAX_ZOOM_SIZE);
+        var max = Math.max(newWidth, MvoEdge.zoomController.ZOOM_MAX_SIZE);
         if (newWidth > max) {
           MvoEdge.logger.info("%@ > maxWidth [%@]".fmt(newWidth, max));
           // Keep the good rate for the picture
@@ -88,7 +75,7 @@ MvoEdge.ContentView = SC.ScrollView.extend(
           }
           return;
         }
-        var min = Math.min(newWidth, MvoEdge.MIN_ZOOM_SIZE);
+        var min = Math.min(newWidth, MvoEdge.zoomController.ZOOM_MIN_SIZE);
         if (newWidth < min) {
           MvoEdge.logger.info("%@ < minWidth [%@]".fmt(newWidth, min));
           // Keep the good rate for the picture
@@ -103,7 +90,7 @@ MvoEdge.ContentView = SC.ScrollView.extend(
         div.adjust('height', newHeight);
       } 
     }
-  }.observes('zoomValue', 'isZooming'),
+  }.observes('zoomValue'),
 
   /**
     @method 
