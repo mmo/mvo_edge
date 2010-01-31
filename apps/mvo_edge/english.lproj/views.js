@@ -239,7 +239,7 @@ MvoEdge.views = SC.Page.design({
       layout: { centerX: -75, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
-      icon: static_url('icons/beginning.png'),
+      icon: static_url('images/icons/beginning.png'),
       target: "MvoEdge.navigationController", 
       action: "goToFirstPage"
     }),
@@ -248,7 +248,7 @@ MvoEdge.views = SC.Page.design({
       layout: { centerX: -40, centerY: 0,  width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
-      icon: static_url('icons/previous.png'),
+      icon: static_url('images/icons/previous.png'),
       target: "MvoEdge.navigationController", 
       action: "goToPreviousPage"
     }),    
@@ -265,7 +265,7 @@ MvoEdge.views = SC.Page.design({
       layout: { centerX: 40, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
-      icon: static_url('icons/next.png'),
+      icon: static_url('images/icons/next.png'),
       target: "MvoEdge.navigationController", 
       action: "goToNextPage"
     }),
@@ -274,7 +274,7 @@ MvoEdge.views = SC.Page.design({
       layout: { centerX: 75, centerY: 0, width: 30, height: 25 },
       titleMinWidth : 0,
       needsEllipsis: NO,
-      icon: static_url('icons/end.png'),
+      icon: static_url('images/icons/end.png'),
       target: "MvoEdge.navigationController", 
       action: "goToLastPage"
     }),    
@@ -290,7 +290,7 @@ MvoEdge.views = SC.Page.design({
         layerId: "zoomInPageId",
         titleMinWidth : 0,
         needsEllipsis: NO,
-        icon: static_url('icons/zoom-minus.png'),
+        icon: static_url('images/icons/zoom-minus.png'),
         target: "MvoEdge.zoomController", 
         action: "doZoomOut"
       }),
@@ -300,7 +300,7 @@ MvoEdge.views = SC.Page.design({
         layerId: "originalSizePageId",
         titleMinWidth : 0,
         needsEllipsis: NO,
-        icon: static_url('icons/loupe.png'),
+        icon: static_url('images/icons/loupe.png'),
         target: "MvoEdge.zoomController", 
         action: "doZoomOriginal"
       }),      
@@ -310,7 +310,7 @@ MvoEdge.views = SC.Page.design({
         layerId: "zoomOutPageId",
         titleMinWidth : 0,
         needsEllipsis: NO,
-        icon: static_url('icons/zoom-plus.png'),
+        icon: static_url('images/icons/zoom-plus.png'),
         target: "MvoEdge.zoomController", 
         action: "doZoomIn"
       })
@@ -408,7 +408,7 @@ MvoEdge.views = SC.Page.design({
           }),
           SC.ImageView.design({
             layout: { centerX: 0, centerY: 50, width: 36, height: 36 },
-            value: static_url('icons/progress_wheel_medium.gif'),
+            value: static_url('images/progress_wheel_medium.gif'),
             classNames: ['mvo_info_full_progress']
           })
         ]
@@ -436,7 +436,7 @@ MvoEdge.waitingPane = SC.PanelPane.create({
       }),
       SC.ImageView.design({
         layout: { centerX: 0, centerY: 50, width: 36, height: 36 },
-        value: static_url('icons/progress_wheel_medium.gif'),
+        value: static_url('images/progress_wheel_medium.gif'),
         classNames: 'mvo_info_full_progress'.w()
       })
     ]
