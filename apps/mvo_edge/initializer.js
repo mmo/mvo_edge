@@ -280,7 +280,7 @@ MvoEdge.initializer = SC.Object.create(
         MvoEdge.layoutController.configureWorkspace(componentLayout);
       }
       else {
-        MvoEdge.layoutController.configureWorkspace('pageBased');
+        MvoEdge.layoutController.configureWorkspace('pageBasedWithDivider');
       }
     }
     catch (e) {

@@ -97,6 +97,17 @@ body.sc-theme {
   color:white;
 }
 
+.sc-split-divider-view {
+  /*
+  background-color: #ddd;
+  border-left: 1px #999 solid;
+  border-right: 1px #999 solid;
+  z-index: 1;
+  */
+  border: none;
+  background-color: #444;
+}
+
 /*
 ==========================================================================
  Rules for the general Multivio layout

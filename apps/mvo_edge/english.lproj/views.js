@@ -21,6 +21,84 @@ MvoEdge.views = SC.Page.design({
     value: 'Multivio prototype Edge'
   }),
 
+  treeAndContentView: SC.SplitView.design({
+    layoutDirection: SC.LAYOUT_HORIZONTAL,
+    autoresizeBehavior: SC.RESIZE_BOTTOM_RIGHT,
+    defaultThickness: 200,
+    topLeftMinThickness: 100,
+    topLeftMaxThickness: 2000,
+    dividerThickness: 20,
+    canCollapseViews: NO,
+
+    topLeftView: SC.View.design({
+      layout: { top: 0, bottom: 0, left: 0, right: 0 },
+      childViews: [
+        // this intermediate view level is required due to odd behavior of
+        // the SplitdDivider view
+        SC.View.design({
+          layout: { top: 0, bottom: 0, left: 0, right: 0 },
+
+          childViews: 'innerTree'.w(),
+          innerTree: SC.ScrollView.design({
+            layout: { top: 10, bottom: 10, left: 10, right: 10 },
+            borderStyle: SC.BORDER_NONE,
+
+            contentView: MvoEdge.TreeView.design({
+              layout: { top: 0, bottom: 0, left: 0, right: 0 },
+              rowHeight: 18,
+              borderStyle: SC.BORDER_NONE,
+              contentValueKey: 'label',
+              contentBinding: 'MvoEdge.treeController.arrangedObjects',
+              selectionBinding: 'MvoEdge.treeController.selection'
+            })
+          }),
+          render: function (context, firstTime) {
+            if (context.needsContent) {
+              this.renderChildViews(context, firstTime);
+              context.push(
+                "<div class='top-edge'></div>",
+                "<div class='right-edge'></div>",
+                "<div class='bottom-edge'></div>",
+                "<div class='left-edge'></div>");
+            }
+          }
+        }).classNames('shadow_light inner_view'.w())
+      ]
+    }),
+
+    bottomRightView: SC.View.design({
+      layout: { top: 0, bottom: 0, left: 0, right: 0 },
+      childViews: [
+        // this intermediate view level is required due to odd behavior of
+        // the SplitdDivider view
+        SC.View.design({
+          layout: { top: 0, bottom: 0, left: 0, right: 0 },
+
+          childViews: 'innerMainContent'.w(),
+          innerMainContent: MvoEdge.ContentView.design({
+            layout: { top: 10, bottom: 10, left: 10, right: 10 },
+            borderStyle: SC.BORDER_NONE,
+
+            contentView: SC.ImageView.design({
+              layout: { top: 0, bottom: 0, centerX: 0, minWidth: 1 },
+              useImageCache: NO
+            })
+          }),
+          render: function (context, firstTime) {
+            if (context.needsContent) {
+              this.renderChildViews(context, firstTime);
+              context.push(
+                "<div class='top-edge'></div>",
+                "<div class='right-edge'></div>",
+                "<div class='bottom-edge'></div>",
+                "<div class='left-edge'></div>");
+            }
+          }
+        }).classNames('inner_content_view'.w())
+      ]
+    })
+  }),
+
   /**
     Main content view
   */

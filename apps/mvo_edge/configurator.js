@@ -102,6 +102,15 @@ MvoEdge.configurator = SC.Object.create(
         {name: 'views.navigationView',  x: 0, y: 2, xlen: 3, ylen: 1}
       ]
     },
+    'pageBasedWithDivider': {
+      baseLayout: 'default',
+      components: [
+        {name: 'views.headerView',         x: 0, y: 0, xlen: 3, ylen: 1},
+        {name: 'views.treeAndContentView', x: 0, y: 1, xlen: 2, ylen: 1},
+        {name: 'views.thumbnailView',      x: 2, y: 1, xlen: 1, ylen: 1},
+        {name: 'views.navigationView',     x: 0, y: 2, xlen: 3, ylen: 1}
+      ]
+    },
     'contentFullScreen': {
       baseLayout: 'default',
       components: [
@@ -124,7 +133,7 @@ MvoEdge.configurator = SC.Object.create(
 
   fixtureSets: {
     'VAA': {
-      componentLayout: 'pageBased'
+      componentLayout: 'pageBasedWithDivider'
     },
     'HTML': {
       componentLayout: 'pageBased'
