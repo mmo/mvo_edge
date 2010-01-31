@@ -155,7 +155,7 @@ MvoEdge.views = SC.Page.design({
   navigationView: SC.View.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },
 
-    childViews: 'firstPageView previousPageView textPageView nextPageView lastPageView zoomPageView'.w(),
+    childViews: 'firstPageView previousPageView textPageView nextPageView lastPageView zoomPageView logos'.w(),
     
     firstPageView: SC.ButtonView.design({
       layout: { centerX: -75, centerY: 0, width: 30, height: 25 },
@@ -237,33 +237,69 @@ MvoEdge.views = SC.Page.design({
         action: "doZoomIn"
       })
       
-    })    
-          
+    }),
+    
+    logos: SC.View.design({
+      layout: { top: 0, height: 36, right: 6, width: 200 },
+
+      childViews: [
+        SC.ImageView.design({
+          layout: { top: 0, height: 36, right: 100, width: 100 },
+          value: static_url('images/logo_rero_100x36_bw.png')
+        }),
+        SC.ImageView.design({
+          layout: { top: 4, height: 32, right: 0, width: 80 },
+          value: static_url('images/e-lib.ch_80x32_bw.png')
+        })
+      ]
+    })
+    
   }),
 
   /**
     Metadata view
   */
-  metadataView: SC.View.design({
-    layout: { top: 0, bottom: 0, left: 0, right: 0 },
-    
-    childViews: [
-      SC.LabelView.design({
-        layout: { top: 10, height: 20, left: 10, right: 10 },
-        tagName: 'span',
-        classNames: 'metadata_primary',
-        contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
-        contentValueKey: 'title'
-      }),
-      SC.LabelView.design({
-        layout: { top: 31, height: 20, left: 10, right: 10 },
-        tagName: 'span',
-        classNames: 'metadata_secondary',
-        contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
-        contentValueKey: 'creator'
-      })
-    ]
-  }).classNames(''.w()),
+  headerView: SC.View.design({
+    childViews: 'metadataView logoView'.w(),
+
+    metadataView: SC.View.design({
+      layout: { top: 0, bottom: 0, left: 0, right: 0 },
+
+      childViews: [
+        SC.LabelView.design({
+          layout: { top: 10, height: 20, left: 10, right: 10 },
+          isTextSelectable: YES,
+          tagName: 'span',
+          classNames: 'metadata_primary',
+          contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
+          contentValueKey: 'title'
+        }),
+        SC.LabelView.design({
+          layout: { top: 31, height: 20, left: 10, right: 10 },
+          isTextSelectable: YES,
+          tagName: 'span',
+          classNames: 'metadata_secondary',
+          contentBinding: 'MvoEdge.masterController.descriptiveMetadataDictionary',
+          contentValueKey: 'creator'
+        })
+      ]
+    }).classNames(''.w()),
+
+    logoView: SC.View.design({
+      isTextSelectable: YES,
+      childViews: [
+        SC.ImageView.design({
+          layout: { top: 10, height: 29, right: 6, width: 140 },
+          value: static_url('images/multivio_logo_140x29_bw')
+        })
+      ],
+      render: function (context, firstTime) {
+        context.push("<a href='https://www.multivio.org/'>");
+        this.renderChildViews(context, firstTime);
+        context.push("</a>");
+      }
+    })
+  }),
 
   usageView: SC.View.design({
     layout: { top: 0, bottom: 0, left: 0, right: 0 },

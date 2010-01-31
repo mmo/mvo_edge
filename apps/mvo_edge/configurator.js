@@ -95,7 +95,7 @@ MvoEdge.configurator = SC.Object.create(
     'pageBased': {
       baseLayout: 'default',
       components: [
-        {name: 'views.metadataView',    x: 0, y: 0, xlen: 3, ylen: 1},
+        {name: 'views.headerView',      x: 0, y: 0, xlen: 3, ylen: 1},
         {name: 'views.treeView',        x: 0, y: 1, xlen: 1, ylen: 1},
         {name: 'views.mainContentView', x: 1, y: 1, xlen: 1, ylen: 1},
         {name: 'views.thumbnailView',   x: 2, y: 1, xlen: 1, ylen: 1},
