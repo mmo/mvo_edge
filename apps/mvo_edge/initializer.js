@@ -162,9 +162,9 @@ MvoEdge.initializer = SC.Object.create(
         MvoEdge.CoreDocumentNode.FIXTURES =
             MvoEdge.CoreDocumentNode.FIXTURES_HTML;
         break;
-      case 'PDF':
+      case 'ERR':
         MvoEdge.CoreDocumentNode.FIXTURES =
-            MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
+            MvoEdge.CoreDocumentNode.FIXTURES_ERROR;
         break;
       default:
         MvoEdge.logger.error('initializer: the value "%@" '.fmt(name) + 
@@ -200,6 +200,7 @@ MvoEdge.initializer = SC.Object.create(
   _storeCDM: function (response) {
     MvoEdge.logger.debug('initializer: response received from the server: %@'.
         fmt(response.get("body")));
+    var isError = NO;
     var jsonRes = response.get("body");
     //TO DO VERIFY IF ID = -1 to call ErrorPage
     MvoEdge.store = SC.Store.create();
@@ -208,13 +209,24 @@ MvoEdge.initializer = SC.Object.create(
         var oneNode = jsonRes[key];
         var cdmRecord = MvoEdge.store.createRecord(MvoEdge.CoreDocumentNode,
             oneNode, key);
+        if (key === '-1') {
+          isError = YES;
+        }
       } 
     }
     //MvoEdge.store.flush();
     MvoEdge.logger.info('initializer: number of CDM nodes: ' + 
         MvoEdge.store.find(MvoEdge.CoreDocumentNode).length());
     
-    this._initializeControllers();
+    if (isError) {
+      var nodes = MvoEdge.store.find(MvoEdge.CoreDocumentNode);
+      MvoEdge.errorHandler.initialize(nodes);
+      this._hideWaitingPage();
+      this._showErrorPage();
+    }
+    else {
+      this._initializeControllers();
+    }
   },
 
   /**
@@ -303,6 +315,27 @@ MvoEdge.initializer = SC.Object.create(
     // Call the layout controller in order to setup the interface components
     try {
       MvoEdge.layoutController.configureWorkspace('usage');
+    }
+    catch (e) {
+      MvoEdge.logger.logException(e, 'Error showing usage page');
+    }
+    finally {
+      SC.RunLoop.end();
+    }
+  },
+  
+  /**
+    @method
+
+    Show error page
+
+    @private  
+  */
+  _showErrorPage: function () {
+    SC.RunLoop.begin();
+    // Call the layout controller in order to setup the interface components
+    try {
+      MvoEdge.layoutController.configureWorkspace('error');
     }
     catch (e) {
       MvoEdge.logger.logException(e, 'Error showing usage page');

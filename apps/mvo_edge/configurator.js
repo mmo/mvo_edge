@@ -128,6 +128,12 @@ MvoEdge.configurator = SC.Object.create(
       components: [
         {name: 'views.waitingView', x: 0, y: 0, xlen: 3, ylen: 3}
       ]
+    },
+    'error': {
+      baseLayout: 'default',
+      components: [
+        {name: 'views.errorView', x: 0, y: 0, xlen: 3, ylen: 3}
+      ]
     }
   },
 
@@ -136,9 +142,6 @@ MvoEdge.configurator = SC.Object.create(
       componentLayout: 'pageBasedWithDivider'
     },
     'HTML': {
-      componentLayout: 'pageBased'
-    },
-    'PDF': {
       componentLayout: 'pageBased'
     }
   },
