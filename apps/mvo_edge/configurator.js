@@ -58,8 +58,7 @@ MvoEdge.configurator = SC.Object.create(
     },
     
     fixtures: {
-      VAA: "/static/mvo_edge/en/current/images/fixtures/VAA",
-      HTML: "/static/mvo_edge/en/current/PDFHTML"
+      VAA: "/static/mvo_edge/en/current/images/fixtures/VAA"
     }
   },
 
@@ -134,12 +133,6 @@ MvoEdge.configurator = SC.Object.create(
   fixtureSets: {
     'VAA': {
       componentLayout: 'pageBasedWithDivider'
-    },
-    'HTML': {
-      componentLayout: 'pageBased'
-    },
-    'PDF': {
-      componentLayout: 'pageBased'
     }
   },
 

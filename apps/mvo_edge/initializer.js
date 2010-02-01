@@ -158,14 +158,6 @@ MvoEdge.initializer = SC.Object.create(
       switch (name) {
       case 'VAA':
         break;
-      case 'HTML':
-        MvoEdge.CoreDocumentNode.FIXTURES =
-            MvoEdge.CoreDocumentNode.FIXTURES_HTML;
-        break;
-      case 'PDF':
-        MvoEdge.CoreDocumentNode.FIXTURES =
-            MvoEdge.CoreDocumentNode.FIXTURES_PDF_RENDERER;
-        break;
       default:
         MvoEdge.logger.error('initializer: the value "%@" '.fmt(name) + 
             'for the "name" parameter is configured in the application ' +

@@ -126,19 +126,6 @@ MvoEdge.views = SC.Page.design({
       }
     }
   }).classNames('inner_content_view'.w()),
-
-  /**
-    HTML main content view
-  */
-  htmlMainContentView: SC.ScrollView.design({
-    layout: { top: 0, bottom: 0, left: 0, right: 0 },
-    
-    contentView: SC.WebView.design({
-      layout: { top: 0, bottom: 0, left: 0, right: 0 },
-      contentBinding: 'MvoEdge.masterController.masterSelection',
-      contentValueKey: 'imageUrl'
-    })
-  }),
   
   /**
     Thumbnail view
@@ -173,27 +160,6 @@ MvoEdge.views = SC.Page.design({
       }
     }
   }).classNames('shadow_light inner_view'.w()),
-  
-  /**
-    HTML thumbnail view
-  */
-  htmlThumbnailView: SC.ScrollView.design({
-    hasHorizontalScroller: NO,
-    layout: { top: 0, bottom: 0, left: 0, right: 0 },
-
-    contentView: SC.ListView.design({
-      layout: { top: 0, bottom: 0, left: 5, right: 5 },
-      insertionOrientation: SC.VERTICAL_ORIENTATION,
-      rowHeight: 25,
-      columnWidth: 30,
-      exampleView: SC.LabelView.design({
-        textAlign: SC.ALIGN_CENTER
-      }),
-      contentBinding: 'MvoEdge.thumbnailController.arrangedObjects',
-      selectionBinding: 'MvoEdge.thumbnailController.selection',
-      contentValueKey: 'label'
-    })
-  }),
 
   /**
     Tree view
