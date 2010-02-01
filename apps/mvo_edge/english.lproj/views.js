@@ -408,7 +408,7 @@ MvoEdge.views = SC.Page.design({
         layout: { centerX: 0, centerY: 50, width: 700, height: 50 },
         classNames: 'mvo_info_full',
         contentBinding: 'MvoEdge.errorHandler.serverMessage',
-        contentValueKey: 'errorMsg',
+        contentValueKey: 'errorMessage',
         escapeHTML: NO
       })
     ]
