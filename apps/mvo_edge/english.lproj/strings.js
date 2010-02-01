@@ -1,7 +1,10 @@
-// ==========================================================================
-// Project:   MvoEdge Strings
-// Copyright: (c) 2009 RERO
-// ==========================================================================
+/**
+==============================================================================
+  Project:    MvoEdge - https://www.multivio.org/
+  Copyright:  (c) 2009-2010 RERO
+  License:    See file license.js
+==============================================================================
+*/
 /*globals MvoEdge */
 
 // Place strings you want to localize here.  In your app, use the key and

@@ -1,7 +1,10 @@
-// ==========================================================================
-// Project:   MvoEdge.CoreDocumentNode Fixtures
-// Copyright: (c) 2009 RERO
-// ==========================================================================
+/**
+==============================================================================
+  Project:    MvoEdge - https://www.multivio.org/
+  Copyright:  (c) 2009-2010 RERO
+  License:    See file license.js
+==============================================================================
+*/
 /*globals MvoEdge */
 
 sc_require('models/core_document_node');
