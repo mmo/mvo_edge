@@ -87,5 +87,50 @@ MvoEdge.zoomController = SC.ObjectController.create(
   doZoomOriginal: function () {
     this.set('_current_zoom_step', 0);
     this.set('current_zoom_factor', this.ZOOM_ORIGINAL_FACTOR);
-  }
+  },
+  
+  /**
+    @method
+    
+    Return the zoomFactor for a specific step
+    
+    @param {Number} step
+  */
+  getZoomFactorForThisStep: function (step) {
+    return Math.pow(this.ZOOM_FACTOR, step);
+  },
+  
+  /**
+    @method
+    
+    Return YES if ZOOM_MIN_STEP =< step <=  ZOOM_MAX_STEP else return NO
+    
+    @param {Number} step
+  */  
+  isZoomStepValid: function (step) {
+    if(step >= this.ZOOM_MIN_STEP && step <=  this.ZOOM_MAX_STEP){
+      return YES;
+    }
+    else{
+      return NO;
+    }
+  },
+  
+  /**
+    @method
+    
+    Set _current_zoom_step and current_zoomFactor
+    
+    @param {Number} step
+  */
+  setCurrentValue: function (step) {
+    if(this.isZoomStepValid(step)){
+      this.set('_current_zoom_step', step);
+      this.set('current_zoom_factor', Math.pow(this.ZOOM_FACTOR, this._current_zoom_step));
+      MvoEdge.logger.debug('zoomController set cuurent value');
+    }
+    else {
+      MvoEdge.logger.info('unable to set this zoom step value ' + step);
+    }
+  },
 });

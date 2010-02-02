@@ -61,7 +61,7 @@ MvoEdge.configurator = SC.Object.create(
     },
     
     fixtures: {
-      VAA: "/static/mvo_edge/en/current/images/fixtures/VAA"
+      VAA: "/static/mvo_edge/en/current/images/VAA"
     }
   },
 

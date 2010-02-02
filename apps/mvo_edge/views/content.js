@@ -33,6 +33,13 @@ MvoEdge.ContentView = SC.ScrollView.extend(
   */
   masterSelectionBinding: "MvoEdge.masterController.masterSelection", 
   
+  /**
+    @property {Boolean}
+    
+    YES at the begining.  
+  */   
+  isFirstFile: YES,
+  
   /** 
     Original width.
 
@@ -111,6 +118,10 @@ MvoEdge.ContentView = SC.ScrollView.extend(
     content.set('value', url);
     this.set('_originalWidth', image.width);
     this.set('_originalHeight', image.height);
+    if (this.get('isFirstFile')) {
+      this.adjustZoomValue();
+      this.set('isFirstFile', NO);
+    }
     this.doZoom();
     SC.RunLoop.end();
       
@@ -139,5 +150,59 @@ MvoEdge.ContentView = SC.ScrollView.extend(
     }
     MvoEdge.logger.debug('ContentView#_masterSelectionDidChange: %@'.
         fmt(this.get('masterSelection').get('guid')));
-  }.observes('masterSelection')
+  }.observes('masterSelection'),
+  
+  /**
+    @method
+    
+    Set zoomFactor and zoomStep according to the size of the first image 
+    and to the size of this view. The goal is to resize the image so that it is
+    totally visible
+  */   
+  adjustZoomValue: function () {
+    // retreive view width and height, zoomFactor and zoomStep
+    var contentWidth = this.get('layer').clientWidth;
+    var contentHeight = this.get('layer').clientHeight;      
+    var zoomFactor = this.get('zoomValue');
+    var zoomStep = MvoEdge.zoomController._current_zoom_step;  
+    
+    var isWidthOK = this.get('_originalWidth') * zoomFactor < contentWidth ? 
+        YES : NO;
+                  
+    //adjust first width
+    while (!isWidthOK) {
+      zoomStep--;
+      if (MvoEdge.zoomController.isZoomStepValid(zoomStep)) {
+        zoomFactor = MvoEdge.zoomController.getZoomFactorForThisStep(zoomStep);
+        if (this.get('_originalWidth') * zoomFactor < contentWidth) {
+          isWidthOK = YES;
+        }
+      }
+      else {
+        //if zoomStep is not valid stop minimize 
+        zoomStep ++;
+        isWidthOK = YES;
+      }     
+    }
+    var isHeightOK = this.get('_originalHeight') * zoomFactor < contentHeight ?
+          YES : NO;
+
+    //adjust height
+    while (!isHeightOK) {
+      zoomStep--;
+      if (MvoEdge.zoomController.isZoomStepValid(zoomStep)) {
+        zoomFactor = MvoEdge.zoomController.getZoomFactorForThisStep(zoomStep);
+        if (this.get('_originalHeight') * zoomFactor < contentHeight) {
+          isHeightOK = YES;
+        }
+      }
+      else {
+        //if zoomStep is not valid stop minimize 
+        zoomStep ++;
+        isHeightOK = YES;
+      }
+    }
+    MvoEdge.zoomController.setCurrentValue(zoomStep);
+    MvoEdge.logger.info('contentView adjust zoom values');
+  }
 });
