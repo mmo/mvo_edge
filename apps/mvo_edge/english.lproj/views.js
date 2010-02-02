@@ -361,6 +361,27 @@ MvoEdge.views = SC.Page.design({
       })
     ]
   }).classNames('mvo_info_full shadow'.w()),
+  
+  errorView: SC.View.design({
+    layout: { top: 0, bottom: 0, left: 0, right: 0 },
+
+    childViews: [  
+      SC.LabelView.design({
+        layout: { centerX: 0, centerY: 0, width: 700, height: 50 },
+        classNames: 'mvo_info_full',
+        contentBinding: 'MvoEdge.errorController.serverMessage',
+        contentValueKey: 'errorCode',
+        escapeHTML: NO
+      }),
+      SC.LabelView.design({
+        layout: { centerX: 0, centerY: 50, width: 700, height: 50 },
+        classNames: 'mvo_info_full',
+        contentBinding: 'MvoEdge.errorController.serverMessage',
+        contentValueKey: 'errorMessage',
+        escapeHTML: NO
+      })
+    ]
+  }).classNames('mvo_info_full shadow'.w()),
 
   waitingView: SC.View.design({
     childViews: [
