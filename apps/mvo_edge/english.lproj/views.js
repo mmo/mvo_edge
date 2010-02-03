@@ -290,13 +290,33 @@ MvoEdge.views = SC.Page.design({
       layout: { top: 0, height: 36, right: 6, width: 200 },
 
       childViews: [
-        SC.ImageView.design({
+        SC.View.design({
           layout: { top: 0, height: 36, right: 100, width: 100 },
-          value: static_url('images/logo_rero_100x36_bw.png')
+          childViews: [
+            SC.ImageView.design({
+              layout: { top: 0, bottom: 0, left: 0, right: 0 },
+              value: static_url('images/logo_rero_100x36_bw.png')
+            })
+          ],
+          render: function (context, firstTime) {
+            context.push("<a href='http://www.rero.ch/'>");
+            this.renderChildViews(context, firstTime);
+            context.push("</a>");
+          }
         }),
-        SC.ImageView.design({
+        SC.View.design({
           layout: { top: 4, height: 32, right: 0, width: 80 },
-          value: static_url('images/e-lib.ch_80x32_bw.png')
+          childViews: [
+            SC.ImageView.design({
+              layout: { top: 0, bottom: 0, left: 0, right: 0 },
+              value: static_url('images/e-lib.ch_80x32_bw.png')
+            })
+          ],
+          render: function (context, firstTime) {
+            context.push("<a href='http://www.e-lib.ch/'>");
+            this.renderChildViews(context, firstTime);
+            context.push("</a>");
+          }
         })
       ]
     })
